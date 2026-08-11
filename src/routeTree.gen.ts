@@ -18,6 +18,13 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VivaVivaRouteImport } from './routes/viva/viva'
+import { Route as VivaSelectTopicRouteImport } from './routes/viva/select-topic'
+import { Route as VivaSelectRouteImport } from './routes/viva/select'
+import { Route as VivaResultsRouteImport } from './routes/viva/results'
+import { Route as VivaInstructionsRouteImport } from './routes/viva/instructions'
+import { Route as VivaGateRouteImport } from './routes/viva/gate'
+import { Route as VivaEvaluatingRouteImport } from './routes/viva/evaluating'
 import { Route as ApiPublicSeedRouteImport } from './routes/api/public/seed'
 
 const ThankYouRoute = ThankYouRouteImport.update({
@@ -65,6 +72,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VivaVivaRoute = VivaVivaRouteImport.update({
+  id: '/viva/viva',
+  path: '/viva/viva',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaSelectTopicRoute = VivaSelectTopicRouteImport.update({
+  id: '/viva/select-topic',
+  path: '/viva/select-topic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaSelectRoute = VivaSelectRouteImport.update({
+  id: '/viva/select',
+  path: '/viva/select',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaResultsRoute = VivaResultsRouteImport.update({
+  id: '/viva/results',
+  path: '/viva/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaInstructionsRoute = VivaInstructionsRouteImport.update({
+  id: '/viva/instructions',
+  path: '/viva/instructions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaGateRoute = VivaGateRouteImport.update({
+  id: '/viva/gate',
+  path: '/viva/gate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VivaEvaluatingRoute = VivaEvaluatingRouteImport.update({
+  id: '/viva/evaluating',
+  path: '/viva/evaluating',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSeedRoute = ApiPublicSeedRouteImport.update({
   id: '/api/public/seed',
   path: '/api/public/seed',
@@ -81,6 +123,13 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
+  '/viva/evaluating': typeof VivaEvaluatingRoute
+  '/viva/gate': typeof VivaGateRoute
+  '/viva/instructions': typeof VivaInstructionsRoute
+  '/viva/results': typeof VivaResultsRoute
+  '/viva/select': typeof VivaSelectRoute
+  '/viva/select-topic': typeof VivaSelectTopicRoute
+  '/viva/viva': typeof VivaVivaRoute
   '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +142,13 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
+  '/viva/evaluating': typeof VivaEvaluatingRoute
+  '/viva/gate': typeof VivaGateRoute
+  '/viva/instructions': typeof VivaInstructionsRoute
+  '/viva/results': typeof VivaResultsRoute
+  '/viva/select': typeof VivaSelectRoute
+  '/viva/select-topic': typeof VivaSelectTopicRoute
+  '/viva/viva': typeof VivaVivaRoute
   '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRoutesById {
@@ -106,6 +162,13 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
+  '/viva/evaluating': typeof VivaEvaluatingRoute
+  '/viva/gate': typeof VivaGateRoute
+  '/viva/instructions': typeof VivaInstructionsRoute
+  '/viva/results': typeof VivaResultsRoute
+  '/viva/select': typeof VivaSelectRoute
+  '/viva/select-topic': typeof VivaSelectTopicRoute
+  '/viva/viva': typeof VivaVivaRoute
   '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +183,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/testimonials'
     | '/thank-you'
+    | '/viva/evaluating'
+    | '/viva/gate'
+    | '/viva/instructions'
+    | '/viva/results'
+    | '/viva/select'
+    | '/viva/select-topic'
+    | '/viva/viva'
     | '/api/public/seed'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +202,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/testimonials'
     | '/thank-you'
+    | '/viva/evaluating'
+    | '/viva/gate'
+    | '/viva/instructions'
+    | '/viva/results'
+    | '/viva/select'
+    | '/viva/select-topic'
+    | '/viva/viva'
     | '/api/public/seed'
   id:
     | '__root__'
@@ -144,6 +221,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/testimonials'
     | '/thank-you'
+    | '/viva/evaluating'
+    | '/viva/gate'
+    | '/viva/instructions'
+    | '/viva/results'
+    | '/viva/select'
+    | '/viva/select-topic'
+    | '/viva/viva'
     | '/api/public/seed'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +241,13 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ThankYouRoute: typeof ThankYouRoute
+  VivaEvaluatingRoute: typeof VivaEvaluatingRoute
+  VivaGateRoute: typeof VivaGateRoute
+  VivaInstructionsRoute: typeof VivaInstructionsRoute
+  VivaResultsRoute: typeof VivaResultsRoute
+  VivaSelectRoute: typeof VivaSelectRoute
+  VivaSelectTopicRoute: typeof VivaSelectTopicRoute
+  VivaVivaRoute: typeof VivaVivaRoute
   ApiPublicSeedRoute: typeof ApiPublicSeedRoute
 }
 
@@ -225,6 +316,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/viva/viva': {
+      id: '/viva/viva'
+      path: '/viva/viva'
+      fullPath: '/viva/viva'
+      preLoaderRoute: typeof VivaVivaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/select-topic': {
+      id: '/viva/select-topic'
+      path: '/viva/select-topic'
+      fullPath: '/viva/select-topic'
+      preLoaderRoute: typeof VivaSelectTopicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/select': {
+      id: '/viva/select'
+      path: '/viva/select'
+      fullPath: '/viva/select'
+      preLoaderRoute: typeof VivaSelectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/results': {
+      id: '/viva/results'
+      path: '/viva/results'
+      fullPath: '/viva/results'
+      preLoaderRoute: typeof VivaResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/instructions': {
+      id: '/viva/instructions'
+      path: '/viva/instructions'
+      fullPath: '/viva/instructions'
+      preLoaderRoute: typeof VivaInstructionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/gate': {
+      id: '/viva/gate'
+      path: '/viva/gate'
+      fullPath: '/viva/gate'
+      preLoaderRoute: typeof VivaGateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viva/evaluating': {
+      id: '/viva/evaluating'
+      path: '/viva/evaluating'
+      fullPath: '/viva/evaluating'
+      preLoaderRoute: typeof VivaEvaluatingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/seed': {
       id: '/api/public/seed'
       path: '/api/public/seed'
@@ -245,8 +385,25 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TestimonialsRoute: TestimonialsRoute,
   ThankYouRoute: ThankYouRoute,
+  VivaEvaluatingRoute: VivaEvaluatingRoute,
+  VivaGateRoute: VivaGateRoute,
+  VivaInstructionsRoute: VivaInstructionsRoute,
+  VivaResultsRoute: VivaResultsRoute,
+  VivaSelectRoute: VivaSelectRoute,
+  VivaSelectTopicRoute: VivaSelectTopicRoute,
+  VivaVivaRoute: VivaVivaRoute,
   ApiPublicSeedRoute: ApiPublicSeedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -16,6 +16,12 @@ dist-ssr
 .nitro
 *.local
 
+# Python (Oral_bot backend)
+.venv
+__pycache__/
+*.pyc
+.next/
+
 # Env files (secrets)
 .env
 .env.*

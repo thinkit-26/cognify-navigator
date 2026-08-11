@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogoFull } from "./Logo";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Mic2 } from "lucide-react";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 
 const links = [
@@ -57,6 +57,13 @@ export function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link
+            to="/viva/gate"
+            className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm transition hover:bg-navy/90 dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
+          >
+            <Mic2 className="h-3.5 w-3.5" />
+            Start AI Viva
+          </Link>
+          <Link
             to="/login"
             className="rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm"
           >
@@ -85,6 +92,12 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to="/viva/gate"
+              className="inline-flex items-center gap-2 py-1 text-base font-semibold text-orange"
+            >
+              <Mic2 className="h-4 w-4" /> Start AI Viva
+            </Link>
           </div>
         </div>
       )}

@@ -1,0 +1,812 @@
+[
+{
+"id": 1,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "What is meant by skeletal equation?",
+"answer": "A skeletal equation is chemical equation that represents a chemical reaction using chemical formulas of reactants and products without showing their relative amounts (coefficients).",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 2,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "Can a skeletal equation be balanced equation? Give two examples.",
+"answer": "Yes, Even a skeletal equation can be a balanced equation. e.g. CaO + H2O -> Ca(OH)2, C + O2 -> CO2",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 3,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "What is a balanced chemical equation?",
+"answer": "A balanced chemical equation has an equal number of atoms for each element on both the reactant (left) and product (right) sides.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 4,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "Why should chemical equations be balanced?",
+"answer": "It satisfies the Law of Conservation of Mass, which states that mass is neither created nor destroyed during a chemical reaction. i.e. total mass of the reactants must be equal to the total mass of the products.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 5,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "Write the information conveyed by a balanced chemical equation?",
+"answer": "It tells the reactants & the products of a chemical reaction. The ratio (in moles) in which reactants combine & products are formed.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 6,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "CHEMICAL REACTIONS EQUATIONS & BALANCING - INSIGHTS",
+"question": "Write the information not conveyed by a balanced chemical equation?",
+"answer": "It fails to provide the information regarding actual concentrations of the reactants taken and the product formed in the chemical reaction. Time taken for the completion of the chemical change is not provided by the chemical equation. i.e. Rate of reaction (Slow or Fast) It does not tell whether the reaction is feasible or not.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 7,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "MAKING MORE INFORMATIVE EQUATIONS",
+"question": "What do you mean by a precipitation reaction? Explain by giving examples.",
+"answer": "A precipitation reaction is a chemical process in an aqueous solution where two soluble salts react to forming an insoluble solid, known as a precipitate. This solid separates from the liquid, often appearing as a cloudy, milky, or colored residue, frequently occurring in double displacement reactions AgNO3(aq)+NaCl(aq)→AgCl(s)↓+NaNO3(aq)",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 8,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "MAKING MORE INFORMATIVE EQUATIONS",
+"question": "What does one mean by exothermic and endothermic reactions? Differentiate with the help of examples.",
+"answer": "EXOTHERMIC REACTIONS: heat is released by the system. Temperature rises, most combination reactions are exothermic reactions. e.g. C + O2 → CO2 + heat. ENDOTHERMIC REACTIONS: Heat is absorbed by the system. Temperature reduces, most decomposition reactions are endothermic reactions. e.g. CaCO3 -> CaO + CO2",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 9,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "COMBINATION & DECOMPOSITION REACTION",
+"question": "Why is the amount of gas collected in one of the test tubes in activity of electrolysis of water double the amount collected in the other? Name this gas.",
+"answer": "The gas collected in double the amount during the electrolysis of water is hydrogen, which collects at the cathode. It is double the amount of oxygen (collected at the anode) because water molecules consist of two parts hydrogen and one part oxygen by volume, and this ratio 2:1 is maintained during decomposition.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 10,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "DISPLACEMENT REACTION",
+"question": "Why is hydrogen there in the reactivity series of metals?",
+"answer": "Hydrogen is included in the metal reactivity series despite being non-metal because it behaves like a metal by losing an electron to form a positive ion (H+). It acts as a reference point for reactivity: metals above it displace hydrogen from acids and water, while those below do not",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 11,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "DISPLACEMENT REACTION",
+"question": "Why does the colour of copper sulphate solution change when an iron nail is dipped in it?",
+"answer": "The blue copper sulphate (CuSO4) solution changes to light green because of a displacement reaction where more-reactive iron (Fe) displaces less-reactive copper (Cu) to form ferrous sulphate (FeSO4). The iron nail becomes coated with reddish-brown copper metal. Reaction: Fe + CuSO4 -> FeSO4 + Cu Observation: The blue solution turns green due to the formation of ferrous sulphate and a brownish residue of copper is deposited on the nail. Reasoning: Iron is more reactive than copper in the reactivity series",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 12,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Explain the following in terms of gain or loss of oxygen with two examples each.",
+"answer": "Oxidation - Oxidation is defined as a chemical process where a substance gains oxygen. 2Mg + O2 -> 2MgO & 2Cu + O2 -> 2CuO. Reduction - Reduction is defined as a chemical process where a substance loses oxygen. CuO + H2 -> Cu + H2O & ZnO + C -> Zn + CO",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 13,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Why do silver articles turn black and copper items turn green after some time?",
+"answer": "Silver articles turn black due to the formation of a silver sulfide (Ag2S) layer from reacting with hydrogen sulfide in the air. Copper items turn green due to the formation of a basic copper carbonate layer, caused by oxidation in moist air containing carbon dioxide. Both processes are examples of metal corrosion.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 14,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Potato chips manufacturers usually flush bags of chips with nitrogen gas. Why?",
+"answer": "Potato chip manufacturers flush bags with nitrogen gas primarily to prevent the chips from becoming rancid and to keep them fresh and crispy. Nitrogen is an inert gas that replaces oxygen inside the package, stopping oxidation of the oils and fats. It also acts as a cushion to prevent the chips from being crushed during transport.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 15,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Oil and fat containing food items are flushed with nitrogen. Why?",
+"answer": "Potato chip manufacturers flush bags with nitrogen gas primarily to prevent the chips from becoming rancid and to keep them fresh and crispy. Nitrogen is an inert gas that replaces oxygen inside the package, stopping oxidation of the oils and fats. It also acts as a cushion to prevent the chips from being crushed during transport.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 16,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Iron articles lose their shine gradually. Why?",
+"answer": "Iron articles lose their shine gradually because they undergo corrosion (rusting) when exposed to moist air. The iron reacts with oxygen and moisture to form a flaky, reddish-brown layer of hydrated iron(III) oxide (Fe2O3.xH2O), which covers the surface and makes it appear dull.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 17,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Foods should be kept in air-tight containers. Why?",
+"answer": "Foods should be kept in air-tight containers primarily to prevent oxidation, which causes fats and oils to turn rancid, ruining taste and aroma. These containers seal out moisture, humidity, and oxygen, extending shelf life, preventing spoilage, keeping snacks crispy, and protecting food from insects.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 18,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Why do we apply paint on iron articles?",
+"answer": "We apply paint to iron articles primarily to prevent rusting (corrosion) by forming a protective barrier that seals the metal from moisture and oxygen in the atmosphere. Without this protective layer, exposure to air and water causes iron to oxidize, resulting in structural damage. Painting also improves appearance and increases the article's lifespan.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 19,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Explain the following terms corrosion with one example.",
+"answer": "Corrosion is the gradual destruction of metals by chemical reactions with atmospheric oxygen, moisture, or chemicals, forming layers like rust. Corrosion Example: The reddish-brown coating (rust) formed on iron objects left in damp air.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 20,
+"chapter_no": 1,
+"chapter": "CHEMICAL REACTIONS & EQUATIONS",
+"topic": "REDOX REACTION",
+"question": "Explain the following terms Rancidity with one example.",
+"answer": "Rancidity is the oxidation of fats and oils in food, leading to unpleasant smell and taste. Example: The bad taste and smell of potato chips or butter left exposed to air for a long time. Old cooking oil developing a foul, bitter smell.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 21,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "Name two solids and two liquids that are good conductors of electricity. What acts as charge carriers in them?",
+"answer": "Solid conductors include copper and aluminium, which use free electrons as charge carriers. Liquid conductors include acidified water and molten sodium chloride, which use mobile positive and negative ions to conduct electricity. Even mercury is a liquid conductor, and free electrons carry charge in it.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 22,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What constitutes the current in metal wires?",
+"answer": "Solid conductors include copper and aluminium, which use free electrons as charge carriers. Liquid conductors include acidified water and molten sodium chloride, which use mobile positive and negative ions to conduct electricity. Even mercury is a liquid conductor, and free electrons carry charge in it.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 23,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What carries the charge in electrolytic solutions.",
+"answer": "Solid conductors include copper and aluminium, which use free electrons as charge carriers. Liquid conductors include acidified water and molten sodium chloride, which use mobile positive and negative ions to conduct electricity. Even mercury is a liquid conductor, and free electrons carry charge in it.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 24,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What is meant by saying that the potential difference between two points is 1V?",
+"answer": "One volt is the potential differences between two points if 1 J of work is required to be done in bringing 1 C charge from 1 point to the other.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 25,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "Name a device that helps to maintain a potential difference across a conductor.",
+"answer": "A cell or a battery",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 26,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What does an electric circuit mean?",
+"answer": "An electric circuit is a closed, conducting path or loop that allows electricity (electrons) to flow from a source, such as a battery, through components (like bulbs or resistors) and back to the source. It requires a voltage source, conductors, and a complete path to operate",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 27,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "Give two points of difference between open circuit and closed circuit.",
+"answer": "An open circuit has a broken path that prevents current flow, while a closed circuit has a continuous, uninterrupted path that allows current to flow. Additionally, an open circuit has infinite resistance with zero current, whereas a closed circuit has low, functional resistance and allows for active energy flow.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 28,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "Define the unit of current.",
+"answer": "One Ampere may be defined as the amount of current which flows when 1C of charge flows through circuit in one second.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 29,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What is electric current?",
+"answer": "It is defined as rate of flow of charges flowing through a conductor with time.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 30,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "What is the conventional direction of electric current? Why was this direction taken to represent the flow of electric current?",
+"answer": "Conventional current is the direction of electric current from the positive terminal of a cell to the negative terminal. The convention of current flowing from positive (+) to negative (-) was established by Benjamin Franklin before the discovery of electrons, as he assumed charge carriers were positive. This conventional current definition (positive to negative) remains in use because it works for all circuit analysis, despite the actual flow of electrons being opposite (negative to positive).",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 31,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "BEFORE OHM'S LAW",
+"question": "In an electric circuit, state the relationship between the direction of conventional current and the direction of flow of electrons.",
+"answer": "The direction of electric current is conventionally defined as opposite to the flow of electrons in a wire. While electrons (negatively charged) flow from the negative terminal to the positive terminal, the current is described as moving from the positive terminal to the negative terminal",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 32,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "OHM'S LAW AND GRAPHS",
+"question": "We know that R = V/I. How will the resistance be affected i) increasing the voltage two times; ii) current is reduced three times?",
+"answer": "Remains the same. Resistance of a given wire is independent of the current flowing through it or the potential difference applied across it. So, changing the value of current or the applied potential difference does not affect the resistance of the wire.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 33,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "OHM'S LAW AND GRAPHS",
+"question": "Motion of electron through as conductor is retarded by its resistance. Justify.",
+"answer": "The motion of electrons through a conductor is retarded by its resistance, which acts as an opposition to the flow of charge, causing a reduction in speed and converting kinetic energy into heat. This occurs because free electrons frequently collide with stationary positive ions/atoms within the conductor's lattice structure, hindering their smooth flow.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 34,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "OHM'S LAW AND GRAPHS",
+"question": "Why don’t birds sitting on live wire get electric shock?",
+"answer": "Birds sitting on a single live wire do not get an electric shock because they do not complete an electrical circuit and there is no potential difference (voltage) across their bodies. Both bird’s feet are at the same high electric potential, causing the current to bypass them and continue flowing through the copper wire.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 35,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "OHM'S LAW AND GRAPHS",
+"question": "What is the shape of a V-I graph for a metallic wire? Why?",
+"answer": "The V-I graph for a metallic wire is a straight line passing through the origin. This indicates a linear relationship where voltage (V) is directly proportional to current (I), adhering to Ohm's Law (V=IR). The slope of this line represents the constant resistance (R) of the conductor.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 36,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "OHM'S LAW AND GRAPHS",
+"question": "Let the resistance of an electrical component remain constant while the potential difference across the two ends of the component decreases to half of its former value. What change will occur in the current through it?",
+"answer": "From Ohm’s law V I, so if potential difference is halved, then the value of current is also halved.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 37,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "What is resistance of the conductors?",
+"answer": "Resistance is the property of a conductor that opposes the flow of electric current through it. It is caused by collisions between moving electrons and atoms.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 38,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Which among iron and mercury is a better conductor? (refer resistivity table)",
+"answer": "Iron is better conductor than mercury as the resistivity of iron is lesser than that of mercury.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 39,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Which material is the best conductor?",
+"answer": "Silver is the best conductor as its resistivity is the least amongst all the metals.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 40,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Why do electricians wear rubber hand gloves while working?",
+"answer": "Electricians wear rubber gloves because rubber is an excellent electrical insulator (a bad conductor). These gloves act as a protective barrier that stops electrical current from flowing through their hands and body to the ground, thus preventing fatal electric shocks while repairing live wires or switches.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 41,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Why are copper and aluminium wires usually employed for electricity transmission?",
+"answer": "Copper and aluminium are used for electricity transmission primarily due to their low electrical resistivity (high conductivity), which minimizes energy loss. They are also highly malleable, affordable, and lightweight (especially aluminium), making them ideal for long-distance, cost-effective infrastructure.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 42,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "The following table gives the value of electrical resistivity of some materials: Material Copper Silver Constantin Electrical resistivity (\u03a9-m) 1.62 \u00d7 10-8 1.6 \u00d7 10-8 49 \u00d7 10-8 Which one is the best conductor of electricity out of them?",
+"answer": "Silver is the best conductor as its resistivity is the least amongst the metals given.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 43,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "What happens to the resistance when length of conductor is halved without affecting the thickness of conductor?",
+"answer": "We know that R=\u03c1 l/A thus R \u221d l, resistance is directly proportional to the length of the conductor, so if the length of the conductor is halved, then the resistance if also halved.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 44,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Two wires of equal length, one of copper and the other of manganin (an alloy) have the same thickness. Which one can be used for (i) electric transmission lines, (ii) electrical heating devices? Why?",
+"answer": "Electric Transmission Lines (Copper): Copper has very low resistivity and is an excellent conductor of electricity. Using copper minimizes energy loss in the form of heat during the transmission of power over long distances. Electrical Heating Devices (Manganin): Manganin is an alloy with a high resistivity (roughly 25 times greater than copper). When electric current passes through it, this high resistance causes the wire to generate a significant amount of heat, which is necessary for heating appliances.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 45,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "What happens to resistance of a conductor when its temperature increases?",
+"answer": "The resistance of a metallic conductor increases when its temperature increases. As temperature rises, atoms within the conductor vibrate more vigorously, leading to more frequent collisions with electrons, which hampers electron flow and increases resistance.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 46,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "On what factors do the resistance of a conductor depend?",
+"answer": "Factors on which resistance of a wire depends: It is directly proportional to the length of the wire. It is inversely proportional to the area of cross reaction of the wire. It depends directly on resistivity of material of the wire (\u03c1). It also increases directly with temperature, i.e. if the temperature increases, resistance increases and vice versa. R=\u03c1 l/A",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 47,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Why does the cord of an electric heater not glow while the heating element does?",
+"answer": "The cord of an electric heater does not glow because it is made of low-resistance material (copper or aluminium) that generates minimal heat. The heating element, usually Nichrome, has high resistance, converting electrical energy into intense heat and light. Both carry the same current, but the element produces far more heat.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 48,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Will current flow more easily through a thick wire or a thin wire of the same material, when connected to the same source? Why?",
+"answer": "Current will flow more easily through a thick wire. This happens because resistance is inversely proportional to the cross-sectional area of the wire. A thicker wire has a larger cross-sectional area, offering less resistance (opposition) to the flow of electrons compared to a thinner wire of the same material.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 49,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "What are the factors that affect the resistivity of metal wire. Give one way of reducing it. How will it affect the resistance of the wire?",
+"answer": "The resistivity of a metal wire depends on the nature of the material (atomic structure) and temperature (increases with temperature). One way to reduce it is by lowering the temperature (cooling). A decrease in resistivity directly reduces the total resistance of the wire, enhancing conductivity.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 50,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "RESISTANCE & RESISTIVITY",
+"question": "Why are coils of electric toasters and electric irons made of an alloy rather than pure metal?",
+"answer": "The coils of electric toasters and electric iron are made of an alloy rather than a pure metal because of few advantages of alloy over pure metal which are Resistivity of alloys is higher than that of pure metals, so they have higher resistance this causes electrons not to pass easily and undergo more collisions that causes heat to be released. Alloys do not corrode easily.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 51,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "Why is parallel arrangement used for domestic circuits?",
+"answer": "Reasons for connecting appliances in our household are connected in parallel combination. Household appliances are connected in parallel to ensure each device operates at the same voltage (220V), allowing independent operation via individual switches. Parallel circuits ensure that if one appliance breaks down, the rest continue to function, and it prevents high, uneven resistance across devices. Independent Operation: Each electrical appliance has its own ON/OFF switch, meaning one can be turned off without affecting others. Constant Voltage: All appliances receive the same, consistent voltage (220V) as the main supply, which is necessary for them to function properly. No Interruption if One Fails: If one device stops working due to a defect, the rest of the circuit remains intact and continues to function. Reduced Total Resistance: The total effective resistance in a parallel circuit is decreased, which allows each device to draw the appropriate amount of current for its power rating. Safety: There is a lower risk of over-heating or damage compared to series circuits.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 52,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "Why is series arrangement not used for domestic circuits?",
+"answer": "Reasons for connecting appliances in our household are not connected in series combination. Failure of One Appliance Affects All: If one appliance fails or is turned off, the circuit is broken, and all other appliances stop working. No Independent Control: All appliances share a single switch, making it impossible to turn them on or off separately. Unequal Voltage Distribution: The total voltage is divided among appliances. Appliances requiring high voltage may not operate properly. High Total Resistance: The total resistance in a series circuit is the sum of individual resistances (), leading to very low, insufficient current flow. Different Current Requirements: Appliances (e.g., bulbs, heaters, fans) need different amounts of current to operate, but a series circuit forces the same current through all of them.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 53,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "Why is the current constant in series connection of circuit?",
+"answer": "Current is constant in a series circuit because there is only one single path for charge to flow,, preventing splitting or accumulation. Based on the law of conservation of charge, the amount of charge entering any component per second must equal the amount leaving it, ensuring a uniform flow rate throughout the entire loop.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 54,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "Should the resistance of an ammeter be low or high? Give reason.",
+"answer": "The resistance of an ammeter should be very low (ideally zero). Because an ammeter is connected in series with the circuit to measure current, high resistance would significantly reduce the total current flowing through the circuit, resulting in an inaccurate, lower-than-actual measurement.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 55,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "How is a voltmeter connected in the circuit to measure the potential difference between two points?",
+"answer": "A voltmeter is connected in parallel with the component or across the two specific points where the potential difference is to be measured. Because it has very high internal resistance, this parallel connection ensures minimal current is drawn from the main circuit, allowing for accurate voltage measurement without disrupting the circuit's operation.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 56,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "COMBINATION OF RESISTORS",
+"question": "Should the resistance of an voltmeter be low or high? Give reason.",
+"answer": "A voltmeter has a very high resistance. It is connected in parallel to the component being measured to ensure minimal current (I= V/R) passes through it, preventing a reduction in the circuit's total current or alteration of the voltage drop across the component.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 57,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Give the difference in SI unit of electric energy and commercial unit of electric energy.",
+"answer": "The SI unit of electric energy is the Joule (J), representing a small amount of energy (1J = 1W \u00d7 1s). The commercial unit is the Kilowatt-hour (kWh), used for large-scale consumption (e.g., household electricity), where 1kWh is the energy used by a 1 kW device in 1 hr.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 58,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Define one watt hour and one kilowatt hour.",
+"answer": "A watt-hour (Wh) is a unit of energy representing 1 watt of power consumed continuously for one hour, while a kilowatt-hour (kWh) is 1,000 watt-hours, representing 1 kilowatt of power used for one hour commonly used for electricity billing.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 59,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Give two disadvantages of the heating effect of current.",
+"answer": "The main disadvantages of the heating effect of electric current, based on Class 10 physics, are energy wastage during transmission, potential for damaging insulation and electronic components, and fire hazards. It reduces the lifespan of devices, requires costly cooling systems, and decreases efficiency in appliances like incandescent bulbs.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 60,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Explain why fuse wire is always connected in series arrangement.",
+"answer": "A fuse wire is connected in series to protect electrical circuits from overloading or short-circuiting. Being in series, the entire circuit current passes through it. If current exceeds safe limits, the high resistance and low melting point of the wire cause it to melt and cut off the power, preventing damage.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 61,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Would you connect a fuse in series or in parallel to an electric circuit?",
+"answer": "A fuse wire is connected in series to protect electrical circuits from overloading or short-circuiting. Being in series, the entire circuit current passes through it. If current exceeds safe limits, the high resistance and low melting point of the wire cause it to melt and cut off the power, preventing damage.",
+"source": "CBSE",
+"diagram_required": false
+},
+{
+"id": 62,
+"chapter_no": 2,
+"chapter": "ELECTRICITY",
+"topic": "POWER & ENERGY",
+"question": "Why do we prefer tungsten metal in electrical bulbs and why not some other metal of same resistivity can be used?",
+"answer": "Tungsten is preferred for light bulb filaments due to its exceptionally high melting point (3422\u2218), which allows it to glow white-hot without melting, combined with low evaporation rates. Other metals with similar resistivity, such as molybdenum or iron, would melt or vaporize too quickly.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 63,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "LIGHT INTRODUCTION",
+"question": "Can you give evidence for the fact that light travels in a straight-line path?",
+"answer": "The fact that light travels in a straight-line path in a uniform medium is known as the rectilinear propagation of light. This principle is fundamental to optics and can be demonstrated through various natural, experimental, and everyday observations. Formation of Sharp Shadows - When an opaque object blocks light, it creates a dark region behind it, known as a shadow. Because light does not bend around the corners of the object, the resulting shadow has sharp, well-defined edges, indicating that light has travelled in a straight path to the point of obstruction. Aligned Cardboard/Straw Experiment - This is a common, empirical demonstration: Setup: Take three cardboard sheets, punch a small hole in the centre of each, and place them vertically on a table in a straight line. Observation: When a candle is placed behind the first cardboard, the flame is visible through the holes of all three sheets. Proof: If any one of the cardboards is shifted so that the holes are no longer aligned, the flame immediately disappears, demonstrating that light cannot bend to navigate around the misalignment Visible Light Beams (Laser/Sunbeams) Laser Beams: When a laser pointer is used in a dusty, smoky, or foggy environment, the light beam is visibly a straight, narrow path, showing no curvature. Sunbeams (Crepuscular Rays): Sunlight streaming through a window, or through gaps in clouds, creates visible, straight rays of light. The Bent Pipe Observation - If you look at a candle flame through a straight pipe, you can see it clearly. If you bend the pipe, the flame disappears. This is because the light from the flame continues straight and strikes the side of the pipe, failing to reach your eye.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 64,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "LIGHT INTRODUCTION",
+"question": "Does reflection by spherical surface obey laws of reflection?",
+"answer": "Yes, reflection by spherical surfaces (both concave and convex) obeys the laws of reflection. The angle of incidence equals the angle of reflection () at the point of incidence, and the incident ray, reflected ray, and normal all lie in the same plane. The normal is drawn from the centre of curvature.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 65,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "LIGHT INTRODUCTION",
+"question": "How is a normal drawn at a point on a spherical surface?",
+"answer": "A normal is drawn to a spherical surface by drawing a straight line from the centre of curvature to the specific point of incidence on the surface. Because the normal must be perpendicular to the tangent at that point, this line (which acts as a radius of the sphere) passes through.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 66,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "LIGHT INTRODUCTION",
+"question": "Are laws of reflection applicable in irregular reflection?",
+"answer": "Yes, they are applicable.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 67,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "When you direct the sunlight reflected by a concave mirror forming a single bright upon a sheet of paper, why does it burn? Explain.",
+"answer": "A concave mirror burns paper because it acts as a converging lens, focusing parallel sun rays onto a single, intensely bright spot known as the focal point. This concentration of light energy creates high intensity and heat, raising the paper's temperature above its ignition point, typically causing it to smoke and burn.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 68,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "Name a mirror that can give an erect and enlarged image of an object.",
+"answer": "A concave mirror is the mirror that can produce an erect and enlarged (magnified) image of an object. This occurs specifically when the object is placed between the pole (P) and the principal focus (F) of the mirror. The resulting image is virtual, erect, and magnified.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 69,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "Define following terms for the mirrors. Pole",
+"answer": "The pole (P) of a mirror is the exact geometrical center of its reflecting surface. Located directly on the mirror, it serves as the vertex where the principal axis intersects the surface. It acts as the reference point for measuring distances like focal length and object distance.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 70,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "Define following terms for the mirrors. Aperture",
+"answer": "The aperture of a mirror is the effective diameter or linear width of its reflecting surface, defining the boundary from which light reflection occurs. It represents the size of the opening that determines how much light the mirror collects, directly impacting the brightness and image quality",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 71,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "Define following terms for the mirrors. Reflection",
+"answer": "The bouncing back of light rays when they strike a smooth surface.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 72,
+"chapter_no": 3,
+"chapter": "LIGHT",
+"topic": "PROBLEMS RELATED TO RAY DIAGRAMS",
+"question": "Define following terms for the mirrors. Principal axis",
+"answer": "The principal axis of a mirror is the straight, imaginary line passing through the pole (P) and the center of curvature (C) of a spherical mirror. It acts as the axis of symmetry, perpendicular to the mirror's surface, and serves as the reference line for measuring distances like the focal length.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 73,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "Why was the plant kept in dark for few days?",
+"answer": "Ans: Plants are kept in the dark for 2-3 days to deprive them of light, which is essential for photosynthesis. This process allows us to observe the effects of light on plant growth and development. When a plant is kept in the dark, it will use up its stored energy reserves, which can lead to noticeable changes in its appearance, such as yellowing leaves or stunted growth.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 74,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "Why is leaf boiled in water?",
+"answer": "Ans: Boiling a leaf in water is a step in the process of testing for the presence of starch, which indicates photosynthesis has occurred. The boiling water kills the leaf cells, stopping all chemical processes, and breaks down the cell membranes, making it easier to remove the chlorophyll in the next steps.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 75,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "Why is it heated in alcohol?",
+"answer": "Ans: A leaf is heated in alcohol during the starch test to dissolve and remove chlorophyll. This decolourises the leaf, making it white or pale, allowing the blue-black colour change of the starch-iodine reaction to be clearly visible.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 76,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "Why do we wash the leaf again with water?",
+"answer": "Ans: We wash the leaf with water after boiling in alcohol as residual alcohol may interfere with the iodine test. So, washing the leaf with water after boiling in alcohol is important to remove any remaining alcohol and ensure that the iodine test is accurate.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 77,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "Why is Potassium Hydroxide kept in Jar?",
+"answer": "Ans: Potassium hydroxide is kept in a bell jar to absorb carbon dioxide from the air inside. It is used in experiments to prove that CO2 is necessary for photosynthesis by creating a CO2 free environment.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 78,
+"chapter_no": 4,
+"chapter": "LIFE PROCESSES",
+"topic": "INTRO & NUTRITION IN PLANTS",
+"question": "What criteria do we use to decide whether something is alive?",
+"answer": "Ans: The primary criteria to decide if something is alive include visible movements (breathing, growth, walking) and, fundamentally, invisible molecular movements observed in cells i.e. metabolic activities, respiration, transport, and excretion indicators, along with reproduction and responsiveness to environmental stimuli.",
+"source": "",
+"diagram_required": false
+},
+{
+"id": 79,
+"chapter_no": 5,
+"chapter": "ACID BASES AND SALTS",
+"topic": "Intro, physical properties & indicators",
+"question": "You have been provided with three test tubes, one of them contains distilled water and the other two contain an acidic solution and a basic solution respectively. If you are given only red litmus paper, how will you identify the contents of each tube?",
+"answer": "Ans: Acidic solution will turn blue litmus red; This red litmus will turn blue in basic solution; Distilled water will have no effect on any type of litmus paper.",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 80,
+"chapter_no": 5,
+"chapter": "ACID BASES AND SALTS",
+"topic": "Intro, physical properties & indicators",
+"question": "Why should curd and sour substances not be kept in brass and copper vessels?",
+"answer": "Ans: Curd and sour substances should not be kept in brass and copper vessels because they contain acids (like lactic acid) that react with the metal, forming poisonous/toxic metallic salts. These substances can cause food poisoning, making the food unfit for consumption",
+"source": "NCERT",
+"diagram_required": false
+},
+{
+"id": 81,
+"chapter_no": 5,
+"chapter": "ACID BASES AND SALTS",
+"topic": "Intro, physical properties & indicators",
+"question": "Give Arrhenius definition of an acid and a base.",
+"answer": "Ans: Arrhenius Definition of Acid and Base\nArrhenius Acid: A substance that increases the concentration of hydrogen ions (H) or protons in aqueous solution.\nArrhenius Base: A substance that increases the concentration of hydroxide ions (OH) in aqueous solution",
+"source": "CBSE",
+"diagram_required": false
+}
+]
