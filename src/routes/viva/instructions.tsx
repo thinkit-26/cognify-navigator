@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { Mic, Clock, BrainCircuit, CheckCircle2 } from "lucide-react";
 import { startViva } from "@/lib/viva/api";
+import { useExamLock } from "@/lib/viva/useExamLock";
 
 export const Route = createFileRoute("/viva/instructions")({
   head: () => ({ meta: [{ title: "Instructions, AI Oral Viva" }] }),
@@ -12,17 +13,20 @@ export const Route = createFileRoute("/viva/instructions")({
 
 function InstructionsPage() {
   const navigate = useNavigate();
+  const { lockExam } = useExamLock();
   const [starting, setStarting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const rules = [
     { icon: <Mic className="text-orange-500" />, text: "Allow microphone access when prompted — recording starts automatically for each question." },
     { icon: <Clock className="text-orange-500" />, text: "You'll get a few seconds to read each question before recording begins." },
-    { icon: <BrainCircuit className="text-orange-500" />, text: "You have up to 90 seconds to answer. Click Next when you're done, or it advances automatically." },
+    { icon: <BrainCircuit className="text-orange-500" />, text: "You have up to 45 seconds to answer. Click Next when you're done, or it advances automatically." },
     { icon: <CheckCircle2 className="text-orange-500" />, text: "Speak clearly. Your responses are evaluated automatically." },
   ];
 
   async function handleStart() {
     setStarting(true);
+    setError(null);
 
     const chapters = JSON.parse(
       localStorage.getItem("selectedChapters") || "[]"
@@ -32,17 +36,12 @@ function InstructionsPage() {
       localStorage.getItem("selectedTopics") || "[]"
     );
 
-    // Request mic permission here, up front, so the viva page can
-    // auto-start recording without ever needing to prompt mid-question.
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach((track) => track.stop());
-    } catch (err) {
+    } catch {
       setStarting(false);
-      console.error(err);
-      alert(
-        "Microphone access is required to take the viva. Please allow microphone access and try again."
-      );
+      setError("Microphone access is required. Please allow microphone access and try again.");
       return;
     }
 
@@ -51,11 +50,11 @@ function InstructionsPage() {
 
       localStorage.setItem("sessionId", session.session_id);
 
+      lockExam();
       navigate({ to: "/viva/viva" });
-    } catch (err) {
+    } catch {
       setStarting(false);
-      console.error(err);
-      alert("Unable to start viva.");
+      setError("Unable to start viva. Please try again.");
     }
   }
 
@@ -82,6 +81,12 @@ function InstructionsPage() {
               </div>
             ))}
           </div>
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {error}
+            </div>
+          )}
 
           <Button
             className="w-full"

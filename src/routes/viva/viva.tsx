@@ -4,20 +4,26 @@ import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import MicrophoneContainer, { RecordingPhase } from "@/components/viva/MicrophoneContainer";
 import { getQuestion, submitAnswer } from "@/lib/viva/api";
-import type { VivaQuestion, QuestionResponse } from "@/lib/viva/types";
+import type { VivaQuestion } from "@/lib/viva/types";
 
 export const Route = createFileRoute("/viva/viva")({
   head: () => ({ meta: [{ title: "AI Oral Viva, Cognify Institute" }] }),
   component: VivaPage,
 });
 
-const ANSWER_TIME = 90;
-const MIN_READING_TIME = 5;
-const MAX_READING_TIME = 15;
+const ANSWER_TIME = 45;
+const MIN_READING_TIME = 3;
+const MAX_READING_TIME = 8;
 
 function computeReadingTime(questionText: string): number {
   const wordCount = questionText.trim().split(/\s+/).length;
-  return Math.min(MAX_READING_TIME, Math.max(MIN_READING_TIME, wordCount));
+  return Math.min(MAX_READING_TIME, Math.max(MIN_READING_TIME, Math.ceil(wordCount * 0.5)));
+}
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
 function VivaPage() {
@@ -32,7 +38,7 @@ function VivaPage() {
 
   const [transcript, setTranscript] = useState("");
   const transcriptRef = useRef("");
-  const submittingRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
 
@@ -41,29 +47,36 @@ function VivaPage() {
     setSessionId(localStorage.getItem("sessionId"));
   }, []);
 
+  function resetToReading(questionText: string) {
+    setTranscript("");
+    transcriptRef.current = "";
+    setPhase("reading");
+    setTimeLeft(computeReadingTime(questionText));
+  }
+
   async function loadQuestion() {
     if (!sessionId) return;
 
-    const data = await getQuestion(sessionId);
+    try {
+      const data = await getQuestion(sessionId);
 
-    if (data.status === "completed") {
-      navigate({ to: "/viva/evaluating" });
-      return;
+      if (data.status === "completed") {
+        navigate({ to: "/viva/evaluating" });
+        return;
+      }
+
+      setQuestion(data.question);
+      setQuestionNumber(data.question_number);
+      setTotalQuestions(data.total_questions);
+      resetToReading(data.question.question);
+    } catch {
+      // network or server error — stay on page, user can retry via Next
     }
-
-    setQuestion(data.question);
-    setQuestionNumber(data.question_number);
-    setTotalQuestions(data.total_questions);
-
-    setTranscript("");
-    transcriptRef.current = "";
-
-    setPhase("reading");
-    setTimeLeft(computeReadingTime(data.question.question));
   }
 
   useEffect(() => {
     if (sessionId) loadQuestion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
   // Master countdown — advances phase automatically when it hits 0
@@ -89,11 +102,9 @@ function VivaPage() {
     transcriptRef.current = text;
   }
 
-  // Fires once MicrophoneContainer finishes transcribing — whether that was
-  // triggered by the timer hitting 0 or by the student clicking Next/Finish
   async function handleTranscriptionDone() {
-    if (!sessionId || submittingRef.current) return;
-    submittingRef.current = true;
+    if (!sessionId || isSubmitting) return;
+    setIsSubmitting(true);
 
     const answerToSubmit = transcriptRef.current.trim() || "No answer recorded";
 
@@ -108,14 +119,11 @@ function VivaPage() {
       setQuestion(response.next_question);
       setQuestionNumber(response.question_number);
       setTotalQuestions(response.total_questions);
-
-      setTranscript("");
-      transcriptRef.current = "";
-
-      setPhase("reading");
-      setTimeLeft(computeReadingTime(response.next_question.question));
+      resetToReading(response.next_question.question);
+    } catch {
+      // submit failed — stay on page, user can retry
     } finally {
-      submittingRef.current = false;
+      setIsSubmitting(false);
     }
   }
 
@@ -153,7 +161,7 @@ function VivaPage() {
 
           <div className="text-center mb-8">
             <div className="text-5xl font-light text-gray-800 font-mono">
-              00:{timeLeft.toString().padStart(2, "0")}
+              {formatTime(timeLeft)}
             </div>
             <p className="text-sm text-gray-500 mt-2">
               {phase === "reading" ? "Reading time" : "Time remaining"}
@@ -176,7 +184,7 @@ function VivaPage() {
 
           <Button
             onClick={handleManualAdvance}
-            disabled={phase !== "recording" || submittingRef.current}
+            disabled={phase !== "recording" || isSubmitting}
             className="px-8 py-3"
           >
             {phase === "processing" ? "Processing Audio..." : questionNumber === totalQuestions ? "Finish Viva" : "Next Question"}

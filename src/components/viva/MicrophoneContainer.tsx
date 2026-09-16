@@ -30,12 +30,11 @@ export default function MicrophoneContainer({
         const text = await transcribeAudio(blob);
         setTranscript(text);
         onTranscriptChange(text);
+        onTranscriptionDone?.();
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to transcribe audio"
         );
-      } finally {
-        onTranscriptionDone?.();
       }
     },
     [onTranscriptChange, onTranscriptionDone]

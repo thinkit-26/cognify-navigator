@@ -2,11 +2,25 @@ const API_BASE =
   (import.meta.env.VITE_ORALBOT_BACKEND as string | undefined) ??
   "http://127.0.0.1:8000";
 
+const TIMEOUT_MS = 30_000;
+
+async function timedFetch(url: string, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, { ...init, signal: controller.signal });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function getChapters() {
-  const response = await fetch(`${API_BASE}/chapters`);
+  const response = await timedFetch(`${API_BASE}/chapters`);
 
   if (!response.ok) {
-    throw new Error("Failed to fetch chapters");
+    throw new Error(`Failed to fetch chapters (${response.status})`);
   }
 
   return response.json();
@@ -19,12 +33,12 @@ export async function getTopics(chapters: number[]) {
     params.append("chapters", chapter.toString())
   );
 
-  const response = await fetch(
+  const response = await timedFetch(
     `${API_BASE}/topics?${params.toString()}`
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch topics");
+    throw new Error(`Failed to fetch topics (${response.status})`);
   }
 
   return response.json();
@@ -34,7 +48,7 @@ export async function startViva(
   chapters: number[],
   topics: string[]
 ) {
-  const response = await fetch(`${API_BASE}/viva/start`, {
+  const response = await timedFetch(`${API_BASE}/viva/start`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,19 +60,19 @@ export async function startViva(
   });
 
   if (!response.ok) {
-    throw new Error("Unable to start viva");
+    throw new Error(`Unable to start viva (${response.status})`);
   }
 
   return response.json();
 }
 
 export async function getQuestion(sessionId: string) {
-  const response = await fetch(
+  const response = await timedFetch(
     `${API_BASE}/viva/question/${sessionId}`
   );
 
   if (!response.ok) {
-    throw new Error("Unable to fetch question");
+    throw new Error(`Unable to fetch question (${response.status})`);
   }
 
   return response.json();
@@ -68,7 +82,7 @@ export async function submitAnswer(
   sessionId: string,
   answer: string
 ) {
-  const response = await fetch(
+  const response = await timedFetch(
     `${API_BASE}/viva/answer`,
     {
       method: "POST",
@@ -83,7 +97,7 @@ export async function submitAnswer(
   );
 
   if (!response.ok) {
-    throw new Error("Unable to submit answer");
+    throw new Error(`Unable to submit answer (${response.status})`);
   }
 
   return response.json();
@@ -93,7 +107,7 @@ export async function transcribeAudio(blob: Blob): Promise<string> {
   const formData = new FormData();
   formData.append("file", blob, "recording.webm");
 
-  const response = await fetch(`${API_BASE}/transcribe/`, {
+  const response = await timedFetch(`${API_BASE}/transcribe/`, {
     method: "POST",
     body: formData,
   });
@@ -112,10 +126,10 @@ export async function transcribeAudio(blob: Blob): Promise<string> {
 }
 
 export async function getEvaluation(sessionId: string) {
-  const response = await fetch(`${API_BASE}/viva/evaluation/${sessionId}`);
+  const response = await timedFetch(`${API_BASE}/viva/evaluation/${sessionId}`);
 
   if (!response.ok) {
-    throw new Error("Unable to fetch evaluation");
+    throw new Error(`Unable to fetch evaluation (${response.status})`);
   }
 
   return response.json();

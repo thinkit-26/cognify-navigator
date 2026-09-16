@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { getEvaluation } from "@/lib/viva/api";
+import { useExamLock, isExamLocked } from "@/lib/viva/useExamLock";
+import type { Evaluation } from "@/lib/viva/types";
 import jsPDF from "jspdf";
 
 export const Route = createFileRoute("/viva/results")({
@@ -10,26 +12,16 @@ export const Route = createFileRoute("/viva/results")({
   component: ResultsPage,
 });
 
-interface QuestionResult {
-  question_id: number;
-  question: string;
-  student_answer: string;
-  score: number;
-  is_correct: boolean;
-  feedback: string;
-}
-
-interface Evaluation {
-  overall_score: number;
-  overall_feedback: string;
-  total_questions: number;
-  correct_count: number;
-  accuracy_of_correct: number;
-  questions: QuestionResult[];
+function performanceLabel(score: number) {
+  if (score >= 80) return { label: "Excellent Performance", color: "bg-green-100 text-green-700" };
+  if (score >= 60) return { label: "Good Performance", color: "bg-lime-100 text-lime-700" };
+  if (score >= 40) return { label: "Needs Improvement", color: "bg-yellow-100 text-yellow-700" };
+  return { label: "Poor Performance", color: "bg-red-100 text-red-700" };
 }
 
 function ResultsPage() {
   const navigate = useNavigate();
+  const { unlockExam } = useExamLock();
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,8 +29,8 @@ function ResultsPage() {
     const sessionId =
       typeof window !== "undefined" ? localStorage.getItem("sessionId") : null;
 
-    if (!sessionId) {
-      navigate({ to: "/" });
+    if (!sessionId || !isExamLocked()) {
+      navigate({ to: "/viva/gate" });
       return;
     }
 
@@ -57,6 +49,7 @@ function ResultsPage() {
         }
 
         setEvaluation(data.evaluation);
+        unlockExam();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load results");
       }
@@ -64,13 +57,6 @@ function ResultsPage() {
 
     load();
   }, [navigate]);
-
-  function performanceLabel(score: number) {
-    if (score >= 80) return { label: "Excellent Performance", color: "bg-green-100 text-green-700" };
-    if (score >= 60) return { label: "Good Performance", color: "bg-green-100 text-green-700" };
-    if (score >= 40) return { label: "Needs Improvement", color: "bg-yellow-100 text-yellow-700" };
-    return { label: "Poor Performance", color: "bg-red-100 text-red-700" };
-  }
 
   function handleDownload() {
     if (!evaluation) return;
