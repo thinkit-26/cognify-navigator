@@ -6,6 +6,15 @@ import { supabase } from './client'
 // the browser never attaches the bearer token to serverFn RPCs.
 export const attachSupabaseAuth = createMiddleware({ type: 'function' }).client(
   async ({ next }) => {
+    const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
+
+    // When Supabase is not configured (e.g. local viva flow without keys),
+    // skip auth attachment instead of throwing so serverFn RPCs still work.
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+      return next({ headers: {} })
+    }
+
     const { data } = await supabase.auth.getSession()
     const token = data.session?.access_token
     return next({

@@ -120,7 +120,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const hideChrome = pathname === "/login" || pathname === "/dashboard" || pathname === "/admin";
+  const hideChrome =
+    pathname === "/login" || pathname === "/dashboard" || pathname === "/admin" ||
+    pathname.startsWith("/viva/");
   const isFirstPixelRun = useRef(true);
 
   useEffect(() => {
