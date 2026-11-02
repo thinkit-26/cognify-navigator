@@ -11,8 +11,8 @@ import { z } from "zod";
  * are rate-limited per client IP to prevent brute forcing.
  */
 
-const ACCESS_CODE = process.env.VIVA_ACCESS_CODE ?? "";
-const GATE_ENABLED = ACCESS_CODE.length > 0;
+// Read per request: on Cloudflare Workers process.env is empty at module load.
+const accessCode = () => process.env.VIVA_ACCESS_CODE ?? "";
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 60_000;
@@ -28,7 +28,9 @@ function clientKey(): string {
   const request = getRequest();
   const fwd = request?.headers?.get("x-forwarded-for");
   if (fwd) return fwd.split(",")[0]?.trim() ?? "unknown";
-  return request?.headers?.get("cf-connecting-ip") ?? request?.headers?.get("x-real-ip") ?? "unknown";
+  return (
+    request?.headers?.get("cf-connecting-ip") ?? request?.headers?.get("x-real-ip") ?? "unknown"
+  );
 }
 
 function sweep() {
@@ -70,7 +72,8 @@ const VerifyCodeSchema = z.object({
 export const verifyVivaCode = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => VerifyCodeSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!GATE_ENABLED) {
+    const ACCESS_CODE = accessCode();
+    if (ACCESS_CODE.length === 0) {
       throw new Error("Viva access code is not configured on the server");
     }
 
