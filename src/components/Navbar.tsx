@@ -33,29 +33,32 @@ export function Navbar() {
   return (
     <header
       className={`absolute inset-x-0 top-0 z-50 transition-all duration-300 ${
-        solid ? "bg-[var(--cream)]/95 backdrop-blur border-b border-[var(--border)] dark:bg-[#0a1224]/95 dark:border-white/10" : "bg-transparent"
+        solid
+          ? "bg-[var(--cream)]/95 backdrop-blur border-b border-[var(--border)] dark:bg-[#0a1224]/95 dark:border-white/10"
+          : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <Link to="/" className="flex shrink-0 items-center" aria-label="Cognify">
-          <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
-        </Link>
-
-        <nav className="hidden items-center gap-8 lg:flex">
-          {links.map((l, i) => (
-            <Link
-              key={i}
-              to={l.to}
-              hash={l.hash || undefined}
-              className="group relative text-[0.82rem] font-semibold text-navy/75 transition hover:text-navy"
-            >
-              {l.label}
-              <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-orange transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="grid h-10 w-10 place-items-center rounded-full border-2 border-navy/30 bg-transparent text-navy transition hover:border-navy"
+            aria-label="Menu"
+          >
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+          <Link to="/" className="flex shrink-0 items-center" aria-label="Cognify">
+            <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
+          </Link>
+        </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            to="/pyqs"
+            className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
+          >
+            PYQ&apos;s
+          </Link>
           <Link
             to="/viva/gate"
             className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm transition hover:bg-navy/90 dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
@@ -70,17 +73,10 @@ export function Navbar() {
             Login
           </Link>
           <ThemeToggle />
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center rounded-full border-2 border-navy/30 bg-transparent text-navy transition hover:border-navy lg:hidden"
-            aria-label="Menu"
-          >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </button>
         </div>
       </div>
       {open && (
-        <div className="border-t border-border bg-[var(--cream)]/98 px-5 py-4 lg:hidden dark:bg-[#0a1224]/98 dark:border-white/10">
+        <div className="border-t border-border bg-[var(--cream)]/98 px-5 py-4 dark:bg-[#0a1224]/98 dark:border-white/10">
           <div className="flex flex-col gap-3">
             {links.map((l, i) => (
               <Link
