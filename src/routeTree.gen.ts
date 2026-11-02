@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PyqsRouteImport } from './routes/pyqs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -40,6 +41,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PyqsRoute = PyqsRouteImport.update({
+  id: '/pyqs',
+  path: '/pyqs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/privacy'
+    | '/pyqs'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/privacy'
+    | '/pyqs'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/privacy'
+    | '/pyqs'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -238,6 +250,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  PyqsRoute: typeof PyqsRoute
   TermsRoute: typeof TermsRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ThankYouRoute: typeof ThankYouRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pyqs': {
+      id: '/pyqs'
+      path: '/pyqs'
+      fullPath: '/pyqs'
+      preLoaderRoute: typeof PyqsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  PyqsRoute: PyqsRoute,
   TermsRoute: TermsRoute,
   TestimonialsRoute: TestimonialsRoute,
   ThankYouRoute: ThankYouRoute,
