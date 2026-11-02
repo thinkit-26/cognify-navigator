@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PYQ_CHAPTERS } from "@/data/pyqChapters";
 
 export const Route = createFileRoute("/pyqs")({
@@ -15,21 +22,39 @@ export const Route = createFileRoute("/pyqs")({
   component: Pyqs,
 });
 
-const pill = (on: boolean) =>
-  `rounded-full border-2 px-5 py-2 text-sm font-bold transition ${
-    on
-      ? "border-transparent bg-gradient-to-r from-[#E2740A] to-[#FBBF24] text-white shadow-sm"
-      : "border-navy/30 text-navy hover:border-navy dark:text-cream"
-  }`;
-
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+function Pick({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  disabled,
+}: {
+  label: string;
+  value: string | null;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder: string;
+  disabled?: boolean;
+}) {
   return (
-    <div className="mt-10">
-      <div className="mb-4 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.25em] text-orange">
-        <span className="h-px w-8 bg-orange" /> STEP {n} <span className="h-px w-8 bg-orange" />
-      </div>
-      <h2 className="text-2xl font-extrabold text-navy dark:text-cream">{title}</h2>
-      <div className="mt-5 flex flex-wrap justify-center gap-3">{children}</div>
+    <div className="w-full text-left sm:flex-1">
+      <label className="mb-2 block text-xs font-bold tracking-[0.2em] text-orange">{label}</label>
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="h-12 w-full cursor-pointer rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy transition hover:border-navy focus:border-navy focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/5 dark:text-cream"
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -45,7 +70,7 @@ function Pyqs() {
   return (
     <div className="bg-background">
       <section className="pt-36 pb-24">
-        <div className="mx-auto max-w-4xl px-6 text-center">
+        <div className="mx-auto max-w-5xl px-6 text-center">
           <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold tracking-[0.25em] text-orange">
             <span className="h-px w-8 bg-orange" /> PRACTICE <span className="h-px w-8 bg-orange" />
           </div>
@@ -53,48 +78,38 @@ function Pyqs() {
             Previous Year <span className="text-gradient-warm">Questions</span>
           </h1>
 
-          <Step n={1} title="Select your class">
-            {[9, 10, 11, 12].map((c) => (
-              <button
-                key={c}
-                className={pill(cls === c)}
-                onClick={() => {
-                  setCls(c);
-                  setSubject(null);
-                  setChapter(null);
-                }}
-              >
-                Class {c}
-              </button>
-            ))}
-          </Step>
-
-          {cls && (
-            <Step n={2} title="Select the subject">
-              {subjects.map((s) => (
-                <button
-                  key={s}
-                  className={pill(subject === s)}
-                  onClick={() => {
-                    setSubject(s);
-                    setChapter(null);
-                  }}
-                >
-                  {s}
-                </button>
-              ))}
-            </Step>
-          )}
-
-          {subject && (
-            <Step n={3} title="Select the chapter">
-              {chapters.map((c, i) => (
-                <button key={c} className={pill(chapter === c)} onClick={() => setChapter(c)}>
-                  {i + 1}. {c}
-                </button>
-              ))}
-            </Step>
-          )}
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+            <Pick
+              label="CLASS"
+              placeholder="Select class"
+              value={cls ? String(cls) : null}
+              options={[9, 10, 11, 12].map((c) => ({ value: String(c), label: `Class ${c}` }))}
+              onChange={(v) => {
+                setCls(Number(v));
+                setSubject(null);
+                setChapter(null);
+              }}
+            />
+            <Pick
+              label="SUBJECT"
+              placeholder="Select subject"
+              disabled={!cls}
+              value={subject}
+              options={subjects.map((x) => ({ value: x, label: x }))}
+              onChange={(v) => {
+                setSubject(v);
+                setChapter(null);
+              }}
+            />
+            <Pick
+              label="CHAPTER"
+              placeholder="Select chapter"
+              disabled={!subject}
+              value={chapter}
+              options={chapters.map((x, i) => ({ value: x, label: `${i + 1}. ${x}` }))}
+              onChange={setChapter}
+            />
+          </div>
 
           {chapter && (
             <div className="mx-auto mt-12 max-w-2xl rounded-[2rem] border border-border bg-white px-6 py-8 shadow-soft dark:border-white/10 dark:bg-white/5">
