@@ -53,6 +53,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pyq_papers: {
+        Row: {
+          chapter: string
+          class_level: number
+          created_at: string
+          exam: string
+          id: string
+          paper_path: string
+          solution_path: string | null
+          subject: string
+          year: number
+        }
+        Insert: {
+          chapter: string
+          class_level: number
+          created_at?: string
+          exam: string
+          id?: string
+          paper_path: string
+          solution_path?: string | null
+          subject: string
+          year: number
+        }
+        Update: {
+          chapter?: string
+          class_level?: number
+          created_at?: string
+          exam?: string
+          id?: string
+          paper_path?: string
+          solution_path?: string | null
+          subject?: string
+          year?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
