@@ -41,6 +41,7 @@ import { DashboardSidebar } from "@/components/dashboard/Sidebar";
 import { GlassCard } from "@/components/dashboard/GlassCard";
 import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
+import { PyqUploadPanel } from "@/components/dashboard/PyqUploadPanel";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
 import { getCheatRole, clearCheatRole } from "@/lib/cheat";
 import {
@@ -67,7 +68,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin, Cognify" }] }),
 });
 
-type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance";
+type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs";
 
 const ORANGE = "#E2740A";
 const GLOW = "#FBBF24";
@@ -102,6 +103,7 @@ function AdminDashboard() {
         items={[
           { label: "Overview", icon: LayoutDashboard, onClick: () => setTab("overview"), active: tab === "overview" },
           { label: "Papers", icon: FileText, onClick: () => setTab("papers"), active: tab === "papers" },
+          { label: "PYQ Upload", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
           { label: "Students", icon: Users, onClick: () => setTab("students"), active: tab === "students" },
           { label: "Notices", icon: Megaphone, onClick: () => setTab("notices"), active: tab === "notices" },
           { label: "Calendar", icon: CalendarDays, onClick: () => setTab("calendar"), active: tab === "calendar" },
@@ -115,6 +117,7 @@ function AdminDashboard() {
             <h1 className="mt-1 text-2xl font-black leading-tight text-navy dark:text-cream sm:text-3xl md:text-4xl">
               {tab === "overview" && "Good to see you, Aseem."}
               {tab === "papers" && "Paper Analytics"}
+              {tab === "pyqs" && "PYQ Upload"}
               {tab === "students" && "Class Roster"}
               {tab === "notices" && "Notices"}
               {tab === "calendar" && "Calendar"}
@@ -132,6 +135,7 @@ function AdminDashboard() {
 
         {tab === "overview" && <OverviewPanel goTo={setTab} openStudent={setActiveStudent} />}
         {tab === "papers" && <PapersPanel />}
+        {tab === "pyqs" && <PyqUploadPanel />}
         {tab === "students" && <StudentsPanel onOpen={setActiveStudent} />}
         {tab === "notices" && <NoticesPanel />}
         {tab === "calendar" && <CalendarPanel />}
