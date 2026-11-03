@@ -1,12 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { PyqPick as Pick } from "@/components/PyqPick";
+import { PyqPaperList } from "@/components/PyqPaperList";
 import { PYQ_CHAPTERS } from "@/data/pyqChapters";
 
 export const Route = createFileRoute("/pyqs")({
@@ -21,43 +16,6 @@ export const Route = createFileRoute("/pyqs")({
   }),
   component: Pyqs,
 });
-
-function Pick({
-  label,
-  value,
-  onChange,
-  options,
-  placeholder,
-  disabled,
-}: {
-  label: string;
-  value: string | null;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-  placeholder: string;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="w-full text-left sm:flex-1">
-      <label className="mb-2 block text-xs font-bold tracking-[0.2em] text-orange">{label}</label>
-      <select
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="h-12 w-full cursor-pointer rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy transition hover:border-navy focus:border-navy focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/5 dark:text-cream"
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 function Pyqs() {
   const [cls, setCls] = useState<number | null>(null);
@@ -117,9 +75,7 @@ function Pyqs() {
                 Class {cls} › {subject}
               </p>
               <p className="mt-1 text-xl font-extrabold text-navy dark:text-cream">{chapter}</p>
-              <p className="mt-3 text-muted-foreground">
-                Questions for this chapter are coming soon.
-              </p>
+              <PyqPaperList cls={cls!} subject={subject!} chapter={chapter} />
             </div>
           )}
         </div>
