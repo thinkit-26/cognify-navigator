@@ -36,7 +36,7 @@ import { GlassCard } from "@/components/dashboard/GlassCard";
 import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
-import { getCheatRole, clearCheatRole } from "@/lib/cheat";
+import { useAuth } from "@/lib/auth-context";
 import { useNotices, useClasses, useAttendance } from "@/lib/student-notes";
 import {
   STUDENTS,
@@ -66,12 +66,14 @@ function StudentDashboard() {
   const me = STUDENTS[0]; // Abhay
   const [tab, setTab] = useState<Tab>("overview");
 
-  useEffect(() => {
-    if (getCheatRole() !== "student") navigate({ to: "/login" });
-  }, [navigate]);
+  const { isStudent, loading, signOut } = useAuth();
 
-  const logout = () => {
-    clearCheatRole();
+  useEffect(() => {
+    if (!loading && !isStudent) navigate({ to: "/login" });
+  }, [loading, isStudent, navigate]);
+
+  const logout = async () => {
+    await signOut();
     navigate({ to: "/" });
   };
 
