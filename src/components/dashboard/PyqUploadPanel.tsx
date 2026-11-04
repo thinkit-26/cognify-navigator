@@ -31,21 +31,33 @@ export function PyqUploadPanel() {
   };
   useEffect(refresh, [cls, subject, chapter]);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authMsg, setAuthMsg] = useState("");
+
+  const checkAdmin = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return setIsAdmin(false);
+    const { data: row } = await supabase
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", data.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    setIsAdmin(!!row);
+    if (!row) setAuthMsg("This account is not an admin.");
+  };
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) return setIsAdmin(false);
-      const { data: row } = await supabase
-        .from("user_roles")
-        .select("id")
-        .eq("user_id", data.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!row);
-    });
+    checkAdmin();
   }, []);
 
-  const signIn = () =>
-    supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.href } });
+  const signIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthMsg("");
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return setAuthMsg(error.message);
+    checkAdmin();
+  };
 
   const upload = async (file: File, folder: string) => {
     const path = `${folder}/${crypto.randomUUID()}.${ext(file)}`;
@@ -85,15 +97,18 @@ export function PyqUploadPanel() {
   };
 
   if (isAdmin === null) return <p className="text-navy/60 dark:text-cream/60">Checking access…</p>;
-  if (!isAdmin)
+  if (!isAdmin) {
+    const field = "h-12 w-full rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream";
     return (
-      <div className="max-w-md space-y-3">
-        <p className="text-navy dark:text-cream">Uploading needs a Supabase admin account. Sign in with it to continue.</p>
-        <button onClick={signIn} className="rounded-full bg-navy px-5 py-2 text-sm font-bold text-white dark:bg-cream dark:text-navy">
-          Sign in with Google
-        </button>
-      </div>
+      <form onSubmit={signIn} className="max-w-sm space-y-3">
+        <p className="text-navy dark:text-cream">Sign in with your Supabase admin account to upload papers.</p>
+        <input className={field} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input className={field} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <button className="rounded-full bg-navy px-5 py-2 text-sm font-bold text-white dark:bg-cream dark:text-navy">Sign in</button>
+        {authMsg && <p className="text-sm font-semibold text-rose-500">{authMsg}</p>}
+      </form>
     );
+  }
 
   const input = "h-12 w-full rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream";
   const label = "mb-2 block text-xs font-bold tracking-[0.2em] text-orange";
