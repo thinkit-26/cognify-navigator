@@ -54,6 +54,8 @@ export default defineConfig(async ({ command, mode }) => {
         "@tanstack/query-core",
       ],
     },
+    // lucide-react's barrel opens ~1700 icon files at once; Cloudflare's build container hits EMFILE.
+    build: { rollupOptions: { maxParallelFileOps: 20 } },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
       ignoreOutdatedRequests: true,
