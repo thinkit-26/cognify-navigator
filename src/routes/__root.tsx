@@ -15,6 +15,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { AltModeListener } from "@/lib/alt-mode";
+import { AuthProvider } from "@/lib/auth-context";
 
 
 
@@ -141,7 +142,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {!hideChrome && <Navbar />}
       <main className="min-h-screen">
-        <Outlet />
+        {/* only the dashboards need the Supabase session, so other pages never touch Supabase */}
+        {pathname === "/admin" || pathname === "/dashboard" ? (
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
+        ) : (
+          <Outlet />
+        )}
       </main>
       {!hideChrome && <Footer />}
       {!hideChrome && <WhatsAppButton />}

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
@@ -23,6 +23,8 @@ function LoginPage() {
   const [agree, setAgree] = useState(false);
   const [err, setErr] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
 
   const signInWithGoogle = async () => {
     setErr("");
@@ -39,7 +41,7 @@ function LoginPage() {
   };
 
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
     if (!email || !password) return setErr("Please enter your email and password.");
@@ -49,7 +51,21 @@ function LoginPage() {
       if (password !== confirm) return setErr("Passwords do not match.");
       if (!agree) return setErr("Please accept the Terms of Service and Privacy Policy.");
     }
-    setErr("Sign-in is not yet connected. Please contact the institute.");
+    setBusy(true);
+    const { data, error } =
+      mode === "signup"
+        ? await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } })
+        : await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) return setErr(error.message);
+    if (!data.session) return setErr("Check your email to confirm your account, then sign in.");
+    const { data: admin } = await supabase
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", data.session.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    navigate({ to: admin ? "/admin" : "/dashboard" });
   };
 
 
@@ -186,7 +202,8 @@ function LoginPage() {
 
                   <button
                     type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:brightness-[1.03]"
+                    disabled={busy}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:brightness-[1.03] disabled:opacity-60"
                   >
                     {mode === "signin" ? "Sign in" : "Create account"}
                     <ArrowRight className="h-4 w-4" />
