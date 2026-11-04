@@ -14,3 +14,5 @@ In short: the frontend deploys to Cloudflare, and the Python backend in
 Workers can't run FastAPI. Set `VITE_ORALBOT_BACKEND` + `VIVA_ACCESS_CODE` in the
 Cloudflare build env and the Deepgram/Gemini keys + `CORS_ORIGINS` on the backend.
 
+
+<!-- Rebuild trigger: Supabase build variables added to Cloudflare. -->
