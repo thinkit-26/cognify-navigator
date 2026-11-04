@@ -43,7 +43,7 @@ import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { PyqUploadPanel } from "@/components/dashboard/PyqUploadPanel";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
-import { getCheatRole, clearCheatRole } from "@/lib/cheat";
+import { useAuth } from "@/lib/auth-context";
 import {
   useNotices,
   useClasses,
@@ -84,12 +84,14 @@ function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
   const [activeStudent, setActiveStudent] = useState<Student | null>(null);
 
-  useEffect(() => {
-    if (getCheatRole() !== "admin") navigate({ to: "/login" });
-  }, [navigate]);
+  const { isAdmin, loading, signOut } = useAuth();
 
-  const logout = () => {
-    clearCheatRole();
+  useEffect(() => {
+    if (!loading && !isAdmin) navigate({ to: "/login" });
+  }, [loading, isAdmin, navigate]);
+
+  const logout = async () => {
+    await signOut();
     navigate({ to: "/" });
   };
 
