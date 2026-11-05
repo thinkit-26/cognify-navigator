@@ -14,6 +14,8 @@ import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PyqsRouteImport } from './routes/pyqs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as NoahAdminRouteImport } from './routes/noah-admin'
+import { Route as NoahRouteImport } from './routes/noah'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -51,6 +53,16 @@ const PyqsRoute = PyqsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoahAdminRoute = NoahAdminRouteImport.update({
+  id: '/noah-admin',
+  path: '/noah-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoahRoute = NoahRouteImport.update({
+  id: '/noah',
+  path: '/noah',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -125,6 +137,8 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/noah': typeof NoahRoute
+  '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
@@ -145,6 +159,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/noah': typeof NoahRoute
+  '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
@@ -166,6 +182,8 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/noah': typeof NoahRoute
+  '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
   '/terms': typeof TermsRoute
@@ -188,6 +206,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/login'
+    | '/noah'
+    | '/noah-admin'
     | '/privacy'
     | '/pyqs'
     | '/terms'
@@ -208,6 +228,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/login'
+    | '/noah'
+    | '/noah-admin'
     | '/privacy'
     | '/pyqs'
     | '/terms'
@@ -228,6 +250,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/login'
+    | '/noah'
+    | '/noah-admin'
     | '/privacy'
     | '/pyqs'
     | '/terms'
@@ -249,6 +273,8 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  NoahRoute: typeof NoahRoute
+  NoahAdminRoute: typeof NoahAdminRoute
   PrivacyRoute: typeof PrivacyRoute
   PyqsRoute: typeof PyqsRoute
   TermsRoute: typeof TermsRoute
@@ -299,6 +325,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noah-admin': {
+      id: '/noah-admin'
+      path: '/noah-admin'
+      fullPath: '/noah-admin'
+      preLoaderRoute: typeof NoahAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noah': {
+      id: '/noah'
+      path: '/noah'
+      fullPath: '/noah'
+      preLoaderRoute: typeof NoahRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -401,6 +441,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  NoahRoute: NoahRoute,
+  NoahAdminRoute: NoahAdminRoute,
   PrivacyRoute: PrivacyRoute,
   PyqsRoute: PyqsRoute,
   TermsRoute: TermsRoute,
