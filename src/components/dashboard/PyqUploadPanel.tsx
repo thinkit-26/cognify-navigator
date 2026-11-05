@@ -1,10 +1,24 @@
 import { useEffect, useState } from "react";
+import { FileCheck2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PYQ_CHAPTERS } from "@/data/pyqChapters";
 import { listPapers } from "@/lib/pyqPapers";
 
 type Paper = Awaited<ReturnType<typeof listPapers>>[number];
+
+function FilePill({ label, file, onPick }: { label: string; file: File | null; onPick: (f: File | null) => void }) {
+  return (
+    <div className="min-w-0">
+      <span className="mb-2 block text-xs font-bold tracking-[0.2em] text-orange">{label}</span>
+      <label className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-full border-2 border-dashed border-navy/30 bg-white px-5 text-sm font-bold text-navy transition hover:border-navy dark:bg-white/5 dark:text-cream">
+        {file ? <FileCheck2 className="h-4 w-4 shrink-0 text-orange" /> : <Upload className="h-4 w-4 shrink-0 text-orange" />}
+        <span className={`truncate ${file ? "" : "font-semibold text-navy/50 dark:text-cream/50"}`}>{file ? file.name : "Choose a file"}</span>
+        <input type="file" accept="application/pdf,image/*" className="sr-only" onChange={(e) => onPick(e.target.files?.[0] ?? null)} />
+      </label>
+    </div>
+  );
+}
 
 const ext = (f: File) => f.name.split(".").pop()?.toLowerCase() ?? "pdf";
 
@@ -113,8 +127,8 @@ export function PyqUploadPanel() {
   const input = "h-12 w-full rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream";
   const label = "mb-2 block text-xs font-bold tracking-[0.2em] text-orange";
   return (
-    <form onSubmit={submit} className="max-w-4xl space-y-4">
-      <div className="flex flex-col gap-4 sm:flex-row">
+    <form onSubmit={submit} className="w-full max-w-5xl space-y-5">
+      <div className="grid gap-4 sm:grid-cols-3">
         <Pick label="CLASS" placeholder="Select class" value={cls ? String(cls) : null}
           options={[9, 10, 11, 12].map((c) => ({ value: String(c), label: `Class ${c}` }))}
           onChange={(v) => { setCls(Number(v)); setSubject(null); setChapter(null); }} />
@@ -124,19 +138,17 @@ export function PyqUploadPanel() {
         <Pick label="CHAPTER" placeholder="Select chapter" disabled={!subject} value={chapter}
           options={chapters.map((x, i) => ({ value: x, label: `${i + 1}. ${x}` }))} onChange={setChapter} />
       </div>
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="sm:flex-1"><label className={label}>EXAM</label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div><label className={label}>EXAM</label>
           <input className={input} value={exam} onChange={(e) => setExam(e.target.value)} placeholder="e.g. CBSE Board" /></div>
-        <div className="sm:flex-1"><label className={label}>YEAR</label>
+        <div><label className={label}>YEAR</label>
           <input className={input} type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2024" /></div>
       </div>
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="sm:flex-1"><label className={label}>QUESTION PAPER (PDF)</label>
-          <input type="file" accept="application/pdf,image/*" onChange={(e) => setPaper(e.target.files?.[0] ?? null)} className="text-sm text-navy dark:text-cream" /></div>
-        <div className="sm:flex-1"><label className={label}>SOLUTION (PDF, optional)</label>
-          <input type="file" accept="application/pdf,image/*" onChange={(e) => setSolution(e.target.files?.[0] ?? null)} className="text-sm text-navy dark:text-cream" /></div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FilePill label="QUESTION PAPER (PDF)" file={paper} onPick={setPaper} />
+        <FilePill label="SOLUTION (PDF, OPTIONAL)" file={solution} onPick={setSolution} />
       </div>
-      <button disabled={busy} className="rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-6 py-2.5 text-sm font-bold text-white disabled:opacity-50">
+      <button disabled={busy} className="h-12 rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-10 text-sm font-bold text-white shadow-sm disabled:opacity-50">
         {busy ? "Uploading…" : "Upload"}
       </button>
       {msg && <p className="text-sm font-semibold text-navy dark:text-cream">{msg}</p>}

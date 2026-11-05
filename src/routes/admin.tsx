@@ -125,9 +125,11 @@ function AdminDashboard() {
               {tab === "calendar" && "Calendar"}
               {tab === "attendance" && "Attendance"}
             </h1>
-            <p className="mt-1 text-xs text-navy/60 dark:text-cream/60 sm:text-sm">
-              {STUDENTS.length} students · {PAPERS.length} papers · class avg {classAvg}%
-            </p>
+            {tab !== "pyqs" && (
+              <p className="mt-1 text-xs text-navy/60 dark:text-cream/60 sm:text-sm">
+                {STUDENTS.length} students · {PAPERS.length} papers · class avg {classAvg}%
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
