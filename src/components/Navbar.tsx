@@ -60,6 +60,12 @@ export function Navbar() {
             PYQ&apos;s
           </Link>
           <Link
+            to="/noah"
+            className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
+          >
+            NOAH
+          </Link>
+          <Link
             to="/viva/gate"
             className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm transition hover:bg-navy/90 dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
           >
@@ -88,6 +94,9 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <Link to="/noah" className="py-1 text-base font-semibold text-navy">
+              NOAH
+            </Link>
             <Link
               to="/viva/gate"
               className="inline-flex items-center gap-2 py-1 text-base font-semibold text-orange"
