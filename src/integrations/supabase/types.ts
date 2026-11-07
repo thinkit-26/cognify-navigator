@@ -55,7 +55,7 @@ export type Database = {
       }
       pyq_papers: {
         Row: {
-          chapter: string
+          chapter: string | null
           class_level: number
           created_at: string
           exam: string
@@ -63,10 +63,10 @@ export type Database = {
           paper_path: string
           solution_path: string | null
           subject: string
-          year: number
+          year: string
         }
         Insert: {
-          chapter: string
+          chapter?: string | null
           class_level: number
           created_at?: string
           exam: string
@@ -74,10 +74,10 @@ export type Database = {
           paper_path: string
           solution_path?: string | null
           subject: string
-          year: number
+          year: string
         }
         Update: {
-          chapter?: string
+          chapter?: string | null
           class_level?: number
           created_at?: string
           exam?: string
@@ -85,7 +85,7 @@ export type Database = {
           paper_path?: string
           solution_path?: string | null
           subject?: string
-          year?: number
+          year?: string
         }
         Relationships: []
       }
