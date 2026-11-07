@@ -22,6 +22,7 @@ function LoginPage() {
   const [confirm, setConfirm] = useState("");
   const [agree, setAgree] = useState(false);
   const [err, setErr] = useState("");
+  const [info, setInfo] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
@@ -40,6 +41,17 @@ function LoginPage() {
     // On success Supabase redirects the browser to Google, then back to redirectTo.
   };
 
+
+  const forgotPassword = async () => {
+    setErr("");
+    setInfo("");
+    if (!email) return setErr("Enter your email above first.");
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    if (error) return setErr(error.message);
+    setInfo("If that email has an account, a reset link is on its way.");
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,10 +204,15 @@ function LoginPage() {
                         <input type="checkbox" className="h-4 w-4 rounded border-navy/30 accent-orange" />
                         Remember me
                       </label>
-                      <a className="font-bold text-orange hover:underline cursor-pointer">Forgot password?</a>
+                      <button type="button" onClick={forgotPassword} className="font-bold text-orange hover:underline">
+                        Forgot password?
+                      </button>
                     </div>
                   )}
 
+                  {info && (
+                    <p className="rounded-lg bg-green-50 px-3 py-2 text-xs font-medium text-green-700">{info}</p>
+                  )}
                   {err && (
                     <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">{err}</p>
                   )}
