@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PyqsRouteImport } from './routes/pyqs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NoahAdminRouteImport } from './routes/noah-admin'
@@ -43,6 +44,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PyqsRoute = PyqsRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/noah-admin': typeof NoahAdminRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
   '/thank-you': typeof ThankYouRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/noah-admin'
     | '/privacy'
     | '/pyqs'
+    | '/reset-password'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/noah-admin'
     | '/privacy'
     | '/pyqs'
+    | '/reset-password'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/noah-admin'
     | '/privacy'
     | '/pyqs'
+    | '/reset-password'
     | '/terms'
     | '/testimonials'
     | '/thank-you'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   NoahAdminRoute: typeof NoahAdminRoute
   PrivacyRoute: typeof PrivacyRoute
   PyqsRoute: typeof PyqsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ThankYouRoute: typeof ThankYouRoute
@@ -311,6 +324,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pyqs': {
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   NoahAdminRoute: NoahAdminRoute,
   PrivacyRoute: PrivacyRoute,
   PyqsRoute: PyqsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   TestimonialsRoute: TestimonialsRoute,
   ThankYouRoute: ThankYouRoute,
