@@ -3,20 +3,20 @@ import { listPapers, pyqFileUrl } from "@/lib/pyqPapers";
 
 type Paper = Awaited<ReturnType<typeof listPapers>>[number];
 
-export function PyqPaperList({ cls, subject, chapter }: { cls: number; subject: string; chapter: string }) {
+export function PyqPaperList({ cls, subject }: { cls: number; subject: string }) {
   const [papers, setPapers] = useState<Paper[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     setPapers(null);
     setFailed(false);
-    listPapers(cls, subject, chapter).then(setPapers, () => setFailed(true));
-  }, [cls, subject, chapter]);
+    listPapers(cls, subject).then(setPapers, () => setFailed(true));
+  }, [cls, subject]);
 
   if (failed) return <p className="mt-3 text-muted-foreground">Could not load papers. Please try again.</p>;
   if (!papers) return <p className="mt-3 text-muted-foreground">Loading…</p>;
   if (papers.length === 0)
-    return <p className="mt-3 text-muted-foreground">Questions for this chapter are coming soon.</p>;
+    return <p className="mt-3 text-muted-foreground">Papers for this subject are coming soon.</p>;
 
   const btn = "rounded-full border-2 border-navy/30 px-4 py-1 text-xs font-bold text-navy transition hover:border-navy dark:text-cream";
   return (

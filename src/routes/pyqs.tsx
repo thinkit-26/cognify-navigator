@@ -20,10 +20,8 @@ export const Route = createFileRoute("/pyqs")({
 function Pyqs() {
   const [cls, setCls] = useState<number | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
-  const [chapter, setChapter] = useState<string | null>(null);
 
   const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
-  const chapters = cls && subject ? PYQ_CHAPTERS[cls][subject] : [];
 
   return (
     <div className="bg-background">
@@ -45,7 +43,6 @@ function Pyqs() {
               onChange={(v) => {
                 setCls(Number(v));
                 setSubject(null);
-                setChapter(null);
               }}
             />
             <Pick
@@ -54,28 +51,16 @@ function Pyqs() {
               disabled={!cls}
               value={subject}
               options={subjects.map((x) => ({ value: x, label: x }))}
-              onChange={(v) => {
-                setSubject(v);
-                setChapter(null);
-              }}
-            />
-            <Pick
-              label="CHAPTER"
-              placeholder="Select chapter"
-              disabled={!subject}
-              value={chapter}
-              options={chapters.map((x, i) => ({ value: x, label: `${i + 1}. ${x}` }))}
-              onChange={setChapter}
+              onChange={setSubject}
             />
           </div>
 
-          {chapter && (
+          {subject && (
             <div className="mx-auto mt-12 max-w-2xl rounded-[2rem] border border-border bg-white px-6 py-8 shadow-soft dark:border-white/10 dark:bg-white/5">
               <p className="text-sm font-bold text-orange">
                 Class {cls} › {subject}
               </p>
-              <p className="mt-1 text-xl font-extrabold text-navy dark:text-cream">{chapter}</p>
-              <PyqPaperList cls={cls!} subject={subject!} chapter={chapter} />
+              <PyqPaperList cls={cls!} subject={subject} />
             </div>
           )}
         </div>
