@@ -27,7 +27,6 @@ export function PyqUploadPanel() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [cls, setCls] = useState<number | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
-  const [chapter, setChapter] = useState<string | null>(null);
   const [exam, setExam] = useState("");
   const [year, setYear] = useState("");
   const [paper, setPaper] = useState<File | null>(null);
@@ -37,13 +36,12 @@ export function PyqUploadPanel() {
   const [existing, setExisting] = useState<Paper[]>([]);
 
   const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
-  const chapters = cls && subject ? PYQ_CHAPTERS[cls][subject] : [];
 
   const refresh = () => {
-    if (cls && subject && chapter) listPapers(cls, subject, chapter).then(setExisting, () => setExisting([]));
+    if (cls && subject) listPapers(cls, subject).then(setExisting, () => setExisting([]));
     else setExisting([]);
   };
-  useEffect(refresh, [cls, subject, chapter]);
+  useEffect(refresh, [cls, subject]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,7 +80,8 @@ export function PyqUploadPanel() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cls || !subject || !chapter || !paper || !exam.trim() || !year) return setMsg("Fill every field and choose the paper file.");
+    if (!cls || !subject || !paper || !exam.trim() || !year.trim()) return setMsg("Fill every field and choose the paper file.");
+    if (!/^\d{4}(-\d{2})?$/.test(year.trim())) return setMsg("Year looks like 2025 or 2025-26.");
     setBusy(true);
     setMsg("");
     try {
@@ -90,7 +89,7 @@ export function PyqUploadPanel() {
       const paper_path = await upload(paper, folder);
       const solution_path = solution ? await upload(solution, folder) : null;
       const { error } = await supabase.from("pyq_papers").insert({
-        class_level: cls, subject, chapter, exam: exam.trim(), year: Number(year), paper_path, solution_path,
+        class_level: cls, subject, exam: exam.trim(), year: year.trim(), paper_path, solution_path,
       });
       if (error) throw error;
       setMsg("Uploaded. It is now live on the PYQ's page.");
@@ -128,21 +127,19 @@ export function PyqUploadPanel() {
   const label = "mb-2 block text-xs font-bold tracking-[0.2em] text-orange";
   return (
     <form onSubmit={submit} className="w-full max-w-5xl space-y-5">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Pick label="CLASS" placeholder="Select class" value={cls ? String(cls) : null}
           options={[9, 10, 11, 12].map((c) => ({ value: String(c), label: `Class ${c}` }))}
-          onChange={(v) => { setCls(Number(v)); setSubject(null); setChapter(null); }} />
+          onChange={(v) => { setCls(Number(v)); setSubject(null); }} />
         <Pick label="SUBJECT" placeholder="Select subject" disabled={!cls} value={subject}
           options={subjects.map((x) => ({ value: x, label: x }))}
-          onChange={(v) => { setSubject(v); setChapter(null); }} />
-        <Pick label="CHAPTER" placeholder="Select chapter" disabled={!subject} value={chapter}
-          options={chapters.map((x, i) => ({ value: x, label: `${i + 1}. ${x}` }))} onChange={setChapter} />
+          onChange={setSubject} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div><label className={label}>EXAM</label>
           <input className={input} value={exam} onChange={(e) => setExam(e.target.value)} placeholder="e.g. CBSE Board" /></div>
         <div><label className={label}>YEAR</label>
-          <input className={input} type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2024" /></div>
+          <input className={input} value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2025-26" /></div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <FilePill label="QUESTION PAPER (PDF)" file={paper} onPick={setPaper} />
