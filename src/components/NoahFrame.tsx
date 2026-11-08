@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 // NOAH (the AI oral examiner) runs as its own app; this page shows it inside the
 // site. ?embed= opens it straight to one role's sign-in (see NOAH's embed mode).
-const NOAH_URL = "https://cognify-noah.vercel.app";
+export const NOAH_URL = "https://cognify-noah.vercel.app";
 
 export function NoahFrame({ role }: { role: "student" | "admin" }) {
   const back = role === "admin" ? "/admin" : "/";
