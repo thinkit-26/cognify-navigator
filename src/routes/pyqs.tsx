@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PyqPaperList } from "@/components/PyqPaperList";
 import { PYQ_CHAPTERS } from "@/data/pyqChapters";
+import { PYQ_SESSIONS } from "@/data/pyqYears";
 
 export const Route = createFileRoute("/pyqs")({
   head: () => ({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/pyqs")({
 function Pyqs() {
   const [cls, setCls] = useState<number | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
+  const [year, setYear] = useState<string | null>(null);
 
   const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
 
@@ -43,6 +45,7 @@ function Pyqs() {
               onChange={(v) => {
                 setCls(Number(v));
                 setSubject(null);
+                setYear(null);
               }}
             />
             <Pick
@@ -51,16 +54,27 @@ function Pyqs() {
               disabled={!cls}
               value={subject}
               options={subjects.map((x) => ({ value: x, label: x }))}
-              onChange={setSubject}
+              onChange={(v) => {
+                setSubject(v);
+                setYear(null);
+              }}
+            />
+            <Pick
+              label="YEAR"
+              placeholder="Select year"
+              disabled={!subject}
+              value={year}
+              options={PYQ_SESSIONS.map((y) => ({ value: y, label: y }))}
+              onChange={setYear}
             />
           </div>
 
-          {subject && (
+          {subject && year && (
             <div className="mx-auto mt-12 max-w-2xl rounded-[2rem] border border-border bg-white px-6 py-8 shadow-soft dark:border-white/10 dark:bg-white/5">
               <p className="text-sm font-bold text-orange">
-                Class {cls} › {subject}
+                Class {cls} › {subject} › {year}
               </p>
-              <PyqPaperList cls={cls!} subject={subject} />
+              <PyqPaperList cls={cls!} subject={subject} year={year} />
             </div>
           )}
         </div>
