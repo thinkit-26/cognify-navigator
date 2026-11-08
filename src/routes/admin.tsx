@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
@@ -18,6 +18,7 @@ import {
   Sparkles,
   Flame,
   BookOpen,
+  Mic2,
   ChevronRight,
 } from "lucide-react";
 import {
@@ -42,6 +43,7 @@ import { GlassCard } from "@/components/dashboard/GlassCard";
 import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { PyqUploadPanel } from "@/components/dashboard/PyqUploadPanel";
+import { NoahPanel } from "@/components/dashboard/NoahPanel";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -68,7 +70,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin, Cognify" }] }),
 });
 
-type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs";
+type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs" | "noah";
 
 const ORANGE = "#E2740A";
 const GLOW = "#FBBF24";
@@ -106,6 +108,7 @@ function AdminDashboard() {
           { label: "Overview", icon: LayoutDashboard, onClick: () => setTab("overview"), active: tab === "overview" },
           { label: "Papers", icon: FileText, onClick: () => setTab("papers"), active: tab === "papers" },
           { label: "PYQ Upload", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
+          { label: "NOAH Papers", icon: Mic2, onClick: () => setTab("noah"), active: tab === "noah" },
           { label: "Students", icon: Users, onClick: () => setTab("students"), active: tab === "students" },
           { label: "Notices", icon: Megaphone, onClick: () => setTab("notices"), active: tab === "notices" },
           { label: "Calendar", icon: CalendarDays, onClick: () => setTab("calendar"), active: tab === "calendar" },
@@ -120,24 +123,19 @@ function AdminDashboard() {
               {tab === "overview" && "Good to see you, Aseem."}
               {tab === "papers" && "Paper Analytics"}
               {tab === "pyqs" && "PYQ Upload"}
+              {tab === "noah" && "NOAH Oral Papers"}
               {tab === "students" && "Class Roster"}
               {tab === "notices" && "Notices"}
               {tab === "calendar" && "Calendar"}
               {tab === "attendance" && "Attendance"}
             </h1>
-            {tab !== "pyqs" && (
+            {tab !== "pyqs" && tab !== "noah" && (
               <p className="mt-1 text-xs text-navy/60 dark:text-cream/60 sm:text-sm">
                 {STUDENTS.length} students · {PAPERS.length} papers · class avg {classAvg}%
               </p>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              to="/noah-admin"
-              className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
-            >
-              NOAH
-            </Link>
             <ThemeToggle />
             <NotificationBell role="admin" />
           </div>
@@ -146,6 +144,7 @@ function AdminDashboard() {
         {tab === "overview" && <OverviewPanel goTo={setTab} openStudent={setActiveStudent} />}
         {tab === "papers" && <PapersPanel />}
         {tab === "pyqs" && <PyqUploadPanel />}
+        {tab === "noah" && <NoahPanel />}
         {tab === "students" && <StudentsPanel onOpen={setActiveStudent} />}
         {tab === "notices" && <NoticesPanel />}
         {tab === "calendar" && <CalendarPanel />}
