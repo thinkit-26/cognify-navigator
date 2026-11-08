@@ -3,6 +3,7 @@ import { FileCheck2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PYQ_CHAPTERS } from "@/data/pyqChapters";
+import { PYQ_SESSIONS } from "@/data/pyqYears";
 import { listPapers } from "@/lib/pyqPapers";
 
 type Paper = Awaited<ReturnType<typeof listPapers>>[number];
@@ -38,10 +39,10 @@ export function PyqUploadPanel() {
   const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
 
   const refresh = () => {
-    if (cls && subject) listPapers(cls, subject).then(setExisting, () => setExisting([]));
+    if (cls && subject && year) listPapers(cls, subject, year).then(setExisting, () => setExisting([]));
     else setExisting([]);
   };
-  useEffect(refresh, [cls, subject]);
+  useEffect(refresh, [cls, subject, year]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -80,8 +81,7 @@ export function PyqUploadPanel() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cls || !subject || !paper || !exam.trim() || !year.trim()) return setMsg("Fill every field and choose the paper file.");
-    if (!/^\d{4}(-\d{2})?$/.test(year.trim())) return setMsg("Year looks like 2025 or 2025-26.");
+    if (!cls || !subject || !paper || !exam.trim() || !year) return setMsg("Fill every field and choose the paper file.");
     setBusy(true);
     setMsg("");
     try {
@@ -89,7 +89,7 @@ export function PyqUploadPanel() {
       const paper_path = await upload(paper, folder);
       const solution_path = solution ? await upload(solution, folder) : null;
       const { error } = await supabase.from("pyq_papers").insert({
-        class_level: cls, subject, exam: exam.trim(), year: year.trim(), paper_path, solution_path,
+        class_level: cls, subject, exam: exam.trim(), year, paper_path, solution_path,
       });
       if (error) throw error;
       setMsg("Uploaded. It is now live on the PYQ's page.");
@@ -138,8 +138,8 @@ export function PyqUploadPanel() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div><label className={label}>EXAM</label>
           <input className={input} value={exam} onChange={(e) => setExam(e.target.value)} placeholder="e.g. CBSE Board" /></div>
-        <div><label className={label}>YEAR</label>
-          <input className={input} value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2025-26" /></div>
+        <Pick label="YEAR" placeholder="Select year" value={year || null}
+          options={PYQ_SESSIONS.map((y) => ({ value: y, label: y }))} onChange={setYear} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <FilePill label="QUESTION PAPER (PDF)" file={paper} onPick={setPaper} />
