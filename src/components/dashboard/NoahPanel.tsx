@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { NOAH_URL } from "@/components/NoahFrame";
+import { NOAH_VERSION } from "@/lib/noah-version";
 
 // NOAH's admin runs as its own app. When it says it is ready, hand it this admin's
 // Supabase session so it can verify it and skip its own sign-in.
@@ -21,7 +22,7 @@ export function NoahPanel() {
     <iframe
       ref={frame}
       title="NOAH admin"
-      src={`${NOAH_URL}/?embed=admin`}
+      src={`${NOAH_URL}/?embed=admin&v=${NOAH_VERSION}`}
       allow="microphone; fullscreen"
       className="block h-[calc(100dvh-11rem)] min-h-[560px] w-full rounded-2xl border border-border bg-white dark:border-white/10"
     />

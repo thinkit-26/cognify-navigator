@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { NOAH_VERSION } from "@/lib/noah-version";
 
 // NOAH (the AI oral examiner) runs as its own app; this page shows it inside the
 // site. ?embed= opens it straight to one role's sign-in (see NOAH's embed mode).
@@ -23,7 +24,7 @@ export function NoahFrame({ role }: { role: "student" | "admin" }) {
       </div>
       <iframe
         title={role === "admin" ? "NOAH admin" : "NOAH"}
-        src={`${NOAH_URL}/?embed=${role}`}
+        src={`${NOAH_URL}/?embed=${role}&v=${NOAH_VERSION}`}
         allow="microphone; fullscreen"
         className="block w-full flex-1 border-0"
       />
