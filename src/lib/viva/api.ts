@@ -1,6 +1,6 @@
 const API_BASE =
   (import.meta.env.VITE_ORALBOT_BACKEND as string | undefined) ??
-  "http://127.0.0.1:8000";
+  (import.meta.env.DEV ? "http://127.0.0.1:8000" : "https://api.cognifyinstitute.com");
 
 const TIMEOUT_MS = 30_000;
 
