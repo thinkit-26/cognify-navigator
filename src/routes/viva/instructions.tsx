@@ -5,8 +5,11 @@ import Button from "@/components/viva/Button";
 import { Mic, Clock, BrainCircuit, CheckCircle2 } from "lucide-react";
 import { startViva } from "@/lib/viva/api";
 import { useExamLock } from "@/lib/viva/useExamLock";
+import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/instructions")({
+  ssr: false, // the token lives in sessionStorage, so the check must run in the browser
+  beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Instructions, AI Oral Viva" }] }),
   component: InstructionsPage,
 });

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 
 /**
@@ -9,35 +9,51 @@ import { z } from "zod";
  * The access code is read from the server environment (VIVA_ACCESS_CODE) and
  * NEVER shipped to the client, so it is invisible in DevTools. Failed attempts
  * are rate-limited per client IP to prevent brute forcing.
+ *
+ * The session token is stateless: "<expiryMs>.<HMAC-SHA256(expiryMs)>", signed with
+ * VIVA_TOKEN_SECRET. Any Worker, and the FastAPI backend (same secret), can verify it
+ * without shared storage. Keep this format in sync with Oral_bot/backend/core/auth.py.
  */
 
 // Read per request: on Cloudflare Workers process.env is empty at module load.
 const accessCode = () => process.env.VIVA_ACCESS_CODE ?? "";
+const tokenSecret = () => process.env.VIVA_TOKEN_SECRET ?? "";
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 60_000;
-const TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+const TOKEN_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours, fixed (no sliding extension)
 
 type AttemptRecord = { count: number; lockedUntil: number };
+// shortcut: per-Worker memory, so the lockout is per instance, upgrade to a Cloudflare rate-limit rule.
 const attemptMap = new Map<string, AttemptRecord>();
 
-// session token -> expiry timestamp
-const tokenStore = new Map<string, number>();
-
 function clientKey(): string {
+  // x-forwarded-for is client-controlled, so only trust the headers Cloudflare sets.
   const request = getRequest();
-  const fwd = request?.headers?.get("x-forwarded-for");
-  if (fwd) return fwd.split(",")[0]?.trim() ?? "unknown";
   return (
     request?.headers?.get("cf-connecting-ip") ?? request?.headers?.get("x-real-ip") ?? "unknown"
   );
 }
 
-function sweep() {
-  const now = Date.now();
-  for (const [token, expiry] of tokenStore) {
-    if (expiry <= now) tokenStore.delete(token);
-  }
+const sign = (expiry: string, secret: string) =>
+  createHmac("sha256", secret).update(expiry).digest("hex");
+
+function issueToken(): string {
+  const secret = tokenSecret();
+  if (!secret) throw new Error("Viva token secret is not configured on the server");
+  const expiry = String(Date.now() + TOKEN_TTL_MS);
+  return `${expiry}.${sign(expiry, secret)}`;
+}
+
+function isValidToken(token: string): boolean {
+  const secret = tokenSecret();
+  if (!secret) return false;
+  const [expiry, signature, ...rest] = token.split(".");
+  if (!expiry || !signature || rest.length > 0 || !/^\d+$/.test(expiry)) return false;
+  if (Number(expiry) <= Date.now()) return false;
+  const expected = Buffer.from(sign(expiry, secret));
+  const given = Buffer.from(signature);
+  return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
 function isLocked(key: string): { locked: boolean; retryInMs: number } {
@@ -88,11 +104,7 @@ export const verifyVivaCode = createServerFn({ method: "POST" })
       throw new Error("That code is incorrect. Please try again.");
     }
 
-    sweep();
-    const token = randomBytes(32).toString("hex");
-    tokenStore.set(token, Date.now() + TOKEN_TTL_MS);
-
-    return { token, expiresInSeconds: TOKEN_TTL_MS / 1000 };
+    return { token: issueToken(), expiresInSeconds: TOKEN_TTL_MS / 1000 };
   });
 
 const CheckTokenSchema = z.object({
@@ -101,13 +113,4 @@ const CheckTokenSchema = z.object({
 
 export const checkVivaAccess = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => CheckTokenSchema.parse(data))
-  .handler(async ({ data }) => {
-    sweep();
-    const expiry = tokenStore.get(data.token);
-    if (!expiry || expiry <= Date.now()) {
-      return { valid: false };
-    }
-    // Slide the expiry on each successful check.
-    tokenStore.set(data.token, Date.now() + TOKEN_TTL_MS);
-    return { valid: true };
-  });
+  .handler(async ({ data }) => ({ valid: isValidToken(data.token) }));

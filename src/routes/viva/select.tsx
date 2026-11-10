@@ -4,8 +4,11 @@ import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { getChapters } from "@/lib/viva/api";
 import type { Chapter } from "@/lib/viva/types";
+import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/select")({
+  ssr: false, // the token lives in sessionStorage, so the check must run in the browser
+  beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Select Chapters, AI Oral Viva" }] }),
   component: SelectPage,
 });
