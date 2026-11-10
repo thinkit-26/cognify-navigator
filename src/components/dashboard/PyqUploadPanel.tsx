@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FileCheck2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PyqPick as Pick } from "@/components/PyqPick";
-import { PYQ_CHAPTERS } from "@/data/pyqChapters";
+import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { PYQ_SESSIONS } from "@/data/pyqYears";
 import { listPapers } from "@/lib/pyqPapers";
 
@@ -36,7 +36,7 @@ export function PyqUploadPanel() {
   const [busy, setBusy] = useState(false);
   const [existing, setExisting] = useState<Paper[]>([]);
 
-  const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
+  const subjects = cls ? PYQ_SUBJECTS[cls] : [];
 
   const refresh = () => {
     if (cls && subject && year) listPapers(cls, subject, year).then(setExisting, () => setExisting([]));
