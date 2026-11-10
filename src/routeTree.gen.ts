@@ -29,7 +29,6 @@ import { Route as VivaResultsRouteImport } from './routes/viva/results'
 import { Route as VivaInstructionsRouteImport } from './routes/viva/instructions'
 import { Route as VivaGateRouteImport } from './routes/viva/gate'
 import { Route as VivaEvaluatingRouteImport } from './routes/viva/evaluating'
-import { Route as ApiPublicSeedRouteImport } from './routes/api/public/seed'
 
 const ThankYouRoute = ThankYouRouteImport.update({
   id: '/thank-you',
@@ -131,11 +130,6 @@ const VivaEvaluatingRoute = VivaEvaluatingRouteImport.update({
   path: '/viva/evaluating',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSeedRoute = ApiPublicSeedRouteImport.update({
-  id: '/api/public/seed',
-  path: '/api/public/seed',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -158,7 +152,6 @@ export interface FileRoutesByFullPath {
   '/viva/select': typeof VivaSelectRoute
   '/viva/select-topic': typeof VivaSelectTopicRoute
   '/viva/viva': typeof VivaVivaRoute
-  '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -181,7 +174,6 @@ export interface FileRoutesByTo {
   '/viva/select': typeof VivaSelectRoute
   '/viva/select-topic': typeof VivaSelectTopicRoute
   '/viva/viva': typeof VivaVivaRoute
-  '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -205,7 +197,6 @@ export interface FileRoutesById {
   '/viva/select': typeof VivaSelectRoute
   '/viva/select-topic': typeof VivaSelectTopicRoute
   '/viva/viva': typeof VivaVivaRoute
-  '/api/public/seed': typeof ApiPublicSeedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -230,7 +221,6 @@ export interface FileRouteTypes {
     | '/viva/select'
     | '/viva/select-topic'
     | '/viva/viva'
-    | '/api/public/seed'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,7 +243,6 @@ export interface FileRouteTypes {
     | '/viva/select'
     | '/viva/select-topic'
     | '/viva/viva'
-    | '/api/public/seed'
   id:
     | '__root__'
     | '/'
@@ -276,7 +265,6 @@ export interface FileRouteTypes {
     | '/viva/select'
     | '/viva/select-topic'
     | '/viva/viva'
-    | '/api/public/seed'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,7 +288,6 @@ export interface RootRouteChildren {
   VivaSelectRoute: typeof VivaSelectRoute
   VivaSelectTopicRoute: typeof VivaSelectTopicRoute
   VivaVivaRoute: typeof VivaVivaRoute
-  ApiPublicSeedRoute: typeof ApiPublicSeedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -445,13 +432,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VivaEvaluatingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/seed': {
-      id: '/api/public/seed'
-      path: '/api/public/seed'
-      fullPath: '/api/public/seed'
-      preLoaderRoute: typeof ApiPublicSeedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -476,7 +456,6 @@ const rootRouteChildren: RootRouteChildren = {
   VivaSelectRoute: VivaSelectRoute,
   VivaSelectTopicRoute: VivaSelectTopicRoute,
   VivaVivaRoute: VivaVivaRoute,
-  ApiPublicSeedRoute: ApiPublicSeedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
