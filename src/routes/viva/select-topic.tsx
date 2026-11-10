@@ -5,6 +5,7 @@ import { getTopics } from "@/lib/viva/api";
 import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/select-topic")({
+  ssr: false, // the token lives in sessionStorage, so the check must run in the browser
   beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Select Topics, AI Oral Viva" }] }),
   component: TopicSelectionPage,

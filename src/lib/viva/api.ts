@@ -11,12 +11,14 @@ async function timedFetch(url: string, init?: RequestInit): Promise<Response> {
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   const headers = new Headers(init?.headers);
-  const token = typeof window !== "undefined" ? sessionStorage.getItem(VIVA_TOKEN_KEY) : null;
+  // /chapters and /topics stay open, so no token (and no extra CORS preflight) for them.
+  const needsToken = url.startsWith(`${API_BASE}/viva/`) || url.startsWith(`${API_BASE}/transcribe`);
+  const token = needsToken && typeof window !== "undefined" ? sessionStorage.getItem(VIVA_TOKEN_KEY) : null;
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   try {
     const response = await fetch(url, { ...init, headers, signal: controller.signal });
-    if (response.status === 401 && typeof window !== "undefined") {
+    if (needsToken && response.status === 401 && typeof window !== "undefined") {
       // Token expired or missing: send the student back to enter the code again.
       sessionStorage.removeItem(VIVA_TOKEN_KEY);
       window.location.assign("/viva/gate");

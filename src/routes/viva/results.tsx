@@ -9,6 +9,7 @@ import jsPDF from "jspdf";
 import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/results")({
+  ssr: false, // the token lives in sessionStorage, so the check must run in the browser
   beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Results, AI Oral Viva" }] }),
   component: ResultsPage,

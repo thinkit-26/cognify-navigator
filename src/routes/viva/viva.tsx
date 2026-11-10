@@ -8,6 +8,7 @@ import type { VivaQuestion } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/viva")({
+  ssr: false, // the token lives in sessionStorage, so the check must run in the browser
   beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "AI Oral Viva, Cognify Institute" }] }),
   component: VivaPage,
