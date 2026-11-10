@@ -57,6 +57,7 @@ In the **Cloudflare** deployment settings (Workers/Pages build environment), set
 |---|---|
 | `VITE_ORALBOT_BACKEND` | `https://your-render-service.onrender.com` |
 | `VIVA_ACCESS_CODE` | the access code (see below) |
+| `VIVA_TOKEN_SECRET` | random secret, add it as a **Secret**. Must match the backend's `VIVA_TOKEN_SECRET` (`openssl rand -hex 32`) |
 
 Then redeploy the frontend.
 
@@ -66,8 +67,7 @@ The gate verifies the code **server-side only** (it is never sent to the browser
 
 - Locally: it lives in the repo-root `.env.local` (`VIVA_ACCESS_CODE=...`).
 - Production: set `VIVA_ACCESS_CODE` in the **Cloudflare** environment so the
-  gate can verify it. The current local code is `476291` — change it in
-  production if desired.
+  gate can verify it. Choose your own code and never commit it.
 
 ---
 
