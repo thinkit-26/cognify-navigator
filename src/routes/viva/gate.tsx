@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, ArrowRight, KeyRound } from "lucide-react";
 import { verifyVivaCode } from "@/lib/viva/gate.functions";
+import { VIVA_TOKEN_KEY } from "@/lib/viva/api";
 
 export const Route = createFileRoute("/viva/gate")({
   head: () => ({ meta: [{ title: "Viva Access, Cognify Institute" }] }),
@@ -28,7 +29,7 @@ function VivaGate() {
     setChecking(true);
     try {
       const { token } = await verify({ data: { code } });
-      sessionStorage.setItem("cognify_viva_token", token);
+      sessionStorage.setItem(VIVA_TOKEN_KEY, token);
       navigate({ to: "/viva/select" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to verify code.");

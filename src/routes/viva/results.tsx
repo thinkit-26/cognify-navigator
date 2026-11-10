@@ -6,8 +6,10 @@ import { getEvaluation } from "@/lib/viva/api";
 import { useExamLock, isExamLocked } from "@/lib/viva/useExamLock";
 import type { Evaluation } from "@/lib/viva/types";
 import jsPDF from "jspdf";
+import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/results")({
+  beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Results, AI Oral Viva" }] }),
   component: ResultsPage,
 });

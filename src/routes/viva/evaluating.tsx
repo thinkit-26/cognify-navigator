@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { getEvaluation } from "@/lib/viva/api";
 import { isExamLocked } from "@/lib/viva/useExamLock";
+import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/evaluating")({
+  beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "Evaluating, AI Oral Viva" }] }),
   component: EvaluatingPage,
 });

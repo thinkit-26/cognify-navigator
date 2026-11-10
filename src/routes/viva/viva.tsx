@@ -5,8 +5,10 @@ import Button from "@/components/viva/Button";
 import MicrophoneContainer, { RecordingPhase } from "@/components/viva/MicrophoneContainer";
 import { getQuestion, submitAnswer } from "@/lib/viva/api";
 import type { VivaQuestion } from "@/lib/viva/types";
+import { requireVivaAccess } from "@/lib/viva/guard";
 
 export const Route = createFileRoute("/viva/viva")({
+  beforeLoad: requireVivaAccess,
   head: () => ({ meta: [{ title: "AI Oral Viva, Cognify Institute" }] }),
   component: VivaPage,
 });
