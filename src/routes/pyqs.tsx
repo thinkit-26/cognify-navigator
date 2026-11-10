@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PyqPaperList } from "@/components/PyqPaperList";
-import { PYQ_CHAPTERS } from "@/data/pyqChapters";
+import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { PYQ_SESSIONS } from "@/data/pyqYears";
 
 export const Route = createFileRoute("/pyqs")({
@@ -23,7 +23,7 @@ function Pyqs() {
   const [subject, setSubject] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
 
-  const subjects = cls ? Object.keys(PYQ_CHAPTERS[cls]) : [];
+  const subjects = cls ? PYQ_SUBJECTS[cls] : [];
 
   return (
     <div className="bg-background">
