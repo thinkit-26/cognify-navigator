@@ -156,7 +156,8 @@ function RootComponent() {
           <Outlet />
         )}
       </main>
-      {!hideChrome && <Footer />}
+      {/* the home page is the hero only; every other page keeps the footer (legal links, contact details) */}
+      {!hideChrome && pathname !== "/" && <Footer />}
       {!hideChrome && <WhatsAppButton />}
       <AltModeListener />
     </QueryClientProvider>
