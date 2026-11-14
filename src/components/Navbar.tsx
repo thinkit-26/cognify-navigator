@@ -78,6 +78,9 @@ export function Navbar() {
             >
               <Mic2 className="h-4 w-4" /> Start AI Viva
             </Link>
+            <Link to="/login" className="py-1 text-base font-semibold text-navy">
+              Login
+            </Link>
           </div>
         </div>
       )}
