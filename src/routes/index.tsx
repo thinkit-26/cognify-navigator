@@ -74,58 +74,52 @@ const HERO_BARS = [
 function HeroMoodboard() {
   const reduce = useReducedMotion();
   return (
-    <section data-hero className="relative isolate overflow-hidden bg-background pt-28 pb-16 md:pt-32 md:pb-24">
+    <section data-hero className="relative isolate overflow-hidden bg-crimson pt-28 pb-20 md:pt-36 md:pb-28">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
-        {/* Main area: the big panel, with the second outline layered behind it */}
-        <div className="relative">
-          <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-3xl border border-navy/20" />
-          <div className="relative flex h-full items-center rounded-3xl border border-navy/40 bg-card p-8 md:p-14">
-            <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
-              {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
-                <motion.span
-                  key={word}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="block"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </h1>
-          </div>
+        {/* Main area: one thin outline, nothing else */}
+        <div className="flex items-center rounded-3xl border border-white/60 p-8 md:p-14">
+          <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-white text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
+            {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="block"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </h1>
         </div>
 
-        {/* Four text-only bars, staggered left and right along a dashed thread. Each slides in from the left edge. */}
-        <div className="relative">
-          <div className="absolute inset-y-6 left-1/2 border-l border-dashed border-navy/25" />
-          <ul className="relative space-y-5">
-            {HERO_BARS.map(({ to, label, note }, i) => {
-              const primary = i === HERO_BARS.length - 1;
-              return (
-                <motion.li
-                  key={to}
-                  initial={reduce ? false : { opacity: 0, x: -56 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 + i * 0.14 }}
-                  className={i % 2 ? "md:ml-14" : "md:mr-14"}
+        {/* Four text-only pill buttons, staggered left and right. Each slides in from the left edge. */}
+        <ul className="space-y-4 self-center">
+          {HERO_BARS.map(({ to, label, note }, i) => {
+            const primary = i === HERO_BARS.length - 1;
+            return (
+              <motion.li
+                key={to}
+                initial={reduce ? false : { opacity: 0, x: -56 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 + i * 0.14 }}
+                className={i % 2 ? "md:ml-14" : "md:mr-14"}
+              >
+                <Link
+                  to={to}
+                  className={`block min-h-12 cursor-pointer rounded-full border px-8 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-crimson ${
+                    primary
+                      ? "border-white bg-white text-crimson hover:bg-white/90"
+                      : "border-white/70 text-white hover:bg-white hover:text-crimson"
+                  }`}
                 >
-                  <Link
-                    to={to}
-                    className={`block min-h-11 cursor-pointer rounded-xl border px-6 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                      primary
-                        ? "border-navy bg-navy text-background hover:bg-navy/90"
-                        : "border-navy/30 bg-card text-navy hover:border-navy hover:bg-navy hover:text-background"
-                    }`}
-                  >
-                    <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>
-                    <span className="mt-0.5 block text-sm opacity-75">{note}</span>
-                  </Link>
-                </motion.li>
-              );
-            })}
-          </ul>
-        </div>
+                  <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>
+                  <span className="mt-0.5 block text-sm">{note}</span>
+                </Link>
+              </motion.li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );
