@@ -53,31 +53,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link
-            to="/noah"
-            className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
-          >
-            NOAH
-          </Link>
-          <Link
-            to="/pyqs"
-            className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
-          >
-            PYQ&apos;s
-          </Link>
-          <Link
-            to="/viva/gate"
-            className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm transition hover:bg-navy/90 dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
-          >
-            <Mic2 className="h-3.5 w-3.5" />
-            Start AI Viva
-          </Link>
-          <Link
-            to="/login"
-            className="rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-4 py-1.5 text-[0.78rem] font-bold text-white shadow-sm"
-          >
-            Login
-          </Link>
           <ThemeToggle />
         </div>
       </div>
@@ -102,6 +77,9 @@ export function Navbar() {
               className="inline-flex items-center gap-2 py-1 text-base font-semibold text-orange"
             >
               <Mic2 className="h-4 w-4" /> Start AI Viva
+            </Link>
+            <Link to="/login" className="py-1 text-base font-semibold text-navy">
+              Login
             </Link>
           </div>
         </div>
