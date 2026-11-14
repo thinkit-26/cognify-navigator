@@ -83,17 +83,7 @@ function HeroMoodboard() {
         <div className="relative">
           <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-[2rem] border-2 border-navy/20" />
           <div className="relative rounded-[2rem] border-2 border-navy/40 bg-white/70 p-8 dark:bg-white/5 md:p-12">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-navy/55"
-            >
-              <span className="h-px w-8 bg-orange" />
-              EST. SDA MARKET · CLASSES IX–XII
-            </motion.div>
-
-            <h1 className="mt-6 text-balance font-black leading-[0.98] tracking-tight text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.25rem]">
+            <h1 className="text-balance font-black leading-[0.98] tracking-tight text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.25rem]">
               <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.6 }} className="block">
                 Clarity.
               </motion.span>
