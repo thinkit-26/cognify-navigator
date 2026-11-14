@@ -94,16 +94,6 @@ function HeroMoodboard() {
                 Cognify.
               </motion.span>
             </h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.55 }}
-              className="mt-7 max-w-lg text-balance text-base leading-relaxed text-muted-foreground md:text-lg"
-            >
-              A modern learning institute for <strong className="text-navy">Maths, Physics, Chemistry &amp; Economics</strong>,
-              where deep conceptual understanding replaces rote memorisation.
-            </motion.p>
           </div>
         </div>
 
