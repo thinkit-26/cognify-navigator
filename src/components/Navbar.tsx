@@ -6,9 +6,6 @@ import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 
 const links = [
   { to: "/", label: "Home", hash: "" },
-  { to: "/", label: "Approach", hash: "approach" },
-  { to: "/", label: "Programs", hash: "programs" },
-  { to: "/", label: "Why Cognify", hash: "why" },
   { to: "/testimonials", label: "Testimonials", hash: "" },
   { to: "/contact", label: "Contact", hash: "" },
 ];
