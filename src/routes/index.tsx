@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight, GraduationCap, Users, BrainCircuit, ShieldCheck,
   Quote, Calculator, Atom, FlaskConical, AlertTriangle, Eye, MessagesSquare, Target, Sparkles,
-  Menu, ChevronDown, Mic2, FileText,
+  Menu, ChevronDown,
 } from "lucide-react";
 
 import { Wave } from "@/components/Wave";
@@ -23,7 +23,6 @@ import { Placeholder } from "@/components/Placeholder";
 import { QuoteBubble } from "@/components/QuoteBubble";
 import { TheJumpInfographic } from "@/components/TheJumpInfographic";
 import { ApproachInfographics } from "@/components/ApproachInfographics";
-import heroWall from "@/assets/hero-wall.jpg";
 
 
 /* Rotating-word, cycles through "students", "families", "parents", "teachers" stay */
@@ -64,83 +63,68 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-/* ---------------- HERO: interlocking mosaic (photos + product tiles) left, heading and CTA right ---------------- */
-const enter = (i: number) => ({
-  initial: { opacity: 0, y: 28 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 + i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-});
-
-function PhotoTile({ src, alt, i, className }: { src: string; alt: string; i: number; className: string }) {
-  return (
-    <motion.div {...enter(i)} className={`overflow-hidden bg-muted ${className}`}>
-      <img src={src} alt={alt} decoding="async" className="h-full w-full object-cover" />
-    </motion.div>
-  );
-}
-
-function LinkTile({ to, label, note, Icon, i, className }: { to: string; label: string; note: string; Icon: typeof BrainCircuit; i: number; className: string }) {
-  return (
-    <motion.div {...enter(i)} className={className}>
-      <Link
-        to={to}
-        className="group flex h-full w-full flex-col justify-between rounded-[inherit] bg-navy p-5 text-background transition duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <span className="flex items-start justify-between">
-          <Icon className="h-6 w-6" strokeWidth={1.5} />
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </span>
-        <span>
-          <span className="block text-lg font-extrabold tracking-[0.06em]">{label}</span>
-          <span className="mt-1 block text-xs leading-snug text-background/80">{note}</span>
-        </span>
-      </Link>
-    </motion.div>
-  );
-}
+/* ---------------- HERO (from the sketch): main panel left, four text-only bars right ---------------- */
+const HERO_BARS = [
+  { to: "/noah", label: "NOAH", note: "Our learning platform" },
+  { to: "/viva/gate", label: "VIVA BOT", note: "Practise your oral viva with AI" },
+  { to: "/pyqs", label: "PYQ's", note: "Previous year papers, Classes 9–12" },
+  { to: "/contact", label: "BOOK A FREE TRIAL", note: "Come and sit in a class" },
+] as const;
 
 function HeroMoodboard() {
+  const reduce = useReducedMotion();
   return (
-    <section data-hero className="relative isolate overflow-hidden bg-background pt-28 pb-16 md:pt-32 md:pb-20">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:min-h-[78vh] md:grid-cols-[1.1fr_1fr] md:gap-10 md:px-10">
-        {/* Mosaic: three staggered columns on desktop, a plain two-column grid on phones */}
-        <div className="order-2 grid grid-cols-2 gap-3 md:order-1 md:flex md:items-start">
-          <div className="contents md:flex md:flex-1 md:flex-col md:gap-3">
-            <LinkTile i={0} to="/noah" label="NOAH" note="Our learning platform" Icon={BrainCircuit} className="aspect-[4/5] rounded-3xl rounded-bl-md md:aspect-[3/4]" />
-          </div>
-          <div className="contents md:mt-20 md:flex md:flex-1 md:flex-col md:gap-3">
-            <PhotoTile i={1} src={heroWall} alt="Line drawing of a physics teacher on the classroom wall" className="aspect-[4/5] rounded-3xl rounded-tr-md md:aspect-square" />
-            <LinkTile i={2} to="/viva/gate" label="VIVA BOT" note="Practise your oral viva with AI" Icon={Mic2} className="aspect-square rounded-3xl rounded-br-md md:aspect-[5/4]" />
-          </div>
-          <div className="contents md:mt-8 md:flex md:flex-1 md:flex-col md:gap-3">
-            <LinkTile i={3} to="/pyqs" label="PYQ's" note="Previous year papers, Classes 9–12" Icon={FileText} className="aspect-square rounded-3xl rounded-tl-md md:aspect-[3/4]" />
+    <section data-hero className="relative isolate overflow-hidden bg-background pt-28 pb-16 md:pt-32 md:pb-24">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
+        {/* Main area: the big panel, with the second outline layered behind it */}
+        <div className="relative">
+          <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-3xl border border-navy/20" />
+          <div className="relative flex h-full items-center rounded-3xl border border-navy/40 bg-card p-8 md:p-14">
+            <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
+              {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
+                <motion.span
+                  key={word}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="block"
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h1>
           </div>
         </div>
 
-        {/* Heading and CTA */}
-        <div className="order-1 flex flex-col items-center text-center md:order-2">
-          <h1 className="font-display text-balance font-semibold leading-[1] tracking-[-0.025em] text-navy text-[15vw] sm:text-[11vw] md:text-[4.25rem] lg:text-[5.75rem]">
-            {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
-              <motion.span
-                key={word}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="block"
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h1>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }} className="mt-10">
-            <Link
-              to="/contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-navy px-8 py-4 text-sm font-bold tracking-wide text-background transition duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Book a free trial
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
+        {/* Four text-only bars, staggered left and right along a dashed thread. Each slides in from the left edge. */}
+        <div className="relative">
+          <div className="absolute inset-y-6 left-1/2 border-l border-dashed border-navy/25" />
+          <ul className="relative space-y-5">
+            {HERO_BARS.map(({ to, label, note }, i) => {
+              const primary = i === HERO_BARS.length - 1;
+              return (
+                <motion.li
+                  key={to}
+                  initial={reduce ? false : { opacity: 0, x: -56 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 + i * 0.14 }}
+                  className={i % 2 ? "md:ml-14" : "md:mr-14"}
+                >
+                  <Link
+                    to={to}
+                    className={`block min-h-11 cursor-pointer rounded-xl border px-6 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      primary
+                        ? "border-navy bg-navy text-background hover:bg-navy/90"
+                        : "border-navy/30 bg-card text-navy hover:border-navy hover:bg-navy hover:text-background"
+                    }`}
+                  >
+                    <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>
+                    <span className="mt-0.5 block text-sm opacity-75">{note}</span>
+                  </Link>
+                </motion.li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </section>
