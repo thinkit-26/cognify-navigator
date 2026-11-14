@@ -69,7 +69,7 @@ function HeroMoodboard() {
       <div ref={containerRef} className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: one thin outline, nothing else */}
         <div className="relative z-10 flex items-center">
-          <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-burgundy-ink text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
+          <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-orange text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
             {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
               <motion.span
                 key={word}
