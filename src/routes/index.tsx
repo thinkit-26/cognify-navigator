@@ -73,36 +73,34 @@ const HERO_LINKS = [
 
 function HeroMoodboard() {
   return (
-    <section data-hero className="relative isolate overflow-hidden bg-accent/40 pt-32 pb-20 md:pt-40 md:pb-24">
-      <div className="absolute inset-0 maze-bg opacity-50" />
-      <Astronaut className="pointer-events-none absolute right-[3%] top-24 hidden h-24 w-24 opacity-80 lg:block" />
-      <Star className="pointer-events-none absolute left-[4%] top-28 h-6 w-6" delay={0.4} />
-
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
+    <section data-hero className="relative isolate overflow-hidden bg-background pt-32 pb-20 md:pt-40 md:pb-28">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: the sketch's big panel, with the second outline layered behind it */}
         <div className="relative">
-          <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-[2rem] border-2 border-navy/20" />
-          <div className="relative rounded-[2rem] border-2 border-navy/40 bg-white/70 p-8 dark:bg-white/5 md:p-12">
-            <h1 className="text-balance font-black leading-[0.98] tracking-tight text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.25rem]">
-              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.6 }} className="block">
-                Clarity.
-              </motion.span>
-              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.6 }} className="block">
-                Confidence.
-              </motion.span>
-              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.6 }} className="block text-fluid">
-                Cognify.
-              </motion.span>
+          <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-3xl border border-navy/20" />
+          <div className="relative flex h-full items-center rounded-3xl border border-navy/40 bg-card p-8 md:p-14">
+            <h1 className="font-display text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
+              {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
+                <motion.span
+                  key={word}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="block"
+                >
+                  {word}
+                </motion.span>
+              ))}
             </h1>
           </div>
         </div>
 
         {/* Staggered buttons, zig-zagging along a dashed thread like the sketch */}
         <div className="relative">
-          <div className="absolute inset-y-6 left-1/2 border-l-2 border-dashed border-navy/20" />
+          <div className="absolute inset-y-6 left-1/2 border-l border-dashed border-navy/25" />
           <ul className="relative space-y-5">
             {HERO_LINKS.map(({ to, label, note, Icon }, i) => {
-              const trial = i === HERO_LINKS.length - 1;
+              const primary = i === HERO_LINKS.length - 1;
               return (
                 <motion.li
                   key={to}
@@ -113,18 +111,14 @@ function HeroMoodboard() {
                 >
                   <Link
                     to={to}
-                    className={`group flex items-center gap-4 rounded-2xl border-2 px-5 py-4 shadow-sm transition hover:-translate-y-0.5 ${
-                      trial
-                        ? "border-transparent bg-gradient-to-r from-[#E2740A] to-[#FBBF24] text-white"
-                        : "border-navy/30 bg-white text-navy hover:border-navy dark:bg-navy dark:text-cream"
+                    className={`group flex items-center gap-4 rounded-xl border px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      primary ? "border-navy bg-navy text-background" : "border-navy/30 bg-card text-navy hover:border-navy"
                     }`}
                   >
-                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${trial ? "bg-white/25" : "bg-orange/15 text-orange"}`}>
-                      <Icon className="h-5 w-5" />
-                    </span>
+                    <Icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-base font-black tracking-wide">{label}</span>
-                      <span className={`block truncate text-xs ${trial ? "text-white/90" : "text-muted-foreground"}`}>{note}</span>
+                      <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>
+                      <span className={`block truncate text-xs ${primary ? "text-background/80" : "text-muted-foreground"}`}>{note}</span>
                     </span>
                     <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
                   </Link>
