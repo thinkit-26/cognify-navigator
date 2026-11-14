@@ -37,7 +37,10 @@
 
   /* Brand tokens */
   --color-navy: var(--navy);
-  --color-crimson: var(--crimson);
+  --color-burgundy: var(--burgundy);
+  --color-burgundy-ink: var(--burgundy-ink);
+  --color-burgundy-paper: var(--burgundy-paper);
+  --color-burgundy-tint: var(--burgundy-tint);
   --color-orange: var(--orange);
   --color-orange-glow: var(--orange-glow);
   --color-gold: var(--gold);
@@ -67,7 +70,11 @@
 
   /* Brand, Warm Premium EdTech (more vibrant + welcoming) */
   --navy: #112D57;
-  --crimson: #DC143C;      /* hero background; white text on it is 4.9:1 */
+  /* Burgundy palette (hero): ink on paper 17.5:1, white on burgundy 11.5:1 */
+  --burgundy: #7A1230;
+  --burgundy-ink: #2A0E18;
+  --burgundy-paper: #FAF7F8;
+  --burgundy-tint: #F0D9DF;
   --navy-soft: #1E293B;
   --orange: #E2740A;       /* punchier amber */
   --orange-soft: #F59E0B;

@@ -74,11 +74,11 @@ const HERO_BARS = [
 function HeroMoodboard() {
   const reduce = useReducedMotion();
   return (
-    <section data-hero className="relative isolate overflow-hidden bg-crimson pt-28 pb-20 md:pt-36 md:pb-28">
+    <section data-hero className="relative isolate overflow-hidden bg-burgundy-paper pt-28 pb-20 md:pt-36 md:pb-28">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: one thin outline, nothing else */}
-        <div className="flex items-center rounded-3xl border border-white/60 p-8 md:p-14">
-          <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-white text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
+        <div className="flex items-center rounded-3xl border border-burgundy-ink/25 bg-white p-8 md:p-14">
+          <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-burgundy-ink text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
             {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
               <motion.span
                 key={word}
@@ -107,10 +107,10 @@ function HeroMoodboard() {
               >
                 <Link
                   to={to}
-                  className={`block min-h-12 cursor-pointer rounded-full border px-8 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-crimson ${
+                  className={`block min-h-12 cursor-pointer rounded-full border px-8 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy focus-visible:ring-offset-2 focus-visible:ring-offset-burgundy-paper ${
                     primary
-                      ? "border-white bg-white text-crimson hover:bg-white/90"
-                      : "border-white/70 text-white hover:bg-white hover:text-crimson"
+                      ? "border-burgundy bg-burgundy text-white hover:bg-burgundy/90"
+                      : "border-burgundy-ink/30 text-burgundy-ink hover:border-burgundy hover:bg-burgundy hover:text-white"
                   }`}
                 >
                   <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>

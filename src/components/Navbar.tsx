@@ -29,7 +29,6 @@ export function Navbar() {
   useEffect(() => setOpen(false), [location.pathname]);
 
   const solid = scrolled || !isHome;
-  const onCrimson = isHome && !scrolled; // transparent bar sits on the crimson hero
 
   return (
     <header
@@ -43,13 +42,13 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setOpen((v) => !v)}
-            className={`grid h-10 w-10 place-items-center rounded-full border-2 bg-transparent transition ${onCrimson ? "border-white/60 text-white hover:border-white" : "border-navy/30 text-navy hover:border-navy"}`}
+            className="grid h-10 w-10 place-items-center rounded-full border-2 border-navy/30 bg-transparent text-navy transition hover:border-navy"
             aria-label="Menu"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
           <Link to="/" className="flex shrink-0 items-center" aria-label="Cognify">
-            <LogoFull white={onCrimson} className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
+            <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
           </Link>
         </div>
 
