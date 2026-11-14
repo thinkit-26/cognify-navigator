@@ -66,18 +66,18 @@ function HeroMoodboard() {
                 initial={reduce ? false : { opacity: 0, x: -56 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 + i * 0.14 }}
-                className={`relative z-10 ${i % 2 ? "md:ml-14" : "md:mr-14"}`}
+                className={`relative z-10 ${i % 2 ? "md:ml-8" : "md:mr-8"}`}
               >
                 <Link
                   to={to}
-                  className={`block min-h-12 cursor-pointer rounded-full border px-8 py-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy focus-visible:ring-offset-2 focus-visible:ring-offset-burgundy-paper ${
+                  className={`block min-h-11 cursor-pointer rounded-full border px-6 py-2.5 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-burgundy focus-visible:ring-offset-2 focus-visible:ring-offset-burgundy-paper ${
                     primary
                       ? "border-burgundy bg-burgundy text-white hover:bg-burgundy/90"
                       : "border-burgundy-ink/30 bg-burgundy-paper text-burgundy-ink hover:border-burgundy hover:bg-burgundy hover:text-white"
                   }`}
                 >
                   <span className="block text-sm font-bold tracking-[0.08em]">{label}</span>
-                  <span className="mt-0.5 block text-sm">{note}</span>
+                  <span className="block text-[13px] leading-snug">{note}</span>
                 </Link>
               </motion.li>
             );
