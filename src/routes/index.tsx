@@ -40,7 +40,8 @@ const HERO_BARS = [
 function HeroMoodboard() {
   const reduce = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLSpanElement>(null);
+  const dotRefs = [useRef<HTMLSpanElement>(null), useRef<HTMLSpanElement>(null), useRef<HTMLSpanElement>(null)];
+  const beamFrom = [0, 1, 2, 2]; // which full stop each button's beam starts from
   const barRefs = [useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null)];
   // Beams measure the bars, so mount them once the slide-in has settled.
   const [beamsReady, setBeamsReady] = useState(false);
@@ -68,8 +69,6 @@ function HeroMoodboard() {
       <div ref={containerRef} className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: one thin outline, nothing else */}
         <div className="relative z-10 flex items-center">
-          {/* beams start from the right edge of the headline column */}
-          <span ref={panelRef} aria-hidden className="absolute right-0 top-1/2 h-px w-px" />
           <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-burgundy-ink text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
             {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
               <motion.span
@@ -79,7 +78,8 @@ function HeroMoodboard() {
                 transition={{ delay: 0.05 + i * 0.13, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="block"
               >
-                {word}
+                {word.slice(0, -1)}
+                <span ref={dotRefs[i]}>.</span>
               </motion.span>
             ))}
           </h1>
@@ -114,22 +114,22 @@ function HeroMoodboard() {
           })}
         </ul>
 
-        {/* One beam from the main panel to each button, behind them. Desktop only: stacked on phones the gaps are too short to read. */}
+        {/* One orange beam from a headline full stop to each button, behind them. Desktop only: stacked on phones the gaps are too short to read. */}
         {beamsReady &&
           barRefs.map((barRef, i) => (
             <AnimatedBeam
               key={i}
               className="hidden md:block"
               containerRef={containerRef}
-              fromRef={panelRef}
+              fromRef={dotRefs[beamFrom[i]]}
               toRef={barRef}
               curvature={curvature[i]}
               duration={5 + i * 0.6}
               delay={i * 0.4}
-              pathColor="#2A0E18"
-              pathOpacity={0.15}
-              gradientStartColor="#F0D9DF"
-              gradientStopColor="#7A1230"
+              pathColor="#E2740A"
+              pathOpacity={0.3}
+              gradientStartColor="#FBBF24"
+              gradientStopColor="#E2740A"
             />
           ))}
       </div>
