@@ -24,9 +24,7 @@ import { QuoteBubble } from "@/components/QuoteBubble";
 import { TheJumpInfographic } from "@/components/TheJumpInfographic";
 import { ApproachInfographics } from "@/components/ApproachInfographics";
 import heroClass from "@/assets/hero-class.jpg";
-import heroTeacher from "@/assets/hero-teacher.jpg";
 import heroWall from "@/assets/hero-wall.jpg";
-import heroTeam from "@/assets/hero-team.jpg";
 
 
 /* Rotating-word, cycles through "students", "families", "parents", "teachers" stay */
@@ -74,10 +72,10 @@ const enter = (i: number) => ({
   transition: { delay: 0.1 + i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-function PhotoTile({ src, alt, i, className, position = "center", crop = false }: { src: string; alt: string; i: number; className: string; position?: string; crop?: boolean }) {
+function PhotoTile({ src, alt, i, className, position = "center" }: { src: string; alt: string; i: number; className: string; position?: string }) {
   return (
     <motion.div {...enter(i)} className={`overflow-hidden bg-muted ${className}`}>
-      <img src={src} alt={alt} decoding="async" className={`h-full w-full object-cover ${crop ? "origin-top scale-[1.15]" : ""}`} style={{ objectPosition: position }} />
+      <img src={src} alt={alt} decoding="async" className="h-full w-full object-cover" style={{ objectPosition: position }} />
     </motion.div>
   );
 }
@@ -113,13 +111,11 @@ function HeroMoodboard() {
             <LinkTile i={1} to="/noah" label="NOAH" note="Our learning platform" Icon={BrainCircuit} className="aspect-[4/5] rounded-3xl rounded-tr-md md:aspect-[5/4]" />
           </div>
           <div className="contents md:mt-20 md:flex md:flex-1 md:flex-col md:gap-3">
-            <LinkTile i={2} to="/viva/gate" label="VIVA BOT" note="Practise your oral viva with AI" Icon={Mic2} className="aspect-[3/4] rounded-3xl rounded-bl-md md:aspect-square" />
-            <PhotoTile i={3} src={heroTeacher} alt="A Cognify teacher at the whiteboard" className="aspect-[3/4] rounded-3xl rounded-tr-md" />
+            <LinkTile i={2} to="/viva/gate" label="VIVA BOT" note="Practise your oral viva with AI" Icon={Mic2} className="aspect-square rounded-3xl rounded-bl-md md:aspect-[3/4]" />
+            <PhotoTile i={3} src={heroWall} alt="Line drawing of a physics teacher on the classroom wall" className="aspect-square rounded-3xl rounded-br-md" />
           </div>
-          <div className="contents md:mt-10 md:flex md:flex-1 md:flex-col md:gap-3">
-            <PhotoTile i={4} src={heroWall} alt="Line drawing of a physics teacher on the classroom wall" className="aspect-square rounded-3xl rounded-br-md" />
-            <LinkTile i={5} to="/pyqs" label="PYQ's" note="Previous year papers, Classes 9–12" Icon={FileText} className="aspect-square rounded-3xl rounded-tl-md md:aspect-[5/4]" />
-            <PhotoTile i={6} src={heroTeam} alt="The Cognify team" crop position="center 30%" className="col-span-2 aspect-[16/9] rounded-3xl rounded-bl-md md:col-span-1 md:aspect-[4/3]" />
+          <div className="contents md:mt-32 md:flex md:flex-1 md:flex-col md:gap-3">
+            <LinkTile i={4} to="/pyqs" label="PYQ's" note="Previous year papers, Classes 9–12" Icon={FileText} className="col-span-2 aspect-[16/7] rounded-3xl rounded-tl-md md:col-span-1 md:aspect-[3/4]" />
           </div>
         </div>
 
