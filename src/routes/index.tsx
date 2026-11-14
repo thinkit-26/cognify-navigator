@@ -10,7 +10,7 @@ import shesh from "@/assets/hero-float-shesh.jpg";
 
 /* Photos drifting behind the hero. Desktop only; positions are where they peek out around the panel and pills. */
 const FLOATERS = [
-  { src: teacher, pos: "left-[3%] top-[10%] w-32", rot: -6, dur: 7 },
+  { src: teacher, pos: "left-[40%] top-[3%] w-24", rot: -6, dur: 7 },
   { src: classroom, pos: "left-[34%] bottom-[5%] w-36", rot: 5, dur: 8 },
   { src: alumni, pos: "right-[4%] top-[9%] w-52", rot: 4, dur: 9 },
   { src: aseem, pos: "right-[30%] bottom-[5%] w-24", rot: -4, dur: 6.5 },
@@ -40,7 +40,7 @@ const HERO_BARS = [
 function HeroMoodboard() {
   const reduce = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLSpanElement>(null);
   const barRefs = [useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null), useRef<HTMLLIElement>(null)];
   // Beams measure the bars, so mount them once the slide-in has settled.
   const [beamsReady, setBeamsReady] = useState(false);
@@ -67,7 +67,9 @@ function HeroMoodboard() {
       </div>
       <div ref={containerRef} className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: one thin outline, nothing else */}
-        <div ref={panelRef} className="relative z-10 flex items-center rounded-3xl border border-burgundy-ink/25 bg-white p-8 md:p-14">
+        <div className="relative z-10 flex items-center">
+          {/* beams start from the right edge of the headline column */}
+          <span ref={panelRef} aria-hidden className="absolute right-0 top-1/2 h-px w-px" />
           <h1 className="text-balance font-semibold leading-[1.02] tracking-[-0.02em] text-burgundy-ink text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.5rem]">
             {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
               <motion.span
