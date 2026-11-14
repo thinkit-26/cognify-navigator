@@ -35,8 +35,8 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-5 py-4 md:px-8">
+        <div className="flex items-center">
           <button
             onClick={() => setOpen((v) => !v)}
             className="grid h-10 w-10 place-items-center rounded-full border-2 border-navy/30 bg-transparent text-navy transition hover:border-navy"
@@ -44,12 +44,13 @@ export function Navbar() {
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
-          <Link to="/" className="flex shrink-0 items-center" aria-label="Cognify">
-            <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
-          </Link>
         </div>
 
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex shrink-0 items-center justify-self-center" aria-label="Cognify">
+          <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
+        </Link>
+
+        <div className="flex items-center justify-end gap-3">
           <ThemeToggle />
         </div>
       </div>
