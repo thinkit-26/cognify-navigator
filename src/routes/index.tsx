@@ -2,6 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedBeam } from "@/components/ui/animated-beam";
+import teacher from "@/assets/hero-float-teacher.jpg";
+import classroom from "@/assets/hero-float-class.jpg";
+import alumni from "@/assets/hero-float-alumni.jpg";
+import aseem from "@/assets/hero-float-aseem.jpg";
+import shesh from "@/assets/hero-float-shesh.jpg";
+
+/* Photos drifting behind the hero. Desktop only; positions are where they peek out around the panel and pills. */
+const FLOATERS = [
+  { src: teacher, pos: "left-[3%] top-[10%] w-32", rot: -6, dur: 7 },
+  { src: classroom, pos: "left-[34%] bottom-[5%] w-36", rot: 5, dur: 8 },
+  { src: alumni, pos: "right-[4%] top-[9%] w-40", rot: 4, dur: 9 },
+  { src: aseem, pos: "right-[30%] bottom-[5%] w-24", rot: -4, dur: 6.5 },
+  { src: shesh, pos: "right-[6%] bottom-[7%] w-28", rot: -5, dur: 7.5 },
+] as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,6 +51,18 @@ function HeroMoodboard() {
   const curvature = [-30, 0, 0, 30];
   return (
     <section data-hero className="relative isolate flex min-h-screen items-center overflow-hidden bg-burgundy-paper pt-28 pb-20 md:pt-32 md:pb-24">
+      {FLOATERS.map((f, i) => (
+        <motion.img
+          key={i}
+          src={f.src}
+          alt=""
+          aria-hidden
+          className={`pointer-events-none absolute hidden aspect-[4/5] rounded-2xl object-cover opacity-80 md:block ${f.pos}`}
+          style={{ rotate: f.rot }}
+          animate={reduce ? undefined : { y: [0, -14, 0] }}
+          transition={{ duration: f.dur, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
       <div ref={containerRef} className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
         {/* Main area: one thin outline, nothing else */}
         <div ref={panelRef} className="relative z-10 flex items-center rounded-3xl border border-burgundy-ink/25 bg-white p-8 md:p-14">
