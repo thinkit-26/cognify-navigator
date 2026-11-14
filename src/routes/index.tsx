@@ -12,7 +12,7 @@ import shesh from "@/assets/hero-float-shesh.jpg";
 const FLOATERS = [
   { src: teacher, pos: "left-[3%] top-[10%] w-32", rot: -6, dur: 7 },
   { src: classroom, pos: "left-[34%] bottom-[5%] w-36", rot: 5, dur: 8 },
-  { src: alumni, pos: "right-[4%] top-[9%] w-40", rot: 4, dur: 9 },
+  { src: alumni, pos: "right-[4%] top-[9%] w-52", rot: 4, dur: 9 },
   { src: aseem, pos: "right-[30%] bottom-[5%] w-24", rot: -4, dur: 6.5 },
   { src: shesh, pos: "right-[6%] bottom-[7%] w-28", rot: -5, dur: 7.5 },
 ] as const;
@@ -58,7 +58,7 @@ function HeroMoodboard() {
             key={i}
             src={f.src}
             alt=""
-            className={`absolute aspect-[4/5] rounded-2xl object-cover opacity-80 ${f.pos}`}
+            className={`absolute h-auto rounded-2xl opacity-80 ${f.pos}`}
             style={{ rotate: f.rot }}
             animate={reduce ? undefined : { y: [0, -14, 0] }}
             transition={{ duration: f.dur, repeat: Infinity, ease: "easeInOut" }}
