@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight, GraduationCap, Users, BrainCircuit, ShieldCheck,
   Quote, Calculator, Atom, FlaskConical, AlertTriangle, Eye, MessagesSquare, Target, Sparkles,
-  Menu, ChevronDown,
+  Menu, ChevronDown, Mic2, FileText, CalendarCheck,
 } from "lucide-react";
 
 import { Wave } from "@/components/Wave";
@@ -63,107 +63,97 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-/* ---------------- HERO (mood-board: left headline, right doodles) ---------------- */
+/* ---------------- HERO (from the founder's sketch: main panel left, staggered action buttons right) ---------------- */
+const HERO_LINKS = [
+  { to: "/noah", label: "NOAH", note: "Our learning platform", Icon: BrainCircuit },
+  { to: "/viva/gate", label: "VIVA BOT", note: "Practise your oral viva with AI", Icon: Mic2 },
+  { to: "/pyqs", label: "PYQ's", note: "Previous year papers, Classes 9–12", Icon: FileText },
+  { to: "/contact", label: "BOOK A FREE TRIAL", note: "Come and sit in a class", Icon: CalendarCheck },
+] as const;
+
 function HeroMoodboard() {
   return (
     <section data-hero className="relative isolate overflow-hidden bg-accent/40 pt-32 pb-20 md:pt-40 md:pb-24">
       <div className="absolute inset-0 maze-bg opacity-50" />
+      <Astronaut className="pointer-events-none absolute right-[3%] top-24 hidden h-24 w-24 opacity-80 lg:block" />
+      <Star className="pointer-events-none absolute left-[4%] top-28 h-6 w-6" delay={0.4} />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-2 md:px-10">
-        {/* Left, copy */}
-        <div className="relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-navy/55"
-          >
-            <span className="h-px w-8 bg-orange" />
-            EST. SDA MARKET · CLASSES IX–XII
-          </motion.div>
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-[1.15fr_1fr] md:gap-16 md:px-10">
+        {/* Main area: the sketch's big panel, with the second outline layered behind it */}
+        <div className="relative">
+          <div className="absolute inset-0 -translate-x-3 -translate-y-3 rounded-[2rem] border-2 border-navy/20" />
+          <div className="relative rounded-[2rem] border-2 border-navy/40 bg-white/70 p-8 dark:bg-white/5 md:p-12">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-navy/55"
+            >
+              <span className="h-px w-8 bg-orange" />
+              EST. SDA MARKET · CLASSES IX–XII
+            </motion.div>
 
-          <h1 className="mt-6 text-balance font-black leading-[0.98] tracking-tight text-navy text-[14vw] sm:text-[10vw] md:text-[5.5rem] lg:text-[6.25rem]">
-            <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.6 }} className="block">
-              Clarity.
-            </motion.span>
-            <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.6 }} className="block">
-              Confidence.
-            </motion.span>
-            <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.6 }} className="block text-fluid">
-              Cognify.
-            </motion.span>
-          </h1>
+            <h1 className="mt-6 text-balance font-black leading-[0.98] tracking-tight text-navy text-[13vw] sm:text-[9vw] md:text-[4.25rem] lg:text-[5.25rem]">
+              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.6 }} className="block">
+                Clarity.
+              </motion.span>
+              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.6 }} className="block">
+                Confidence.
+              </motion.span>
+              <motion.span initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.6 }} className="block text-fluid">
+                Cognify.
+              </motion.span>
+            </h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.55 }}
-            className="mt-7 max-w-lg text-balance text-base leading-relaxed text-muted-foreground md:text-lg"
-          >
-            A modern learning institute for <strong className="text-navy">Maths, Physics, Chemistry &amp; Economics</strong>,
-            where deep conceptual understanding replaces rote memorisation.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-10 flex flex-wrap items-center gap-4"
-          >
-            <CutLink to="/contact" variant="filled">
-              Book a Free Trial Class <ArrowRight className="h-4 w-4" />
-            </CutLink>
-            <CutLink to="/" hash="programs" variant="filled">
-              Explore Programs <ArrowRight className="h-4 w-4" />
-            </CutLink>
-          </motion.div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.55 }}
+              className="mt-7 max-w-lg text-balance text-base leading-relaxed text-muted-foreground md:text-lg"
+            >
+              A modern learning institute for <strong className="text-navy">Maths, Physics, Chemistry &amp; Economics</strong>,
+              where deep conceptual understanding replaces rote memorisation.
+            </motion.p>
+          </div>
         </div>
 
-        {/* Right, doodle composition (sparse on mobile, full on desktop) */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-0 w-[42%] md:relative md:inset-auto md:right-auto md:z-auto md:h-[680px] md:w-auto">
-          <Astronaut className="absolute right-[8%] top-[34%] h-14 w-14 md:h-72 md:w-72 md:top-[10%] md:right-[4%]" />
-          <Rocket className="absolute right-[60%] top-[58%] h-12 w-12 md:h-44 md:w-44 md:left-[6%] md:right-auto md:top-[40%]" delay={1} />
-          <Planet className="absolute right-[20%] top-[70%] h-9 w-12 opacity-75 md:h-28 md:w-36 md:left-[34%] md:right-auto md:bottom-[6%] md:top-auto" delay={2} />
-          <Star className="absolute right-[40%] top-[44%] h-4 w-4 md:h-10 md:w-10 md:top-[14%] md:right-[40%]" delay={0.2} />
-          <Star className="absolute right-[72%] top-[38%] h-3 w-3 opacity-90" delay={0.5} />
-          <Star className="absolute right-[14%] top-[54%] h-3 w-3 opacity-80" delay={0.8} />
-          <Star className="absolute right-[48%] top-[66%] h-2.5 w-2.5 opacity-70" delay={1.1} />
-          <UFO className="absolute right-[55%] top-[30%] h-8 w-10 opacity-80 md:hidden" delay={1.6} />
-          {/* Extra mobile doodles to fill empty space */}
-          <Satellite className="absolute right-[6%] top-[6%] h-10 w-12 opacity-80 md:hidden" delay={0.3} />
-          <Moon className="absolute right-[28%] top-[14%] h-7 w-7 opacity-70 md:hidden" delay={0.9} />
-          <Star className="absolute right-[18%] top-[2%] h-3 w-3 opacity-75 md:hidden" delay={1.3} />
-          <Star className="absolute right-[48%] top-[10%] h-2.5 w-2.5 opacity-65 md:hidden" delay={0.6} />
-          <Comet className="absolute right-[40%] top-[22%] h-5 w-16 opacity-60 md:hidden" delay={1.8} />
-          <UFO className="absolute right-[10%] top-[82%] h-7 w-10 opacity-75 md:hidden" delay={2.0} />
-          <Moon className="absolute right-[42%] top-[88%] h-6 w-6 opacity-65 md:hidden" delay={1.4} />
-          <Star className="absolute right-[22%] top-[94%] h-3 w-3 opacity-70 md:hidden" delay={0.4} />
-          <Star className="absolute right-[60%] top-[80%] h-2.5 w-2.5 opacity-60 md:hidden" delay={2.2} />
-          {/* Desktop-only extras */}
-          <UFO className="absolute left-[2%] top-[0%] hidden md:block md:h-28 md:w-36 opacity-90" delay={1.5} />
-          <UFO className="absolute right-[6%] bottom-[18%] hidden md:block md:h-16 md:w-24 opacity-60" delay={2.4} />
-          <UFO className="absolute left-[52%] top-[22%] hidden md:block md:h-12 md:w-16 opacity-50" delay={0.8} />
-          <Satellite className="absolute right-[48%] top-[2%] hidden md:block md:h-14 md:w-16 opacity-80" delay={0.4} />
-          <Satellite className="absolute right-[30%] bottom-[24%] hidden md:block md:h-16 md:w-20 opacity-75" delay={0.9} />
-          <Planet className="absolute right-[2%] top-[2%] hidden md:block md:h-16 md:w-24 opacity-55" delay={1.2} />
-          <Moon className="absolute right-[2%] bottom-[4%] hidden md:block md:h-24 md:w-24 opacity-85" delay={2.2} />
-          <Moon className="absolute left-[18%] top-[28%] hidden md:block md:h-10 md:w-10 opacity-50" delay={1.7} />
-          <Comet className="absolute right-[40%] top-[8%] hidden md:block md:h-12 md:w-32 opacity-70" delay={0.6} />
-          <Comet className="absolute left-[34%] bottom-[34%] hidden md:block md:h-10 md:w-28 opacity-55" delay={1.8} />
-          <Star className="absolute left-[42%] top-[10%] hidden md:block md:h-7 md:w-7" delay={1.1} />
-          <Star className="absolute right-[14%] bottom-[2%] hidden md:block md:h-6 md:w-6" delay={0.7} />
-          <Star className="absolute left-[8%] top-[34%] hidden md:block md:h-5 md:w-5 opacity-80" delay={1.4} />
-          <Star className="absolute right-[6%] top-[40%] hidden md:block md:h-4 md:w-4 opacity-70" delay={2.0} />
-          <Star className="absolute left-[58%] bottom-[14%] hidden md:block md:h-5 md:w-5 opacity-75" delay={0.5} />
-          <Star className="absolute left-[20%] bottom-[8%] hidden md:block md:h-4 md:w-4 opacity-60" delay={2.6} />
-          <Star className="absolute right-[22%] top-[4%] hidden md:block md:h-4 md:w-4 opacity-65" delay={1.9} />
-          <Star className="absolute left-[62%] top-[18%] hidden md:block md:h-3 md:w-3 opacity-55" delay={2.3} />
-          <Star className="absolute left-[44%] bottom-[2%] hidden md:block md:h-5 md:w-5 opacity-70" delay={0.3} />
-          <Star className="absolute right-[36%] bottom-[8%] hidden md:block md:h-3 md:w-3 opacity-50" delay={1.5} />
+        {/* Staggered buttons, zig-zagging along a dashed thread like the sketch */}
+        <div className="relative">
+          <div className="absolute inset-y-6 left-1/2 border-l-2 border-dashed border-navy/20" />
+          <ul className="relative space-y-5">
+            {HERO_LINKS.map(({ to, label, note, Icon }, i) => {
+              const trial = i === HERO_LINKS.length - 1;
+              return (
+                <motion.li
+                  key={to}
+                  initial={{ opacity: 0, x: i % 2 ? 28 : -28 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className={i % 2 ? "md:ml-14" : "md:mr-14"}
+                >
+                  <Link
+                    to={to}
+                    className={`group flex items-center gap-4 rounded-2xl border-2 px-5 py-4 shadow-sm transition hover:-translate-y-0.5 ${
+                      trial
+                        ? "border-transparent bg-gradient-to-r from-[#E2740A] to-[#FBBF24] text-white"
+                        : "border-navy/30 bg-white text-navy hover:border-navy dark:bg-navy dark:text-cream"
+                    }`}
+                  >
+                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${trial ? "bg-white/25" : "bg-orange/15 text-orange"}`}>
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-base font-black tracking-wide">{label}</span>
+                      <span className={`block truncate text-xs ${trial ? "text-white/90" : "text-muted-foreground"}`}>{note}</span>
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </motion.li>
+              );
+            })}
+          </ul>
         </div>
-
       </div>
-
     </section>
   );
 }
