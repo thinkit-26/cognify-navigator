@@ -6,7 +6,6 @@
 
 @theme inline {
   --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -37,10 +36,6 @@
 
   /* Brand tokens */
   --color-navy: var(--navy);
-  --color-burgundy: var(--burgundy);
-  --color-burgundy-ink: var(--burgundy-ink);
-  --color-burgundy-paper: var(--burgundy-paper);
-  --color-burgundy-tint: var(--burgundy-tint);
   --color-orange: var(--orange);
   --color-orange-glow: var(--orange-glow);
   --color-gold: var(--gold);
@@ -70,11 +65,6 @@
 
   /* Brand, Warm Premium EdTech (more vibrant + welcoming) */
   --navy: #112D57;
-  /* Burgundy palette (hero): ink on paper 17.5:1, white on burgundy 11.5:1 */
-  --burgundy: #7A1230;
-  --burgundy-ink: #2A0E18;
-  --burgundy-paper: #FAF7F8;
-  --burgundy-tint: #F0D9DF;
   --navy-soft: #1E293B;
   --orange: #E2740A;       /* punchier amber */
   --orange-soft: #F59E0B;
@@ -310,16 +300,3 @@
 /* Hide the duplicate floating doodle sets (keep only the hero set) */
 .alt [data-doodles="extra"] { display: none !important; }
 
-
-/* Page-to-page transition (router uses the View Transitions API). Only <main> animates; the navbar and footer stay put. */
-main { view-transition-name: page; }
-::view-transition-old(root),
-::view-transition-new(root) { animation: none; }
-::view-transition-old(page) { animation: page-out 180ms cubic-bezier(0.4, 0, 1, 1) both; }
-::view-transition-new(page) { animation: page-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-@keyframes page-out { to { opacity: 0; transform: translateY(-8px); } }
-@keyframes page-in { from { opacity: 0; transform: translateY(18px); } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(page),
-  ::view-transition-new(page) { animation: none; }
-}
