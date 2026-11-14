@@ -125,7 +125,7 @@ function HeroMoodboard() {
 
         {/* Heading and CTA */}
         <div className="order-1 flex flex-col items-center text-center md:order-2">
-          <h1 className="font-display text-balance font-semibold leading-[1] tracking-[-0.025em] text-navy text-[15vw] sm:text-[11vw] md:text-[4.25rem] lg:text-[5.75rem]">
+          <h1 className="text-balance font-semibold leading-[1] tracking-[-0.025em] text-navy text-[15vw] sm:text-[11vw] md:text-[4.25rem] lg:text-[5.75rem]">
             {["Clarity.", "Confidence.", "Cognify."].map((word, i) => (
               <motion.span
                 key={word}
