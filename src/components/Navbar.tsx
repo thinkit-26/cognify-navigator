@@ -47,7 +47,7 @@ export function Navbar() {
         </div>
 
         <Link to="/" className="flex shrink-0 items-center justify-self-center" aria-label="Cognify">
-          <LogoFull className="h-[46px] w-[46px] opacity-95 md:h-16 md:w-16 dark:brightness-0 dark:invert" />
+          <LogoFull className="h-14 w-14 opacity-95 md:h-20 md:w-20 dark:brightness-0 dark:invert" />
         </Link>
 
         <div className="flex items-center justify-end gap-3">
