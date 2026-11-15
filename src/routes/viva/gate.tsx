@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, User, AudioLines, ClipboardCheck, LineChart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureVivaToken } from "@/lib/viva/guard";
@@ -21,6 +22,7 @@ const input = "w-full bg-transparent text-navy outline-none placeholder:text-nav
 
 function VivaLogin() {
   const navigate = useNavigate();
+  const reduce = useReducedMotion();
   const [mode, setMode] = useState<Mode>("signin");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -137,20 +139,38 @@ function VivaLogin() {
                     setError("");
                     setInfo("");
                   }}
-                  className={`rounded-full py-2.5 transition ${mode === m ? "bg-navy text-cream shadow" : "text-navy/60"}`}
+                  className={`relative rounded-full py-2.5 transition-colors duration-300 ${mode === m ? "text-cream" : "text-navy/60"}`}
                 >
-                  {m === "signin" ? "Sign in" : "Create account"}
+                  {mode === m && (
+                    <motion.span
+                      layoutId="viva-tab"
+                      className="absolute inset-0 rounded-full bg-navy shadow"
+                      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative">{m === "signin" ? "Sign in" : "Create account"}</span>
                 </button>
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              {mode === "signup" && (
-                <label className={field}>
-                  <User className="shrink-0 text-orange" size={20} />
-                  <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="Full name" className={input} />
-                </label>
-              )}
+            <form onSubmit={handleSubmit} className="mt-6 [&>*:not(:last-child)]:mb-4">
+              <AnimatePresence initial={false}>
+                {mode === "signup" && (
+                  <motion.div
+                    key="name"
+                    initial={reduce ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                    className="!mb-0 overflow-hidden pb-4"
+                  >
+                    <label className={field}>
+                      <User className="shrink-0 text-orange" size={20} />
+                      <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="Full name" className={input} />
+                    </label>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <label className={field}>
                 <Mail className="shrink-0 text-orange" size={20} />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="Email" className={input} />
