@@ -128,20 +128,8 @@ function VivaLogin() {
         {/* Form panel */}
         <section className="flex items-center justify-center bg-background px-6 py-10 md:px-12">
           <div className="w-full max-w-md">
-            <Link to="/" className="mb-8 inline-flex items-center lg:hidden" aria-label="Cognify home">
-              <LogoFull className="h-14 w-auto" />
-            </Link>
             <Eyebrow>{mode === "signin" ? "WELCOME BACK" : "NEW STUDENT"}</Eyebrow>
-            <h2 className="mt-3 text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream">
-              {mode === "signin" ? "Sign in to your viva" : "Create your account"}
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              {mode === "signin"
-                ? "Your answers and scores are saved to your account."
-                : "One account keeps every attempt and your progress in one place."}
-            </p>
-
-            <div className="mt-7 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
+            <div className="mt-5 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
               {(["signin", "signup"] as const).map((m) => (
                 <button
                   key={m}
