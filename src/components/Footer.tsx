@@ -10,7 +10,7 @@ export function Footer() {
       <Wave flip className="absolute -top-1 left-0 h-12 w-full" />
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
-          <LogoFull className="h-28 w-auto opacity-95 md:h-32" />
+          <LogoFull white className="h-28 w-auto opacity-95 md:h-32" />
           <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">
             A thinking institute for Classes 9–12. Maths, Physics, Chemistry & Economics, taught for clarity,
             built for confidence.
