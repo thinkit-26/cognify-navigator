@@ -92,7 +92,7 @@ export function PyqUploadPanel() {
         class_level: cls, subject, exam: exam.trim(), year, paper_path, solution_path,
       });
       if (error) throw error;
-      setMsg("Uploaded. It is now live on the PYQ's page.");
+      setMsg("Uploaded. It is now live on the Previous Year Papers page.");
       setPaper(null);
       setSolution(null);
       refresh();
