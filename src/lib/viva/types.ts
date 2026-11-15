@@ -4,12 +4,6 @@ export interface Chapter {
   topics: string[];
 }
 
-export interface VivaStartResponse {
-  session_id: string;
-  total_questions: number;
-  status: string;
-}
-
 export interface VivaQuestion {
   id: number;
   chapter: string;
@@ -19,21 +13,6 @@ export interface VivaQuestion {
   answer?: string;
   diagram_required: boolean;
 }
-
-export interface QuestionResponse {
-  question_number: number;
-  total_questions: number;
-  question: VivaQuestion;
-}
-
-export type AnswerResponse =
-  | { status: "completed" }
-  | {
-      status: "running";
-      next_question: VivaQuestion;
-      question_number: number;
-      total_questions: number;
-    };
 
 export interface QuestionResult {
   question_id: number;

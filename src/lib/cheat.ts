@@ -13,14 +13,6 @@ export function getCheatRole(): CheatRole | null {
   }
 }
 
-export function setCheatRole(role: CheatRole) {
-  try {
-    window.localStorage.setItem(KEY, role);
-  } catch {
-    // ignore
-  }
-}
-
 export function clearCheatRole() {
   try {
     window.localStorage.removeItem(KEY);
