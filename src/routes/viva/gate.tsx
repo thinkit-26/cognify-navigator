@@ -125,7 +125,8 @@ function VivaLogin() {
 
         {/* Form panel */}
         <section className="flex items-center justify-center bg-background px-6 py-10 md:px-12">
-          <div className="w-full max-w-md">
+          {/* Fixed minimum height so the form block keeps the same height in both modes and never re-centres (that was the jitter). */}
+          <div className="min-h-[30rem] w-full max-w-md">
             <p className="text-center text-xs font-bold tracking-[0.25em] text-orange">HELLO STUDENT</p>
             <div className="mt-5 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
               {(["signin", "signup"] as const).map((m) => (
@@ -162,9 +163,9 @@ function VivaLogin() {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
                     transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="!mb-0 overflow-hidden pb-4"
+                    className="!mb-0 overflow-hidden"
                   >
-                    <label className={field}>
+                    <label className={`${field} mb-4`}>
                       <User className="shrink-0 text-orange" size={20} />
                       <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="Full name" className={input} />
                     </label>
