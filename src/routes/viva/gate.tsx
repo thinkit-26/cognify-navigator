@@ -4,7 +4,6 @@ import { ArrowRight, Eye, EyeOff, Lock, Mail, User, AudioLines, ClipboardCheck, 
 import { supabase } from "@/integrations/supabase/client";
 import { ensureVivaToken } from "@/lib/viva/guard";
 import Button from "@/components/viva/Button";
-import { Eyebrow } from "@/components/viva/Shell";
 import { LogoFull } from "@/components/Logo";
 import { Astronaut, Rocket, Star } from "@/components/Doodles";
 import { LoginWave } from "@/components/LoginWave";
@@ -97,12 +96,9 @@ function VivaLogin() {
           </Link>
           <div className="mt-14 max-w-lg">
             <h1 className="text-5xl font-black leading-[1.02] text-white md:text-6xl">
-              AI Oral <span className="text-orange-glow">Viva</span>
+              NOAH <span className="text-orange-glow">AI</span>
             </h1>
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
-              Say your answers out loud. An AI examiner listens, scores each one and tells you what to fix.
-            </p>
-            <ul className="mt-8 space-y-4 text-white/85">
+            <ul className="mt-10 space-y-4 text-white/85">
               {[
                 { Icon: AudioLines, text: "Questions from the chapters you pick" },
                 { Icon: ClipboardCheck, text: "Every answer scored and explained" },
@@ -128,7 +124,7 @@ function VivaLogin() {
         {/* Form panel */}
         <section className="flex items-center justify-center bg-background px-6 py-10 md:px-12">
           <div className="w-full max-w-md">
-            <Eyebrow>{mode === "signin" ? "WELCOME BACK" : "NEW STUDENT"}</Eyebrow>
+            <p className="text-center text-xs font-bold tracking-[0.25em] text-orange">HELLO STUDENT</p>
             <div className="mt-5 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
               {(["signin", "signup"] as const).map((m) => (
                 <button
