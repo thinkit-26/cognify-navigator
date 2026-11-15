@@ -110,6 +110,93 @@ export type Database = {
         }
         Relationships: []
       }
+      viva_answers: {
+        Row: {
+          answered_at: string
+          feedback: string | null
+          id: string
+          is_correct: boolean | null
+          question: string
+          question_id: number
+          question_number: number | null
+          score: number | null
+          session_id: string
+          student_answer: string
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string
+          feedback?: string | null
+          id?: string
+          is_correct?: boolean | null
+          question: string
+          question_id: number
+          question_number?: number | null
+          score?: number | null
+          session_id: string
+          student_answer: string
+          user_id: string
+        }
+        Update: {
+          answered_at?: string
+          feedback?: string | null
+          id?: string
+          is_correct?: boolean | null
+          question?: string
+          question_id?: number
+          question_number?: number | null
+          score?: number | null
+          session_id?: string
+          student_answer?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      viva_sessions: {
+        Row: {
+          chapters: number[]
+          completed_at: string | null
+          correct_count: number | null
+          id: string
+          overall_feedback: string | null
+          overall_score: number | null
+          session_id: string
+          started_at: string
+          status: string
+          topics: string[]
+          total_questions: number | null
+          user_id: string
+        }
+        Insert: {
+          chapters?: number[]
+          completed_at?: string | null
+          correct_count?: number | null
+          id?: string
+          overall_feedback?: string | null
+          overall_score?: number | null
+          session_id: string
+          started_at?: string
+          status?: string
+          topics?: string[]
+          total_questions?: number | null
+          user_id: string
+        }
+        Update: {
+          chapters?: number[]
+          completed_at?: string | null
+          correct_count?: number | null
+          id?: string
+          overall_feedback?: string | null
+          overall_score?: number | null
+          session_id?: string
+          started_at?: string
+          status?: string
+          topics?: string[]
+          total_questions?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

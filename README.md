@@ -11,7 +11,7 @@ parts. Full, step-by-step instructions live in **[`VIVA_DEPLOYMENT.md`](VIVA_DEP
 
 In short: the frontend deploys to Cloudflare, and the Python backend in
 `Oral_bot/backend` must be hosted separately (e.g. Render) because Cloudflare
-Workers can't run FastAPI. Set `VITE_ORALBOT_BACKEND` + `VIVA_ACCESS_CODE` in the
+Workers can't run FastAPI. Set `VITE_ORALBOT_BACKEND` + `VIVA_TOKEN_SECRET` in the
 Cloudflare build env and the Deepgram/Gemini keys + `CORS_ORIGINS` on the backend.
 
 

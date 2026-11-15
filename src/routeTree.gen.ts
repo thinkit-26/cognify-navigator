@@ -27,6 +27,7 @@ import { Route as VivaSelectTopicRouteImport } from './routes/viva/select-topic'
 import { Route as VivaSelectRouteImport } from './routes/viva/select'
 import { Route as VivaResultsRouteImport } from './routes/viva/results'
 import { Route as VivaInstructionsRouteImport } from './routes/viva/instructions'
+import { Route as VivaHistoryRouteImport } from './routes/viva/history'
 import { Route as VivaGateRouteImport } from './routes/viva/gate'
 import { Route as VivaEvaluatingRouteImport } from './routes/viva/evaluating'
 
@@ -120,6 +121,11 @@ const VivaInstructionsRoute = VivaInstructionsRouteImport.update({
   path: '/viva/instructions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VivaHistoryRoute = VivaHistoryRouteImport.update({
+  id: '/viva/history',
+  path: '/viva/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VivaGateRoute = VivaGateRouteImport.update({
   id: '/viva/gate',
   path: '/viva/gate',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/thank-you': typeof ThankYouRoute
   '/viva/evaluating': typeof VivaEvaluatingRoute
   '/viva/gate': typeof VivaGateRoute
+  '/viva/history': typeof VivaHistoryRoute
   '/viva/instructions': typeof VivaInstructionsRoute
   '/viva/results': typeof VivaResultsRoute
   '/viva/select': typeof VivaSelectRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/thank-you': typeof ThankYouRoute
   '/viva/evaluating': typeof VivaEvaluatingRoute
   '/viva/gate': typeof VivaGateRoute
+  '/viva/history': typeof VivaHistoryRoute
   '/viva/instructions': typeof VivaInstructionsRoute
   '/viva/results': typeof VivaResultsRoute
   '/viva/select': typeof VivaSelectRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/thank-you': typeof ThankYouRoute
   '/viva/evaluating': typeof VivaEvaluatingRoute
   '/viva/gate': typeof VivaGateRoute
+  '/viva/history': typeof VivaHistoryRoute
   '/viva/instructions': typeof VivaInstructionsRoute
   '/viva/results': typeof VivaResultsRoute
   '/viva/select': typeof VivaSelectRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/viva/evaluating'
     | '/viva/gate'
+    | '/viva/history'
     | '/viva/instructions'
     | '/viva/results'
     | '/viva/select'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/viva/evaluating'
     | '/viva/gate'
+    | '/viva/history'
     | '/viva/instructions'
     | '/viva/results'
     | '/viva/select'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/thank-you'
     | '/viva/evaluating'
     | '/viva/gate'
+    | '/viva/history'
     | '/viva/instructions'
     | '/viva/results'
     | '/viva/select'
@@ -283,6 +295,7 @@ export interface RootRouteChildren {
   ThankYouRoute: typeof ThankYouRoute
   VivaEvaluatingRoute: typeof VivaEvaluatingRoute
   VivaGateRoute: typeof VivaGateRoute
+  VivaHistoryRoute: typeof VivaHistoryRoute
   VivaInstructionsRoute: typeof VivaInstructionsRoute
   VivaResultsRoute: typeof VivaResultsRoute
   VivaSelectRoute: typeof VivaSelectRoute
@@ -418,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VivaInstructionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/viva/history': {
+      id: '/viva/history'
+      path: '/viva/history'
+      fullPath: '/viva/history'
+      preLoaderRoute: typeof VivaHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/viva/gate': {
       id: '/viva/gate'
       path: '/viva/gate'
@@ -451,6 +471,7 @@ const rootRouteChildren: RootRouteChildren = {
   ThankYouRoute: ThankYouRoute,
   VivaEvaluatingRoute: VivaEvaluatingRoute,
   VivaGateRoute: VivaGateRoute,
+  VivaHistoryRoute: VivaHistoryRoute,
   VivaInstructionsRoute: VivaInstructionsRoute,
   VivaResultsRoute: VivaResultsRoute,
   VivaSelectRoute: VivaSelectRoute,

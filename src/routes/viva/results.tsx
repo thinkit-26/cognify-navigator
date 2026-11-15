@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { getEvaluation } from "@/lib/viva/api";
+import { logEvaluation } from "@/lib/viva/log";
 import { useExamLock, isExamLocked } from "@/lib/viva/useExamLock";
 import type { Evaluation } from "@/lib/viva/types";
 import jsPDF from "jspdf";
@@ -52,6 +53,7 @@ function ResultsPage() {
         }
 
         setEvaluation(data.evaluation);
+        void logEvaluation(sessionId as string, data.evaluation);
         unlockExam();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load results");
@@ -139,6 +141,7 @@ function ResultsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
         <p className="text-red-500 font-medium mb-4">{error}</p>
+        <Button onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
         <Button onClick={() => navigate({ to: "/" })}>Return Home</Button>
       </div>
     );

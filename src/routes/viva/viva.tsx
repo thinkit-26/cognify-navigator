@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import MicrophoneContainer, { RecordingPhase } from "@/components/viva/MicrophoneContainer";
 import { getQuestion, submitAnswer } from "@/lib/viva/api";
+import { logAnswer } from "@/lib/viva/log";
 import type { VivaQuestion } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
 
@@ -113,6 +114,7 @@ function VivaPage() {
 
     try {
       const response = await submitAnswer(sessionId, answerToSubmit);
+      if (question) void logAnswer(sessionId, question, questionNumber, answerToSubmit);
 
       if (response.status === "completed") {
         navigate({ to: "/viva/evaluating" });
