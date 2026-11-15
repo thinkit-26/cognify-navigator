@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import Button from "@/components/viva/Button";
 import { getChapters } from "@/lib/viva/api";
 import type { Chapter } from "@/lib/viva/types";
@@ -63,9 +65,25 @@ function SelectPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <main className="flex-1 max-w-5xl mx-auto w-full p-6 pt-32 md:pt-24">
-        <h1 className="text-3xl font-bold mb-8">
-          Select Chapters
-        </h1>
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-3xl font-bold">Select Chapters</h1>
+          <div className="flex items-center gap-4 text-sm font-semibold">
+            <Link to="/viva/history" className="text-orange-500 hover:underline">
+              My results
+            </Link>
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                sessionStorage.clear();
+                navigate({ to: "/viva/gate" });
+              }}
+              className="text-gray-500 hover:text-gray-800"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {chapters.map((chapter) => (

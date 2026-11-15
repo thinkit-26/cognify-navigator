@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { Mic, Clock, BrainCircuit, CheckCircle2 } from "lucide-react";
 import { startViva } from "@/lib/viva/api";
+import { logSessionStart } from "@/lib/viva/log";
 import { useExamLock } from "@/lib/viva/useExamLock";
 import { requireVivaAccess } from "@/lib/viva/guard";
 
@@ -52,6 +53,7 @@ function InstructionsPage() {
       const session = await startViva(chapters, topics);
 
       localStorage.setItem("sessionId", session.session_id);
+      void logSessionStart(session.session_id, chapters, topics, session.total_questions);
 
       lockExam();
       navigate({ to: "/viva/viva" });

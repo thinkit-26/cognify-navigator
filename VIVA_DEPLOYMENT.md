@@ -56,18 +56,25 @@ In the **Cloudflare** deployment settings (Workers/Pages build environment), set
 | Variable | Value |
 |---|---|
 | `VITE_ORALBOT_BACKEND` | `https://your-render-service.onrender.com` |
-| `VIVA_ACCESS_CODE` | the access code (see below) |
 | `VIVA_TOKEN_SECRET` | random secret, add it as a **Secret**. Must match the backend's `VIVA_TOKEN_SECRET` (`openssl rand -hex 32`) |
 
 Then redeploy the frontend.
 
-### Access code (`VIVA_ACCESS_CODE`)
+### Student accounts
 
-The gate verifies the code **server-side only** (it is never sent to the browser).
+Students sign in (or create an account) on `/viva/gate` with email and password, through the
+same Supabase project as the rest of the site. The server function `issueVivaToken` checks that
+Supabase session and then issues the signed Viva token, so the old shared access code
+(`VIVA_ACCESS_CODE`) is no longer used and can be deleted from the Cloudflare env.
 
-- Locally: it lives in the repo-root `.env.local` (`VIVA_ACCESS_CODE=...`).
-- Production: set `VIVA_ACCESS_CODE` in the **Cloudflare** environment so the
-  gate can verify it. Choose your own code and never commit it.
+Each attempt is saved to the student's own account in two tables, `viva_sessions` and
+`viva_answers` (migration `supabase/migrations/20261115000000_viva_student_logs.sql`). Row level
+security lets a student read and write only their own rows, and admins read all. Students see
+their history at `/viva/history`.
+
+In the Supabase dashboard, check **Authentication > URL configuration** (site URL and the
+`/reset-password` redirect) and whether **Confirm email** is on: if it is, a new student must
+click the link in their email before signing in.
 
 ---
 
@@ -76,7 +83,7 @@ The gate verifies the code **server-side only** (it is never sent to the browser
 With both the backend (Render) and frontend (Cloudflare) deployed:
 
 1. Open the deployed site and click **Start AI Viva**.
-2. Enter the access code → you should reach the topic/viva selection.
+2. Create a student account (or sign in) → you should reach the topic/viva selection. After a test, the attempt appears under **My results**.
 3. Pick a chapter/topic → start the viva → record a spoken answer.
 4. After answering, confirm the transcript comes back (Deepgram) and the
    evaluation loads (Gemini) on the results page.
@@ -87,7 +94,7 @@ With both the backend (Render) and frontend (Cloudflare) deployed:
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| Gate says "access code not configured" | `VIVA_ACCESS_CODE` missing on the server/Cloudflare | Set it in the Cloudflare env, redeploy |
+| Sign-in works but the next page bounces back to the gate | `VIVA_TOKEN_SECRET` missing on Cloudflare | Add it as a **Secret** (same value as the backend), redeploy |
 | Chapters never load / network error | Frontend still calling `127.0.0.1:8000` | Set `VITE_ORALBOT_BACKEND` to the Render URL and redeploy |
 | CORS error in the browser console | `CORS_ORIGINS` doesn't include your site | Add the exact origin to `CORS_ORIGINS` on Render, redeploy backend |
 | "DEEPGRAM_API_KEY not found" / "GEMINI_API_KEY not found" | Keys not set on Render | Add them in the Render Environment tab |
@@ -108,6 +115,6 @@ uvicorn main:app --reload --port 8000
 ```powershell
 npm run dev
 ```
-Then open `http://localhost:8080/viva/gate`. Keep `VIVA_ACCESS_CODE` in
+Then open `http://localhost:8080/viva/gate`. Keep the Supabase keys in
 `.env.local` and the Deepgram/Gemini keys in `Oral_bot/backend/.env`
 (both files are gitignored — they never get committed).
