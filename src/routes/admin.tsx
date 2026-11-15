@@ -107,7 +107,7 @@ function AdminDashboard() {
         items={[
           { label: "Overview", icon: LayoutDashboard, onClick: () => setTab("overview"), active: tab === "overview" },
           { label: "Papers", icon: FileText, onClick: () => setTab("papers"), active: tab === "papers" },
-          { label: "PYQ Upload", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
+          { label: "Previous Year Papers", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
           { label: "Viva Results", icon: ClipboardList, onClick: () => setTab("viva"), active: tab === "viva" },
           { label: "Students", icon: Users, onClick: () => setTab("students"), active: tab === "students" },
           { label: "Notices", icon: Megaphone, onClick: () => setTab("notices"), active: tab === "notices" },
@@ -122,7 +122,7 @@ function AdminDashboard() {
             <h1 className="mt-1 text-2xl font-black leading-tight text-navy dark:text-cream sm:text-3xl md:text-4xl">
               {tab === "overview" && "Good to see you, Aseem."}
               {tab === "papers" && "Paper Analytics"}
-              {tab === "pyqs" && "PYQ Upload"}
+              {tab === "pyqs" && "Previous Year Papers"}
               {tab === "viva" && "Viva Results"}
               {tab === "students" && "Class Roster"}
               {tab === "notices" && "Notices"}

@@ -57,7 +57,7 @@ export function Navbar() {
             to="/pyqs"
             className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
           >
-            PYQ&apos;s
+            Previous Year Papers
           </Link>
           <Link
             to="/viva/gate"

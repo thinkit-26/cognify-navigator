@@ -8,7 +8,7 @@ import { PYQ_SESSIONS } from "@/data/pyqYears";
 export const Route = createFileRoute("/pyqs")({
   head: () => ({
     meta: [
-      { title: "PYQ's — Cognify Institute" },
+      { title: "Previous Year Papers, Cognify Institute" },
       {
         name: "description",
         content: "Previous year questions for Classes IX–XII at Cognify Institute.",
