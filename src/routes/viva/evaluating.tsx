@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { getEvaluation } from "@/lib/viva/api";
 import { isExamLocked } from "@/lib/viva/useExamLock";
 import { requireVivaAccess } from "@/lib/viva/guard";
+import Button from "@/components/viva/Button";
+import { VivaShell, vivaCard } from "@/components/viva/Shell";
+import { Rocket } from "@/components/Doodles";
 
 export const Route = createFileRoute("/viva/evaluating")({
   ssr: false, // the token lives in sessionStorage, so the check must run in the browser
@@ -63,37 +66,36 @@ function EvaluatingPage() {
 
   if (timedOut) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Evaluation is taking longer than expected
-        </h2>
-        <p className="text-gray-500 mb-6">
-          This usually means the AI is processing a complex set of answers.
-          Please try again in a few minutes.
-        </p>
-        <button
-          onClick={() => navigate({ to: "/viva/gate" })}
-          className="px-6 py-3 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors"
-        >
-          Return to Gate
-        </button>
-      </div>
+      <VivaShell>
+        <div className={`${vivaCard} mx-auto max-w-xl p-10 text-center`}>
+          <h2 className="text-3xl font-extrabold text-navy dark:text-cream">This is taking longer than expected</h2>
+          <p className="mt-3 text-muted-foreground">
+            The AI is working through a long set of answers. Please try again in a few minutes.
+          </p>
+          <Button className="mt-8" onClick={() => navigate({ to: "/viva/gate" })}>
+            Back to start
+          </Button>
+        </div>
+      </VivaShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-        className="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full mb-8"
-      />
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Evaluating Your Responses...
-      </h2>
-      <p className="text-gray-500">
-        Please wait while the AI analyzes your answers.
-      </p>
-    </div>
+    <VivaShell>
+      <div className={`${vivaCard} mx-auto max-w-xl overflow-hidden p-10 text-center`}>
+        <div className="relative mx-auto grid h-28 w-28 place-items-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 2.4, ease: "linear" }}
+            className="absolute inset-0 rounded-full border-[6px] border-orange/20 border-t-orange"
+          />
+          <Rocket className="h-14 w-14 text-navy" delay={0} />
+        </div>
+        <h2 className="mt-8 text-3xl font-extrabold text-navy dark:text-cream">
+          Evaluating your <span className="text-gradient-warm">answers.</span>
+        </h2>
+        <p className="mt-3 text-muted-foreground">The AI examiner is reading each response. This takes a moment.</p>
+      </div>
+    </VivaShell>
   );
 }

@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
 import { downloadVivaReport } from "@/lib/viva/report";
+import Button from "@/components/viva/Button";
+import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/history")({
   ssr: false, // needs the browser's Supabase session
@@ -72,89 +74,93 @@ function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 max-w-4xl mx-auto w-full p-6 pt-32 md:pt-24">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-3xl font-bold text-gray-900">My results</h1>
-          <div className="flex items-center gap-4 text-sm font-semibold">
-            <button
-              type="button"
-              onClick={downloadReport}
-              disabled={reporting || !sessions?.length}
-              className="text-orange-500 hover:underline disabled:opacity-50 disabled:no-underline"
-            >
-              {reporting ? "Making report..." : "Download report (PDF)"}
-            </button>
-            <Link to="/viva/select" className="text-orange-500 hover:underline">
-              Start a new viva
-            </Link>
-          </div>
+    <VivaShell
+      actions={
+        <Link to="/viva/select" className="text-orange hover:underline">
+          Start a new viva
+        </Link>
+      }
+    >
+      <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <Eyebrow>YOUR PROGRESS</Eyebrow>
+          <h1 className="mt-3 text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
+            My <span className="text-gradient-warm">results.</span>
+          </h1>
         </div>
+        <Button variant="outline" onClick={downloadReport} disabled={reporting || !sessions?.length}>
+          {reporting ? "Making report..." : "Download report (PDF)"}
+        </Button>
+      </div>
 
-        {error && <p className="text-red-500">{error}</p>}
-        {!error && sessions === null && <p className="text-gray-500">Loading your results...</p>}
-        {sessions?.length === 0 && (
-          <div className="rounded-2xl bg-white p-8 text-center shadow">
-            <p className="text-gray-700">You haven't taken a viva yet.</p>
-            <Link to="/viva/select" className="mt-3 inline-block font-semibold text-orange-500 hover:underline">
-              Start your first viva
-            </Link>
-          </div>
-        )}
+      {error && <p className="font-semibold text-rose-600">{error}</p>}
+      {!error && sessions === null && <p className="text-navy/60">Loading your results...</p>}
+      {sessions?.length === 0 && (
+        <div className={`${vivaCard} p-10 text-center`}>
+          <p className="text-lg font-bold text-navy dark:text-cream">You haven't taken a viva yet.</p>
+          <Link to="/viva/select" className="mt-4 inline-block font-bold text-orange hover:underline">
+            Start your first viva
+          </Link>
+        </div>
+      )}
 
-        <ul className="space-y-4">
-          {sessions?.map((s) => {
-            const rows = answers[s.session_id] ?? [];
-            const isOpen = open === s.session_id;
-            return (
-              <li key={s.id} className="rounded-2xl bg-white p-5 shadow">
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : s.session_id)}
-                  className="flex w-full items-center justify-between gap-4 text-left"
-                  aria-expanded={isOpen}
+      <ul className="space-y-5">
+        {sessions?.map((s) => {
+          const rows = answers[s.session_id] ?? [];
+          const isOpen = open === s.session_id;
+          const score = s.overall_score != null ? Math.round(Number(s.overall_score)) : null;
+          return (
+            <li key={s.id} className={`${vivaCard} p-6`}>
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? null : s.session_id)}
+                className="flex w-full items-center justify-between gap-4 text-left"
+                aria-expanded={isOpen}
+              >
+                <span>
+                  <span className="block font-extrabold text-navy dark:text-cream">{when(s.started_at)}</span>
+                  <span className="mt-0.5 block text-sm text-muted-foreground">
+                    {s.status === "completed"
+                      ? `${s.correct_count ?? 0} of ${s.total_questions ?? rows.length} correct`
+                      : `In progress, ${rows.length} answered`}
+                  </span>
+                </span>
+                <span
+                  className={`grid h-16 w-16 shrink-0 place-items-center rounded-full border-4 text-lg font-black ${
+                    score == null ? "border-navy/15 text-navy/40" : score >= 60 ? "border-orange text-navy" : "border-navy/25 text-navy"
+                  } dark:text-cream`}
                 >
-                  <span>
-                    <span className="block font-semibold text-gray-900">{when(s.started_at)}</span>
-                    <span className="block text-sm text-gray-500">
-                      {s.status === "completed"
-                        ? `${s.correct_count ?? 0} of ${s.total_questions ?? rows.length} correct`
-                        : `In progress, ${rows.length} answered`}
-                    </span>
-                  </span>
-                  <span className="text-2xl font-bold text-orange-500">
-                    {s.overall_score != null ? `${Math.round(Number(s.overall_score))}%` : "..."}
-                  </span>
-                </button>
+                  {score != null ? `${score}%` : "..."}
+                </span>
+              </button>
 
-                {isOpen && (
-                  <div className="mt-5 space-y-4 border-t border-gray-100 pt-5">
-                    {s.overall_feedback && <p className="text-gray-700">{s.overall_feedback}</p>}
-                    {rows.map((a) => (
-                      <div key={a.id} className="rounded-xl bg-gray-50 p-4">
-                        <p className="font-semibold text-gray-900">
-                          {a.question_number ? `Q${a.question_number}. ` : ""}
-                          {a.question}
+              {isOpen && (
+                <div className="mt-6 space-y-4 border-t border-border pt-6">
+                  {s.overall_feedback && <p className="leading-relaxed text-navy/80 dark:text-cream/80">{s.overall_feedback}</p>}
+                  {rows.map((a) => (
+                    <div key={a.id} className="rounded-2xl bg-secondary/70 p-4">
+                      <p className="font-bold text-navy dark:text-cream">
+                        {a.question_number ? <span className="mr-1.5 text-orange">Q{a.question_number}.</span> : null}
+                        {a.question}
+                      </p>
+                      <p className="mt-2 text-sm text-navy/80 dark:text-cream/80">
+                        <span className="font-extrabold">Your answer: </span>
+                        {a.student_answer}
+                      </p>
+                      {a.score != null && (
+                        <p className={`mt-2 text-sm font-bold ${a.is_correct ? "text-emerald-700" : "text-rose-600"}`}>
+                          Score {a.score}
+                          {a.feedback ? <span className="font-normal text-muted-foreground">, {a.feedback}</span> : null}
                         </p>
-                        <p className="mt-2 text-sm text-gray-700">
-                          <span className="font-semibold">Your answer: </span>
-                          {a.student_answer}
-                        </p>
-                        {a.score != null && (
-                          <p className={`mt-2 text-sm font-semibold ${a.is_correct ? "text-green-600" : "text-red-500"}`}>
-                            Score {a.score}
-                            {a.feedback ? <span className="font-normal text-gray-600">, {a.feedback}</span> : null}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </main>
-    </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </VivaShell>
   );
 }

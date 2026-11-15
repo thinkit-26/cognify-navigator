@@ -2,11 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Button from "@/components/viva/Button";
 import { getChapters } from "@/lib/viva/api";
 import type { Chapter } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
+import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/select")({
   ssr: false, // the token lives in sessionStorage, so the check must run in the browser
@@ -54,69 +56,78 @@ function SelectPage() {
     navigate({ to: "/viva/select-topic" });
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        Loading Chapters...
-      </div>
-    );
-  }
+  const actions = (
+    <>
+      <Link to="/viva/history" className="text-orange hover:underline">
+        My results
+      </Link>
+      <button
+        type="button"
+        onClick={async () => {
+          await supabase.auth.signOut();
+          sessionStorage.clear();
+          navigate({ to: "/viva/gate" });
+        }}
+        className="text-navy/60 hover:text-navy dark:text-cream/60"
+      >
+        Sign out
+      </button>
+    </>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 max-w-5xl mx-auto w-full p-6 pt-32 md:pt-24">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-3xl font-bold">Select Chapters</h1>
-          <div className="flex items-center gap-4 text-sm font-semibold">
-            <Link to="/viva/history" className="text-orange-500 hover:underline">
-              My results
-            </Link>
-            <button
-              type="button"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                sessionStorage.clear();
-                navigate({ to: "/viva/gate" });
-              }}
-              className="text-gray-500 hover:text-gray-800"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
+    <VivaShell step={0} actions={actions} wide>
+      <Eyebrow>STEP 1 OF 4</Eyebrow>
+      <h1 className="mt-3 text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
+        Pick the chapters you want to be <span className="text-gradient-warm">examined on.</span>
+      </h1>
+      <p className="mt-4 max-w-xl text-lg text-muted-foreground">Choose one or more. You'll choose topics next.</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {chapters.map((chapter) => (
-            <motion.div
-              key={chapter.chapter_no}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => toggle(chapter.chapter_no)}
-              className={`cursor-pointer rounded-xl border-2 p-6 transition ${
-                selected.includes(chapter.chapter_no)
-                  ? "border-orange-500 bg-orange-50"
-                  : "border-gray-200 bg-white"
-              }`}
-            >
-              <p className="text-orange-500 font-semibold">
-                Chapter {chapter.chapter_no}
-              </p>
-              <h2 className="text-xl font-semibold mt-2 text-gray-900">
-                {chapter.chapter}
-              </h2>
-            </motion.div>
-          ))}
+      {loading ? (
+        <p className="mt-12 text-navy/60">Loading chapters...</p>
+      ) : (
+        <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+          {chapters.map((chapter, i) => {
+            const on = selected.includes(chapter.chapter_no);
+            return (
+              <motion.button
+                type="button"
+                key={chapter.chapter_no}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                whileTap={{ scale: 0.98 }}
+                aria-pressed={on}
+                onClick={() => toggle(chapter.chapter_no)}
+                className={`${vivaCard} group flex items-center gap-5 p-6 text-left transition hover:-translate-y-1 hover:shadow-glow ${
+                  on ? "!border-navy ring-2 ring-navy/10" : ""
+                }`}
+              >
+                <span
+                  className={`grid h-14 w-14 shrink-0 place-items-center rounded-tl-xl rounded-br-xl text-xl font-black transition ${
+                    on ? "bg-navy text-cream" : "bg-orange/10 text-orange"
+                  }`}
+                >
+                  {on ? <Check className="h-6 w-6" /> : String(chapter.chapter_no).padStart(2, "0")}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs font-extrabold tracking-widest text-navy/50 dark:text-cream/50">CHAPTER {chapter.chapter_no}</span>
+                  <span className="mt-1 block text-lg font-extrabold leading-snug text-navy dark:text-cream">{chapter.chapter}</span>
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
+      )}
 
-        <div className="mt-10 flex justify-end">
-          <Button
-            disabled={selected.length === 0}
-            onClick={continueHandler}
-          >
-            Continue
-          </Button>
-        </div>
-      </main>
-    </div>
+      <div className="sticky bottom-4 mt-10 flex items-center justify-between gap-4 rounded-full border border-border bg-white/90 px-6 py-3 shadow-soft backdrop-blur dark:bg-[#0a1224]/90">
+        <span className="text-sm font-bold text-navy dark:text-cream">
+          {selected.length === 0 ? "No chapters selected" : `${selected.length} chapter${selected.length === 1 ? "" : "s"} selected`}
+        </span>
+        <Button disabled={selected.length === 0} onClick={continueHandler}>
+          Continue
+        </Button>
+      </div>
+    </VivaShell>
   );
 }

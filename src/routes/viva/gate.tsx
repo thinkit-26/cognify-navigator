@@ -1,9 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Eye, EyeOff, Lock, Mail, Mic2, User } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, User, AudioLines, ClipboardCheck, LineChart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureVivaToken } from "@/lib/viva/guard";
+import Button from "@/components/viva/Button";
+import { Eyebrow } from "@/components/viva/Shell";
+import { LogoFull } from "@/components/Logo";
+import { Astronaut, Rocket, Star } from "@/components/Doodles";
+import { LoginWave } from "@/components/LoginWave";
 
 export const Route = createFileRoute("/viva/gate")({
   head: () => ({ meta: [{ title: "Sign in, AI Oral Viva" }] }),
@@ -13,7 +17,8 @@ export const Route = createFileRoute("/viva/gate")({
 type Mode = "signin" | "signup";
 
 const field =
-  "flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 focus-within:border-orange-400";
+  "flex items-center gap-3 rounded-2xl border-2 border-border bg-white px-4 py-3.5 transition focus-within:border-navy dark:bg-white/5";
+const input = "w-full bg-transparent text-navy outline-none placeholder:text-navy/40 dark:text-cream";
 
 function VivaLogin() {
   const navigate = useNavigate();
@@ -83,109 +88,123 @@ function VivaLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 flex items-center justify-center p-6 pt-32 md:pt-24">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-3xl p-8 md:p-12 shadow-xl max-w-md w-full"
-        >
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 mb-6">
-            <Mic2 size={32} />
-          </div>
-
-          <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">AI Oral Viva</h2>
-          <p className="text-center text-gray-500 mb-6">
-            {mode === "signin"
-              ? "Sign in to start your viva. Your answers are saved to your account."
-              : "Create your student account. Your answers are saved to it."}
-          </p>
-
-          <div className="mb-6 grid grid-cols-2 rounded-xl bg-gray-100 p-1 text-sm font-semibold" role="tablist">
-            {(["signin", "signup"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                role="tab"
-                aria-selected={mode === m}
-                onClick={() => {
-                  setMode(m);
-                  setError("");
-                  setInfo("");
-                }}
-                className={`rounded-lg py-2 transition ${mode === m ? "bg-white text-gray-900 shadow" : "text-gray-500"}`}
-              >
-                {m === "signin" ? "Sign in" : "Create account"}
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === "signup" && (
-              <label className={field}>
-                <User className="text-orange-500 shrink-0" size={20} />
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  autoComplete="name"
-                  placeholder="Full name"
-                  className="w-full bg-transparent outline-none text-gray-800 placeholder:text-gray-400"
-                />
-              </label>
-            )}
-            <label className={field}>
-              <Mail className="text-orange-500 shrink-0" size={20} />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                placeholder="Email"
-                className="w-full bg-transparent outline-none text-gray-800 placeholder:text-gray-400"
-              />
-            </label>
-            <label className={field}>
-              <Lock className="text-orange-500 shrink-0" size={20} />
-              <input
-                type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                placeholder="Password"
-                className="w-full bg-transparent outline-none text-gray-800 placeholder:text-gray-400"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw((v) => !v)}
-                aria-label={showPw ? "Hide password" : "Show password"}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </label>
-
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-            {info && <p className="text-green-600 text-sm text-center">{info}</p>}
-
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/25 disabled:opacity-50 disabled:pointer-events-none"
-            >
-              {busy ? "Please wait..." : mode === "signin" ? "Sign in and start" : "Create account and start"}
-              <ArrowRight size={20} />
-            </button>
-          </form>
-
-          {mode === "signin" && (
-            <p className="mt-6 text-center text-sm text-gray-500">
-              <button type="button" onClick={forgotPassword} className="text-orange-500 font-medium hover:underline">
-                Forgot your password?
-              </button>
+    <div className="min-h-screen bg-background px-4 py-4 md:px-6 md:py-6">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl overflow-hidden rounded-[2rem] bg-card shadow-soft lg:grid-cols-[1.05fr_0.95fr]">
+        {/* Brand panel */}
+        <section className="relative isolate hidden overflow-hidden bg-navy px-10 py-10 text-white lg:flex lg:flex-col">
+          <Link to="/" className="inline-flex items-center" aria-label="Cognify home">
+            <LogoFull white className="h-20 w-auto md:h-24" />
+          </Link>
+          <div className="mt-14 max-w-lg">
+            <h1 className="text-5xl font-black leading-[1.02] text-white md:text-6xl">
+              AI Oral <span className="text-orange-glow">Viva</span>
+            </h1>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
+              Say your answers out loud. An AI examiner listens, scores each one and tells you what to fix.
             </p>
-          )}
-        </motion.div>
-      </main>
+            <ul className="mt-8 space-y-4 text-white/85">
+              {[
+                { Icon: AudioLines, text: "Questions from the chapters you pick" },
+                { Icon: ClipboardCheck, text: "Every answer scored and explained" },
+                { Icon: LineChart, text: "Each attempt saved to your account" },
+              ].map(({ Icon, text }) => (
+                <li key={text} className="flex items-center gap-3">
+                  <span className="grid h-9 w-9 place-items-center rounded-tl-xl rounded-br-xl bg-white/10 text-orange-glow">
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
+                  {text}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="relative mt-auto h-[240px]">
+            <Rocket className="absolute right-[10%] top-2 h-20 w-20 text-orange-glow/90" delay={0.4} />
+            <Star className="absolute left-[18%] top-10 h-5 w-5 text-orange-glow" delay={0.6} />
+            <Astronaut interactive className="absolute bottom-0 right-[4%] h-48 w-48 text-white" />
+          </div>
+          <LoginWave className="opacity-90" />
+        </section>
+
+        {/* Form panel */}
+        <section className="flex items-center justify-center bg-background px-6 py-10 md:px-12">
+          <div className="w-full max-w-md">
+            <Link to="/" className="mb-8 inline-flex items-center lg:hidden" aria-label="Cognify home">
+              <LogoFull className="h-14 w-auto" />
+            </Link>
+            <Eyebrow>{mode === "signin" ? "WELCOME BACK" : "NEW STUDENT"}</Eyebrow>
+            <h2 className="mt-3 text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream">
+              {mode === "signin" ? "Sign in to your viva" : "Create your account"}
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              {mode === "signin"
+                ? "Your answers and scores are saved to your account."
+                : "One account keeps every attempt and your progress in one place."}
+            </p>
+
+            <div className="mt-7 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
+              {(["signin", "signup"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  role="tab"
+                  aria-selected={mode === m}
+                  onClick={() => {
+                    setMode(m);
+                    setError("");
+                    setInfo("");
+                  }}
+                  className={`rounded-full py-2.5 transition ${mode === m ? "bg-navy text-cream shadow" : "text-navy/60"}`}
+                >
+                  {m === "signin" ? "Sign in" : "Create account"}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              {mode === "signup" && (
+                <label className={field}>
+                  <User className="shrink-0 text-orange" size={20} />
+                  <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" placeholder="Full name" className={input} />
+                </label>
+              )}
+              <label className={field}>
+                <Mail className="shrink-0 text-orange" size={20} />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="Email" className={input} />
+              </label>
+              <label className={field}>
+                <Lock className="shrink-0 text-orange" size={20} />
+                <input
+                  type={showPw ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  placeholder="Password"
+                  className={input}
+                />
+                <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? "Hide password" : "Show password"} className="text-navy/50 hover:text-navy">
+                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </label>
+
+              {error && <p className="text-center text-sm font-semibold text-rose-600">{error}</p>}
+              {info && <p className="text-center text-sm font-semibold text-emerald-700">{info}</p>}
+
+              <Button type="submit" disabled={busy} className="w-full py-3.5">
+                {busy ? "Please wait..." : mode === "signin" ? "Sign in and start" : "Create account and start"}
+                <ArrowRight size={18} />
+              </Button>
+            </form>
+
+            {mode === "signin" && (
+              <p className="mt-6 text-center text-sm">
+                <button type="button" onClick={forgotPassword} className="font-bold text-orange hover:underline">
+                  Forgot your password?
+                </button>
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
