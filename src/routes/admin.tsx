@@ -18,7 +18,6 @@ import {
   Sparkles,
   Flame,
   BookOpen,
-  Mic2,
   ClipboardList,
   ChevronRight,
 } from "lucide-react";
@@ -44,7 +43,6 @@ import { GlassCard } from "@/components/dashboard/GlassCard";
 import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { PyqUploadPanel } from "@/components/dashboard/PyqUploadPanel";
-import { NoahPanel } from "@/components/dashboard/NoahPanel";
 import { VivaResultsPanel } from "@/components/dashboard/VivaResultsPanel";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
 import { useAuth } from "@/lib/auth-context";
@@ -72,7 +70,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin, Cognify" }] }),
 });
 
-type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs" | "noah" | "viva";
+type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs" | "viva";
 
 const ORANGE = "#E2740A";
 const GLOW = "#FBBF24";
@@ -110,7 +108,6 @@ function AdminDashboard() {
           { label: "Overview", icon: LayoutDashboard, onClick: () => setTab("overview"), active: tab === "overview" },
           { label: "Papers", icon: FileText, onClick: () => setTab("papers"), active: tab === "papers" },
           { label: "PYQ Upload", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
-          { label: "NOAH Papers", icon: Mic2, onClick: () => setTab("noah"), active: tab === "noah" },
           { label: "Viva Results", icon: ClipboardList, onClick: () => setTab("viva"), active: tab === "viva" },
           { label: "Students", icon: Users, onClick: () => setTab("students"), active: tab === "students" },
           { label: "Notices", icon: Megaphone, onClick: () => setTab("notices"), active: tab === "notices" },
@@ -126,14 +123,13 @@ function AdminDashboard() {
               {tab === "overview" && "Good to see you, Aseem."}
               {tab === "papers" && "Paper Analytics"}
               {tab === "pyqs" && "PYQ Upload"}
-              {tab === "noah" && "NOAH Oral Papers"}
               {tab === "viva" && "Viva Results"}
               {tab === "students" && "Class Roster"}
               {tab === "notices" && "Notices"}
               {tab === "calendar" && "Calendar"}
               {tab === "attendance" && "Attendance"}
             </h1>
-            {tab !== "pyqs" && tab !== "noah" && tab !== "viva" && (
+            {tab !== "pyqs" && tab !== "viva" && (
               <p className="mt-1 text-xs text-navy/60 dark:text-cream/60 sm:text-sm">
                 {STUDENTS.length} students · {PAPERS.length} papers · class avg {classAvg}%
               </p>
@@ -148,7 +144,6 @@ function AdminDashboard() {
         {tab === "overview" && <OverviewPanel goTo={setTab} openStudent={setActiveStudent} />}
         {tab === "papers" && <PapersPanel />}
         {tab === "pyqs" && <PyqUploadPanel />}
-        {tab === "noah" && <NoahPanel />}
         {tab === "viva" && <VivaResultsPanel />}
         {tab === "students" && <StudentsPanel onOpen={setActiveStudent} />}
         {tab === "notices" && <NoticesPanel />}

@@ -123,7 +123,6 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const hideChrome =
     pathname === "/login" || pathname === "/dashboard" || pathname === "/admin" ||
-    pathname === "/noah" || pathname === "/noah-admin" ||
     pathname.startsWith("/viva/");
   const isFirstPixelRun = useRef(true);
 
