@@ -34,6 +34,8 @@ export async function logAnswer(sessionId: string, question: VivaQuestion, quest
         question_id: question.id,
         question_number: questionNumber,
         question: question.question,
+        topic: question.topic,
+        chapter: question.chapter,
         student_answer: answer,
       },
       { onConflict: "session_id,question_id" },
