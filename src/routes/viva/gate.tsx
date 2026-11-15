@@ -96,12 +96,9 @@ function VivaLogin() {
           </Link>
           <div className="mt-14 max-w-lg">
             <h1 className="text-5xl font-black leading-[1.02] text-white md:text-6xl">
-              AI Oral <span className="text-orange-glow">Viva</span>
+              NOAH <span className="text-orange-glow">AI</span>
             </h1>
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
-              Say your answers out loud. An AI examiner listens, scores each one and tells you what to fix.
-            </p>
-            <ul className="mt-8 space-y-4 text-white/85">
+            <ul className="mt-10 space-y-4 text-white/85">
               {[
                 { Icon: AudioLines, text: "Questions from the chapters you pick" },
                 { Icon: ClipboardCheck, text: "Every answer scored and explained" },
