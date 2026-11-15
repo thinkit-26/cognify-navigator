@@ -23,21 +23,3 @@ export function LogoFull({ className = "", white = false }: { className?: string
     </div>
   );
 }
-
-export function LogoWordmark({ className = "" }: { className?: string }) {
-  return (
-    <div className={`inline-flex items-center gap-3 leading-none ${className}`}>
-      <LogoMark size={42} />
-      <div className="flex flex-col justify-center">
-        <span className="text-[1.05rem] font-extrabold leading-none tracking-tight text-navy/90">
-          COGNIFY
-        </span>
-        <span className="mt-[5px] flex items-center gap-1 text-[0.6rem] font-bold leading-none tracking-[0.24em] text-orange/90">
-          <span className="h-px w-2.5 bg-orange/80" />
-          INSTITUTE
-          <span className="h-px w-2.5 bg-orange/80" />
-        </span>
-      </div>
-    </div>
-  );
-}

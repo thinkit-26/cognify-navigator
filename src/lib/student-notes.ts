@@ -10,8 +10,6 @@ const NOTICES_KEY = "cognify_notices_v1";
 const PAPERS_KEY = "cognify_mcq_papers_v1";
 const ATTEMPTS_KEY = "cognify_mcq_attempts_v1";
 
-export type Note = { id: string; studentId: string; text: string; author: string; date: string };
-export type Metric = { id: string; studentId: string; label: string; value: string; date: string };
 export type AttendanceMark = { studentId: string; date: string; status: "present" | "online" | "absent" };
 export type ScheduledClass = { id: string; date: string; time: string; title: string; classLevel: string };
 export type Notice = { id: string; title: string; body: string; date: string };
@@ -69,8 +67,6 @@ function useStore<T>(key: string, fallback: T) {
   return [val, set] as const;
 }
 
-export const useNotes    = () => useStore<Note[]>(NOTES_KEY, []);
-export const useMetrics  = () => useStore<Metric[]>(METRICS_KEY, []);
 export const useAttendance = () => useStore<AttendanceMark[]>(ATT_KEY, []);
 export const useClasses  = () => useStore<ScheduledClass[]>(CLASSES_KEY, []);
 export const useNotices  = () => useStore<Notice[]>(NOTICES_KEY, []);

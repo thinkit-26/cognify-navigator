@@ -164,14 +164,6 @@ export const ABHAY_RADAR = [
   { skill: "Application", value: 86, full: 100 },
 ];
 
-export const ABHAY_CHAPTERS = [
-  { chapter: "Electric Charges", progress: 100 },
-  { chapter: "Electric Potential", progress: 86 },
-  { chapter: "Capacitance", progress: 64 },
-  { chapter: "Current Electricity", progress: 42 },
-  { chapter: "Magnetism", progress: 18 },
-];
-
 export const ABHAY_RECENT = [
   { paper: "Paper 1, Before Coulomb (MCQ)", subject: "Physics", date: "May 10", score: 78 },
   { paper: "Paper 1, Conduction (Sub)",      subject: "Physics", date: "May 15", score: 72 },
@@ -191,7 +183,7 @@ export const QUOTES = [
 
 /* ---------------- Chapter & subject breakdown (CBSE typology) ---------------- */
 
-export const CHAPTERS_BY_SUBJECT: Record<string, string[]> = {
+const CHAPTERS_BY_SUBJECT: Record<string, string[]> = {
   Physics: ["Electrostatics", "Current Electricity", "Magnetism", "EM Induction", "Optics", "Modern Physics"],
   Maths: ["Relations & Functions", "Calculus", "Vectors & 3D", "Probability", "Linear Programming"],
   Chemistry: ["Solid State", "Solutions", "Electrochemistry", "Organic-I", "Coordination", "Biomolecules"],
