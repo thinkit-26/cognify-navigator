@@ -113,6 +113,7 @@ export type Database = {
       viva_answers: {
         Row: {
           answered_at: string
+          chapter: string | null
           feedback: string | null
           id: string
           is_correct: boolean | null
@@ -122,10 +123,12 @@ export type Database = {
           score: number | null
           session_id: string
           student_answer: string
+          topic: string | null
           user_id: string
         }
         Insert: {
           answered_at?: string
+          chapter?: string | null
           feedback?: string | null
           id?: string
           is_correct?: boolean | null
@@ -135,10 +138,12 @@ export type Database = {
           score?: number | null
           session_id: string
           student_answer: string
+          topic?: string | null
           user_id: string
         }
         Update: {
           answered_at?: string
+          chapter?: string | null
           feedback?: string | null
           id?: string
           is_correct?: boolean | null
@@ -148,6 +153,7 @@ export type Database = {
           score?: number | null
           session_id?: string
           student_answer?: string
+          topic?: string | null
           user_id?: string
         }
         Relationships: []

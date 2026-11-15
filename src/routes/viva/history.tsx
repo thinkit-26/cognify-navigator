@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
+import { downloadVivaReport } from "@/lib/viva/report";
 
 export const Route = createFileRoute("/viva/history")({
   ssr: false, // needs the browser's Supabase session
@@ -46,14 +47,48 @@ function HistoryPage() {
     })();
   }, []);
 
+  const [reporting, setReporting] = useState(false);
+  const downloadReport = async () => {
+    setReporting(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const user = auth.user;
+      if (!user) return;
+      const { data: prof } = await supabase.from("profiles").select("full_name, class_level").eq("id", user.id).maybeSingle();
+      await downloadVivaReport(
+        {
+          name: prof?.full_name || (user.user_metadata?.full_name as string | undefined) || "Student",
+          id: user.id.slice(0, 8).toUpperCase(),
+          classLevel: prof?.class_level ?? null,
+        },
+        sessions ?? [],
+        Object.values(answers).flat(),
+      );
+    } catch {
+      setError("Couldn't make your report. Try again.");
+    } finally {
+      setReporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <main className="flex-1 max-w-4xl mx-auto w-full p-6 pt-32 md:pt-24">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-3xl font-bold text-gray-900">My results</h1>
-          <Link to="/viva/select" className="text-sm font-semibold text-orange-500 hover:underline">
-            Start a new viva
-          </Link>
+          <div className="flex items-center gap-4 text-sm font-semibold">
+            <button
+              type="button"
+              onClick={downloadReport}
+              disabled={reporting || !sessions?.length}
+              className="text-orange-500 hover:underline disabled:opacity-50 disabled:no-underline"
+            >
+              {reporting ? "Making report..." : "Download report (PDF)"}
+            </button>
+            <Link to="/viva/select" className="text-orange-500 hover:underline">
+              Start a new viva
+            </Link>
+          </div>
         </div>
 
         {error && <p className="text-red-500">{error}</p>}

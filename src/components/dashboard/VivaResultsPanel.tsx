@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { downloadVivaReport } from "@/lib/viva/report";
 
 type Session = Tables<"viva_sessions">;
 type Answer = Tables<"viva_answers">;
@@ -86,6 +87,28 @@ export function VivaResultsPanel() {
       .eq("session_id", next)
       .order("question_number", { ascending: true });
     setAnswers((a) => ({ ...a, [next]: data ?? [] }));
+  };
+
+  const [reportFor, setReportFor] = useState<string | null>(null);
+  const downloadReport = async (userId: string) => {
+    setReportFor(userId);
+    try {
+      const mine = sessions.filter((x) => x.user_id === userId);
+      const { data: rows } = await supabase
+        .from("viva_answers")
+        .select("session_id, topic, is_correct")
+        .in("session_id", mine.map((x) => x.session_id));
+      const { data: prof } = await supabase.from("profiles").select("class_level").eq("id", userId).maybeSingle();
+      await downloadVivaReport(
+        { name: names[userId] || "Student", id: userId.slice(0, 8).toUpperCase(), classLevel: prof?.class_level ?? null },
+        mine,
+        rows ?? [],
+      );
+    } catch {
+      setError("Couldn't make the report. Try again.");
+    } finally {
+      setReportFor(null);
+    }
   };
 
   const shown = useMemo(() => {
@@ -185,6 +208,14 @@ export function VivaResultsPanel() {
 
               {isOpen && (
                 <div className="mt-4 space-y-3 border-t border-navy/10 pt-4 dark:border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => downloadReport(s.user_id)}
+                    disabled={reportFor === s.user_id}
+                    className="text-xs font-bold text-orange hover:underline disabled:opacity-50"
+                  >
+                    {reportFor === s.user_id ? "Making report…" : "Download this student's report (PDF)"}
+                  </button>
                   {s.overall_feedback && <p className="text-sm text-navy dark:text-cream">{s.overall_feedback}</p>}
                   {!rows && <p className="text-sm text-navy/60 dark:text-cream/60">Loading answers…</p>}
                   {rows?.length === 0 && <p className="text-sm text-navy/60 dark:text-cream/60">No answers saved for this attempt.</p>}
