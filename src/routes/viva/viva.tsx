@@ -7,6 +7,7 @@ import { getQuestion, submitAnswer } from "@/lib/viva/api";
 import { logAnswer } from "@/lib/viva/log";
 import type { VivaQuestion } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
+import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/viva")({
   ssr: false, // the token lives in sessionStorage, so the check must run in the browser
@@ -139,63 +140,84 @@ function VivaPage() {
 
   if (!question) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading Question...
-      </div>
+      <VivaShell step={3}>
+        <p className="py-24 text-center font-semibold text-navy/60">Loading question...</p>
+      </VivaShell>
     );
   }
 
+  const phaseTotal = phase === "reading" ? computeReadingTime(question.question) : ANSWER_TIME;
+  const fraction = phase === "processing" ? 0 : Math.max(0, Math.min(1, timeLeft / phaseTotal));
+  const RING = 2 * Math.PI * 44;
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 max-w-4xl mx-auto w-full p-6 pt-32 md:pt-24 flex flex-col justify-center">
-        <div className="text-center mb-8">
-          <p className="text-sm font-semibold text-orange-500 uppercase tracking-wider">
-            Question {questionNumber} of {totalQuestions}
-          </p>
+    <VivaShell step={3}>
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <Eyebrow>
+          QUESTION {questionNumber} OF {totalQuestions}
+        </Eyebrow>
+        <div className="flex flex-1 max-w-xs items-center gap-1.5" aria-hidden>
+          {Array.from({ length: totalQuestions }).map((_, i) => (
+            <span key={i} className={`h-1.5 flex-1 rounded-full ${i < questionNumber ? "bg-orange" : "bg-navy/15"}`} />
+          ))}
+        </div>
+      </div>
+
+      <motion.div
+        key={question.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`${vivaCard} p-8 md:p-12`}
+      >
+        <h2 className="text-balance text-center text-2xl font-extrabold leading-snug text-navy dark:text-cream md:text-4xl">
+          {question.question}
+        </h2>
+
+        <div className="mt-10 flex flex-col items-center">
+          <div className="relative grid h-32 w-32 place-items-center">
+            <svg viewBox="0 0 100 100" className="absolute inset-0 -rotate-90" aria-hidden>
+              <circle cx="50" cy="50" r="44" fill="none" strokeWidth="6" className="stroke-navy/10" />
+              <circle
+                cx="50"
+                cy="50"
+                r="44"
+                fill="none"
+                strokeWidth="6"
+                strokeLinecap="round"
+                className={phase === "recording" ? "stroke-orange" : "stroke-navy"}
+                strokeDasharray={RING}
+                strokeDashoffset={RING * (1 - fraction)}
+                style={{ transition: "stroke-dashoffset 1s linear" }}
+              />
+            </svg>
+            <div className="text-center">
+              <div className="font-mono text-3xl font-black text-navy dark:text-cream">{formatTime(timeLeft)}</div>
+              <div className="text-[10px] font-extrabold tracking-widest text-navy/50 dark:text-cream/50">
+                {phase === "reading" ? "READING" : "LEFT"}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <motion.div
-          key={question.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 md:p-12 shadow-xl mb-8"
-        >
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 leading-relaxed text-center mb-10">
-            {question.question}
-          </h2>
-
-          <div className="text-center mb-8">
-            <div className="text-5xl font-light text-gray-800 font-mono">
-              {formatTime(timeLeft)}
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              {phase === "reading" ? "Reading time" : "Time remaining"}
-            </p>
-          </div>
-
+        <div className="mt-8">
           <MicrophoneContainer
             phase={phase}
             onTranscriptChange={handleTranscriptChange}
             onTranscriptionDone={handleTranscriptionDone}
           />
-        </motion.div>
-
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-500">
-            {phase === "reading" && "Read the question — recording starts automatically"}
-            {phase === "recording" && "Recording your answer..."}
-            {phase === "processing" && "Processing your answer..."}
-          </div>
-
-          <Button
-            onClick={handleManualAdvance}
-            disabled={phase !== "recording" || isSubmitting}
-            className="px-8 py-3"
-          >
-            {phase === "processing" ? "Processing Audio..." : questionNumber === totalQuestions ? "Finish Viva" : "Next Question"}
-          </Button>
         </div>
-      </main>
-    </div>
+      </motion.div>
+
+      <div className="mt-8 flex items-center justify-between gap-4">
+        <div className="text-sm font-semibold text-navy/60 dark:text-cream/60">
+          {phase === "reading" && "Read the question. Recording starts automatically."}
+          {phase === "recording" && "Recording your answer..."}
+          {phase === "processing" && "Processing your answer..."}
+        </div>
+        <Button onClick={handleManualAdvance} disabled={phase !== "recording" || isSubmitting} className="px-8 py-3">
+          {phase === "processing" ? "Processing audio..." : questionNumber === totalQuestions ? "Finish viva" : "Next question"}
+        </Button>
+      </div>
+    </VivaShell>
   );
 }

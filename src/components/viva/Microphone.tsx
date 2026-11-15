@@ -22,19 +22,19 @@ export default function Microphone({ phase, transcript, error }: Props) {
             <motion.div
               animate={{ scale: [1, 1.2, 1], opacity: [0.7, 0.3, 0.7] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              className="absolute inset-0 rounded-full bg-orange-200"
+              className="absolute inset-0 rounded-full bg-orange/25"
             />
             <motion.div
               animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0.2, 0.5] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="absolute inset-2 rounded-full bg-orange-100"
+              className="absolute inset-2 rounded-full bg-orange/15"
             />
           </>
         )}
 
         <div
           className={`relative z-10 w-20 h-20 rounded-full flex items-center justify-center text-white shadow-lg ${
-            listening ? "bg-red-500" : "bg-orange-500"
+            listening ? "bg-rose-600" : "bg-gradient-to-br from-[#E2740A] to-[#FBBF24]"
           }`}
         >
           {listening ? <Square size={32} /> : <Mic size={32} />}
@@ -42,12 +42,12 @@ export default function Microphone({ phase, transcript, error }: Props) {
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-semibold text-gray-800">
-          {phase === "reading" && "Get Ready..."}
-          {phase === "recording" && "Listening..."}
-          {phase === "processing" && "Processing..."}
+        <p className="text-lg font-extrabold text-navy dark:text-cream">
+          {phase === "reading" && "Get ready"}
+          {phase === "recording" && "Listening"}
+          {phase === "processing" && "Processing"}
         </p>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           {phase === "reading" && "Read the question carefully"}
           {phase === "recording" && "Speak clearly into your microphone"}
           {phase === "processing" && "Transcribing your answer..."}
@@ -59,13 +59,13 @@ export default function Microphone({ phase, transcript, error }: Props) {
       )}
 
       <div className="w-full max-w-2xl">
-        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 min-h-[120px]">
-          <div className="text-sm font-semibold text-gray-500 mb-2">
-            Transcript
+        <div className="bg-secondary/60 rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md p-5 border border-border min-h-[120px]">
+          <div className="text-xs font-extrabold tracking-widest text-orange mb-2">
+            YOUR ANSWER
           </div>
-          <p className="text-gray-800 leading-relaxed">
+          <p className="text-navy dark:text-cream leading-relaxed">
             {transcript || (
-              <span className="text-gray-400 italic">
+              <span className="text-navy/40 italic">
                 Your spoken answer will appear here...
               </span>
             )}

@@ -8,6 +8,7 @@ import { useExamLock, isExamLocked } from "@/lib/viva/useExamLock";
 import type { Evaluation } from "@/lib/viva/types";
 import jsPDF from "jspdf";
 import { requireVivaAccess } from "@/lib/viva/guard";
+import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/results")({
   ssr: false, // the token lives in sessionStorage, so the check must run in the browser
@@ -17,10 +18,10 @@ export const Route = createFileRoute("/viva/results")({
 });
 
 function performanceLabel(score: number) {
-  if (score >= 80) return { label: "Excellent Performance", color: "bg-green-100 text-green-700" };
-  if (score >= 60) return { label: "Good Performance", color: "bg-lime-100 text-lime-700" };
-  if (score >= 40) return { label: "Needs Improvement", color: "bg-yellow-100 text-yellow-700" };
-  return { label: "Poor Performance", color: "bg-red-100 text-red-700" };
+  if (score >= 80) return { label: "Excellent performance", color: "bg-emerald-100 text-emerald-800" };
+  if (score >= 60) return { label: "Good performance", color: "bg-lime-100 text-lime-800" };
+  if (score >= 40) return { label: "Needs improvement", color: "bg-amber-100 text-amber-800" };
+  return { label: "Needs a lot of practice", color: "bg-rose-100 text-rose-800" };
 }
 
 function ResultsPage() {
@@ -139,89 +140,107 @@ function ResultsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 text-center">
-        <p className="text-red-500 font-medium mb-4">{error}</p>
-        <Button onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
-        <Button onClick={() => navigate({ to: "/" })}>Return Home</Button>
-      </div>
+      <VivaShell>
+        <div className={`${vivaCard} mx-auto max-w-xl p-10 text-center`}>
+          <p className="font-bold text-rose-600">{error}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Button onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
+            <Button variant="outline" onClick={() => navigate({ to: "/" })}>Return home</Button>
+          </div>
+        </div>
+      </VivaShell>
     );
   }
 
   if (!evaluation) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading results...
-      </div>
+      <VivaShell>
+        <p className="py-24 text-center font-semibold text-navy/60">Loading results...</p>
+      </VivaShell>
     );
   }
 
   const performance = performanceLabel(evaluation.overall_score);
+  const RING = 2 * Math.PI * 54;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 max-w-3xl mx-auto w-full p-6 pt-32 md:pt-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 shadow-lg text-center mb-8"
-        >
-          <h2 className="text-xl text-gray-500 font-medium mb-2">Overall Score</h2>
-          <div className="text-6xl font-bold text-orange-500 mb-4">
-            {evaluation.overall_score}%
+    <VivaShell>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-tl-[2.5rem] rounded-br-[2.5rem] rounded-tr-md rounded-bl-md bg-navy p-8 text-white shadow-soft md:p-12"
+      >
+        <div className="grid items-center gap-8 md:grid-cols-[auto_1fr]">
+          <div className="relative mx-auto grid h-44 w-44 place-items-center">
+            <svg viewBox="0 0 120 120" className="absolute inset-0 -rotate-90" aria-hidden>
+              <circle cx="60" cy="60" r="54" fill="none" strokeWidth="9" stroke="rgba(255,255,255,0.15)" />
+              <motion.circle
+                cx="60"
+                cy="60"
+                r="54"
+                fill="none"
+                strokeWidth="9"
+                strokeLinecap="round"
+                stroke="#FBBF24"
+                strokeDasharray={RING}
+                initial={{ strokeDashoffset: RING }}
+                animate={{ strokeDashoffset: RING * (1 - Math.min(100, evaluation.overall_score) / 100) }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </svg>
+            <div className="text-center">
+              <div className="text-5xl font-black">{evaluation.overall_score}%</div>
+              <div className="text-[10px] font-extrabold tracking-[0.25em] text-white/60">OVERALL</div>
+            </div>
           </div>
-          <div className={`inline-block px-4 py-2 rounded-full font-semibold ${performance.color}`}>
-            {performance.label}
+          <div>
+            <Eyebrow className="!text-orange-glow">YOUR VIVA RESULT</Eyebrow>
+            <div className={`mt-3 inline-block rounded-full px-4 py-1.5 text-sm font-bold ${performance.color}`}>{performance.label}</div>
+            <p className="mt-4 text-lg text-white/80">
+              {evaluation.correct_count} of {evaluation.total_questions} answers correct, {evaluation.accuracy_of_correct}% accuracy on the correct ones.
+            </p>
+            {evaluation.overall_feedback && <p className="mt-3 leading-relaxed text-white/65">{evaluation.overall_feedback}</p>}
           </div>
-          <p className="text-gray-500 mt-4">
-            {evaluation.correct_count} / {evaluation.total_questions} correct &middot;{" "}
-            {evaluation.accuracy_of_correct}% accuracy on correct answers
-          </p>
-        </motion.div>
-
-        <div className="space-y-4 mb-12">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Question Summary</h3>
-          {evaluation.questions.map((q, i) => (
-            <motion.div
-              key={q.question_id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1 text-gray-700 font-medium">{q.question}</div>
-                <div
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap ${
-                    q.is_correct
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {q.is_correct ? "Correct" : "Incorrect"}
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-3 text-sm text-gray-600">
-                <span className="font-semibold text-gray-500">Your answer: </span>
-                {q.student_answer || (
-                  <span className="italic text-gray-400">No answer recorded</span>
-                )}
-              </div>
-
-              {q.feedback && (
-                <p className="text-sm text-gray-500 italic">{q.feedback}</p>
-              )}
-            </motion.div>
-          ))}
         </div>
+      </motion.div>
 
-        <div className="flex gap-4 justify-center">
-          <Button variant="outline" onClick={() => navigate({ to: "/" })}>
-            Return Home
-          </Button>
-          <Button onClick={handleDownload}>Download Report</Button>
-        </div>
-      </main>
-    </div>
+      <h3 className="mb-5 mt-12 text-2xl font-extrabold text-navy dark:text-cream">Question by question</h3>
+      <div className="space-y-5">
+        {evaluation.questions.map((q, i) => (
+          <motion.div
+            key={q.question_id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07 }}
+            className={`${vivaCard} p-6`}
+          >
+            <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
+              <div className="flex-1 font-bold text-navy dark:text-cream">
+                <span className="mr-2 text-orange">Q{i + 1}.</span>
+                {q.question}
+              </div>
+              <span
+                className={`shrink-0 self-start rounded-full px-4 py-1.5 text-sm font-bold ${
+                  q.is_correct ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                }`}
+              >
+                {q.is_correct ? "Correct" : "Incorrect"} · {q.score}/10
+              </span>
+            </div>
+            <div className="mt-4 rounded-2xl bg-secondary/70 p-4 text-sm text-navy/80 dark:text-cream/80">
+              <span className="font-extrabold text-navy dark:text-cream">Your answer: </span>
+              {q.student_answer || <span className="italic text-navy/40">No answer recorded</span>}
+            </div>
+            {q.feedback && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{q.feedback}</p>}
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-12 flex flex-wrap justify-center gap-4">
+        <Button onClick={handleDownload}>Download report</Button>
+        <Button variant="outline" onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
+        <Button variant="outline" onClick={() => navigate({ to: "/" })}>Return home</Button>
+      </div>
+    </VivaShell>
   );
 }
