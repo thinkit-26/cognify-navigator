@@ -4,4 +4,14 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  // Preview builds (any branch except main) run `wrangler preview`, which requires this block.
+  // Only public values here: the Supabase URL and publishable key and the Viva backend URL.
+  // Never put a secret (VIVA_TOKEN_SECRET and friends) in this file; set secrets in Cloudflare.
+  "previews": {
+    "vars": {
+      "SUPABASE_URL": "https://iibfcgrxcoskpduoxayk.supabase.co",
+      "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_KJhR_HeYWgn9o67V74C9KA_OEVOH6nj",
+      "VITE_ORALBOT_BACKEND": "https://api.cognifyinstitute.com"
+    }
+  }
 }
