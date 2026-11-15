@@ -4,7 +4,6 @@ import { ArrowRight, Eye, EyeOff, Lock, Mail, User, AudioLines, ClipboardCheck, 
 import { supabase } from "@/integrations/supabase/client";
 import { ensureVivaToken } from "@/lib/viva/guard";
 import Button from "@/components/viva/Button";
-import { Eyebrow } from "@/components/viva/Shell";
 import { LogoFull } from "@/components/Logo";
 import { Astronaut, Rocket, Star } from "@/components/Doodles";
 import { LoginWave } from "@/components/LoginWave";
@@ -128,7 +127,7 @@ function VivaLogin() {
         {/* Form panel */}
         <section className="flex items-center justify-center bg-background px-6 py-10 md:px-12">
           <div className="w-full max-w-md">
-            <Eyebrow>{mode === "signin" ? "WELCOME BACK" : "NEW STUDENT"}</Eyebrow>
+            <p className="text-center text-xs font-bold tracking-[0.25em] text-orange">HELLO STUDENT</p>
             <div className="mt-5 grid grid-cols-2 rounded-full bg-secondary p-1 text-sm font-bold" role="tablist">
               {(["signin", "signup"] as const).map((m) => (
                 <button
