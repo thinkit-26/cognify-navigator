@@ -2,7 +2,7 @@
 
 The Cognify Institute web platform.
 
-Built by **Abhay Kapoor** / **Briar**.
+Built by **COGNIFY Institute**
 
 ## AI Oral Viva — deployment
 
