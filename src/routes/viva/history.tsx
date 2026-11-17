@@ -13,6 +13,7 @@ export const Route = createFileRoute("/viva/history")({
 function HistoryPage() {
   return (
     <VivaShell
+      full
       actions={
         <Link to="/viva/select" className={vivaPill}>
           Start a new viva

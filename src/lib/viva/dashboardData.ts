@@ -119,6 +119,13 @@ export function buildStudentReport(sessions: Session[], answers: SlimAnswer[]): 
 
 export const ACCURACY_THRESHOLD = 75;
 
+/** "BEFORE OHM'S LAW" -> "Before Ohm's Law": topic names are stored in capitals. */
+export const niceTopic = (t: string) => t.toLowerCase().replace(/(^|[\s(/&-])([a-z])/g, (_, a, b) => a + b.toUpperCase());
+
+/** The paper a viva was on: its topics, else its chapters. */
+export const paperName = (s: Pick<Session, "topics" | "chapters">) =>
+  s.topics?.length ? s.topics.map(niceTopic).join(", ") : s.chapters?.length ? `Chapter ${s.chapters.join(", ")}` : "Viva";
+
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
 /**
@@ -145,8 +152,8 @@ export function prognosis(r: StudentReport, name: string | null, classAvg: numbe
   const best = rated[rated.length - 1];
   const weak = rated.filter((t) => t.accuracy < ACCURACY_THRESHOLD).slice(0, 3);
   const parts: string[] = [];
-  if (best && best.accuracy >= ACCURACY_THRESHOLD) parts.push(`${who} ${be} strongest in ${best.topic} (${Math.round(best.accuracy)}%)`);
-  if (weak.length) parts.push(`${parts.length ? "but " : `${who} `}${name ? "loses" : "lose"} marks in ${list(weak.map((t) => `${t.topic} (${Math.round(t.accuracy)}%)`))}`);
+  if (best && best.accuracy >= ACCURACY_THRESHOLD) parts.push(`${who} ${be} strongest in ${niceTopic(best.topic)} (${Math.round(best.accuracy)}%)`);
+  if (weak.length) parts.push(`${parts.length ? "but " : `${who} `}${name ? "loses" : "lose"} marks in ${list(weak.map((t) => `${niceTopic(t.topic)} (${Math.round(t.accuracy)}%)`))}`);
   if (parts.length) out.push(parts.join(", ") + ".");
   if (!weak.length && rated.length) out.push(`No topic is below ${ACCURACY_THRESHOLD}%, so keep the difficulty up.`);
 
@@ -155,7 +162,7 @@ export function prognosis(r: StudentReport, name: string | null, classAvg: numbe
   const mean = (a: number[]) => a.reduce((t, x) => t + x, 0) / a.length;
   const d = mean(recent) - mean(before.length ? before : r.scores.slice(0, 1));
   const trend = d >= 5 ? "are improving" : d <= -5 ? "are slipping" : "are holding steady";
-  out.push(`${poss} recent scores ${trend}${weak[0] ? `; next practice: ${weak[0].topic}` : ""}.`);
+  out.push(`${poss} recent scores ${trend}${weak[0] ? `; next practice: ${niceTopic(weak[0].topic)}` : ""}.`);
   return out.join(" ");
 }
 

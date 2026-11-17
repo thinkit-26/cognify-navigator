@@ -7,6 +7,8 @@ import {
   buildClassReport,
   buildStudentReport,
   monotonePath,
+  niceTopic,
+  paperName,
   prognosis,
   scoreColor,
   type Session,
@@ -95,10 +97,11 @@ function Attempt({ s, answers, onOpen }: { s: Session; answers: Answer[] | undef
   return (
     <details onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && onOpen()}>
       <summary>
-        <span>
-          {when(s.started_at)}
+        <span className="grow">
+          <span className="name" title={paperName(s)}>{paperName(s)}</span>
           <small>{s.status === "completed" ? `${s.correct_count ?? 0} of ${s.total_questions ?? "?"} correct` : "In progress"}</small>
         </span>
+        <span className="when">{when(s.started_at)}</span>
         <b className="mono" style={{ color: score == null ? "var(--faint)" : scoreColor(score) }}>{score == null ? "-" : pct(score)}</b>
       </summary>
       <div style={{ paddingBottom: 12 }}>
@@ -151,7 +154,7 @@ function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache, onPdf
             <div className="bars">
               {r.topics.slice(0, 8).map((t) => (
                 <div className="row" key={t.topic}>
-                  <span className="name" title={t.topic}>{t.topic}</span>
+                  <span className="name" title={niceTopic(t.topic)}>{niceTopic(t.topic)}</span>
                   <b style={{ color: scoreColor(t.accuracy) }}>{pct(t.accuracy)}</b>
                   <div className="track"><div className="fill" style={{ ["--w" as string]: `${t.accuracy}%`, background: scoreColor(t.accuracy) }} /></div>
                 </div>
@@ -166,7 +169,7 @@ function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache, onPdf
             <div className="bars">
               {r.weak.slice(0, 6).map((t) => (
                 <div className="row" key={t.topic}>
-                  <span className="name" title={t.topic}>{t.topic}</span>
+                  <span className="name" title={niceTopic(t.topic)}>{niceTopic(t.topic)}</span>
                   <b style={{ color: "var(--bad)" }}>{t.flagged} viva{t.flagged === 1 ? "" : "s"}</b>
                 </div>
               ))}
@@ -220,7 +223,7 @@ function ClassView({ sessions, slim, names, pick }: { sessions: Session[]; slim:
             <div className="bars">
               {c.struggling.slice(0, 6).map((t) => (
                 <div className="row" key={t.topic}>
-                  <span className="name" title={t.topic}>{t.topic}</span>
+                  <span className="name" title={niceTopic(t.topic)}>{niceTopic(t.topic)}</span>
                   <b style={{ color: scoreColor(t.accuracy) }}>{pct(t.accuracy)}</b>
                   <div className="track"><div className="fill" style={{ ["--w" as string]: `${t.accuracy}%`, background: scoreColor(t.accuracy) }} /></div>
                 </div>
