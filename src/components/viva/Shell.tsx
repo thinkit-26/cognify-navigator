@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { LogoFull } from "@/components/Logo";
 import { Rocket, Star } from "@/components/Doodles";
 
@@ -53,12 +53,15 @@ export function VivaShell({
   actions,
   wide = false,
   full = false,
+  back,
 }: {
   children: ReactNode;
   step?: number;
   actions?: ReactNode;
   wide?: boolean;
   full?: boolean;
+  /** Where the Back pill goes. Left off on the live question page, so a test is not left by accident. */
+  back?: { to: "/" | "/viva/select" | "/viva/select-topic" | "/viva/history"; label?: string };
 }) {
   return (
     <div className="relative isolate min-h-screen bg-background">
@@ -68,9 +71,17 @@ export function VivaShell({
 
       <header className="relative z-10 border-b border-border/60 bg-white/80 backdrop-blur dark:bg-[#0a1224]/80">
         <div className={`mx-auto flex items-center justify-between gap-4 px-5 py-3 md:px-8 ${full ? "max-w-none" : "max-w-6xl"}`}>
-          <Link to="/" aria-label="Cognify home" className="flex shrink-0 items-center">
-            <LogoFull className="h-14 w-14" />
-          </Link>
+          <div className="flex shrink-0 items-center gap-4">
+            <Link to="/" aria-label="Cognify home" className="flex items-center">
+              <LogoFull className="h-14 w-14" />
+            </Link>
+            {back && (
+              <Link to={back.to} className={`${vivaPill} inline-flex items-center gap-1.5`}>
+                <ArrowLeft className="h-4 w-4" />
+                {back.label ?? "Back"}
+              </Link>
+            )}
+          </div>
           {step !== undefined && <Steps current={step} />}
           <div className="flex items-center gap-4 text-sm font-bold">{actions}</div>
         </div>

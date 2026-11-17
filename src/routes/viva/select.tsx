@@ -76,7 +76,7 @@ function SelectPage() {
   );
 
   return (
-    <VivaShell step={0} actions={actions} wide>
+    <VivaShell step={0} actions={actions} wide back={{ to: "/", label: "Home" }}>
       <h1 className="text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
         Pick the chapters you want to be <span className="text-gradient-warm">examined on.</span>
       </h1>

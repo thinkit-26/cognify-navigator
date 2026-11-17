@@ -54,7 +54,7 @@ function TopicSelectionPage() {
   }
 
   return (
-    <VivaShell step={1}>
+    <VivaShell step={1} back={{ to: "/viva/select" }}>
       <Eyebrow>STEP 2 OF 4</Eyebrow>
       <h1 className="mt-3 text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
         Choose your <span className="text-gradient-warm">topics.</span>

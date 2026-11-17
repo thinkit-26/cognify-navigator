@@ -65,7 +65,7 @@ function InstructionsPage() {
   }
 
   return (
-    <VivaShell step={2}>
+    <VivaShell step={2} back={{ to: "/viva/select-topic" }}>
       <Eyebrow>STEP 3 OF 4</Eyebrow>
       <h1 className="mt-3 text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
         Before you <span className="text-gradient-warm">begin.</span>
