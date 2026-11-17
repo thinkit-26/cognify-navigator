@@ -18,8 +18,9 @@
   color: var(--ink);
   font-family: var(--sans);
   background: var(--bg);
+  min-height: calc(100vh - 7rem);
   border-radius: 20px;
-  padding: 28px;
+  padding: clamp(16px, 3vw, 40px);
   overflow: hidden;
 }
 /* Sunlit Paper: warm cream canvas, amber and lemon light, a sage lift, and a warm hairline grid. */
@@ -136,11 +137,25 @@
 .vr summary { list-style: none; display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 2px; cursor: pointer; font-size: 14px; }
 .vr summary::-webkit-details-marker { display: none; }
 .vr summary small { display: block; font: 400 11px var(--mono); color: var(--soft); margin-top: 2px; }
+.vr summary .grow { flex: 1; min-width: 0; }
+.vr summary .grow .name { display: block; font-weight: 500; }
+.vr .when { font: 400 12px var(--mono); color: var(--soft); white-space: nowrap; text-align: right; }
 .vr .q { padding: 10px 12px; margin-bottom: 8px; border-radius: 10px; background: #f6f8fa; font-size: 13px; line-height: 1.5; }
 .vr .q p { margin: 0; }
 .vr .q .fb { font: 400 12px var(--mono); margin-top: 6px; }
 
+@media (max-width: 1024px) {
+  .vr .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vr .two { grid-template-columns: 1fr; }
+}
+@media (min-width: 1500px) {
+  .vr .stats { gap: 20px; }
+  .vr .two { gap: 20px; }
+}
 @media (max-width: 640px) {
+  .vr summary { flex-wrap: wrap; }
+  .vr summary .grow { flex-basis: 100%; }
+  .vr .when { text-align: left; margin-right: auto; }
   .vr { padding: 16px; border-radius: 16px; }
   .vr .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .vr .two { grid-template-columns: 1fr; }

@@ -52,11 +52,13 @@ export function VivaShell({
   step,
   actions,
   wide = false,
+  full = false,
 }: {
   children: ReactNode;
   step?: number;
   actions?: ReactNode;
   wide?: boolean;
+  full?: boolean;
 }) {
   return (
     <div className="relative isolate min-h-screen bg-background">
@@ -65,7 +67,7 @@ export function VivaShell({
       <Star className="pointer-events-none absolute left-[6%] top-40 -z-10 hidden h-6 w-6 opacity-60 lg:block" delay={0.4} />
 
       <header className="relative z-10 border-b border-border/60 bg-white/80 backdrop-blur dark:bg-[#0a1224]/80">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 md:px-8">
+        <div className={`mx-auto flex items-center justify-between gap-4 px-5 py-3 md:px-8 ${full ? "max-w-none" : "max-w-6xl"}`}>
           <Link to="/" aria-label="Cognify home" className="flex shrink-0 items-center">
             <LogoFull className="h-14 w-14" />
           </Link>
@@ -74,7 +76,7 @@ export function VivaShell({
         </div>
       </header>
 
-      <main className={`mx-auto w-full px-5 py-10 md:px-8 md:py-14 ${wide ? "max-w-6xl" : "max-w-4xl"}`}>{children}</main>
+      <main className={`mx-auto w-full px-5 py-10 md:px-8 md:py-14 ${full ? "max-w-none md:px-6" : wide ? "max-w-6xl" : "max-w-4xl"}`}>{children}</main>
     </div>
   );
 }
