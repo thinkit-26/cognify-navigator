@@ -117,28 +117,45 @@ export function buildStudentReport(sessions: Session[], answers: SlimAnswer[]): 
   };
 }
 
-/** A short verdict on overall performance: level, direction, strongest and weakest topic. `name` null means the reader is the student. */
-export function prognosis(r: StudentReport, name: string | null): string {
+export const ACCURACY_THRESHOLD = 75;
+
+const list = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
+
+/**
+ * A short, honest diagnosis in 2-3 sentences: standing (vs the class when given), strength, weakness
+ * below the threshold, trend, and one next step. `name` null means the reader is the student.
+ * `classAvg` is the mean of every student's average; students cannot read other students' rows, so only admins pass it.
+ */
+export function prognosis(r: StudentReport, name: string | null, classAvg: number | null = null): string {
   if (!r.count) return name ? `${name} has not taken a viva yet.` : "You have not taken a viva yet. Your report will appear after your first one.";
   const who = name ?? "You";
   const be = name ? "is" : "are";
-  const level = r.avg >= 80 ? "strongly" : r.avg >= PASS_MARK ? "solidly" : r.avg >= 40 ? "below the pass mark" : "poorly";
-  const out = [`${who} ${be} performing ${level}, averaging ${Math.round(r.avg)}% with ${r.passed} of ${r.count} viva${r.count === 1 ? "" : "s"} passed.`];
-  if (r.count >= 2) {
-    const recent = r.scores.slice(-3);
-    const before = r.scores.slice(0, -recent.length);
-    const base = before.length ? before : r.scores.slice(0, 1);
-    const mean = (a: number[]) => a.reduce((t, x) => t + x, 0) / a.length;
-    const d = mean(recent) - mean(base);
-    out.push(d >= 5 ? `${name ? "Their" : "Your"} scores are improving.` : d <= -5 ? `${name ? "Their" : "Your"} scores are slipping.` : `${name ? "Their" : "Your"} scores are holding steady.`);
+  const poss = name ? "Their" : "Your";
+  const avg = Math.round(r.avg);
+
+  let standing = `${who} ${be} averaging ${avg}% across ${r.count} viva${r.count === 1 ? "" : "s"}`;
+  if (classAvg != null) {
+    const d = Math.round(r.avg - classAvg);
+    standing += d === 0 ? ", level with the class average" : `, ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"} ${d > 0 ? "above" : "below"} the class average`;
   }
-  const rated = r.topics.filter((t) => t.total >= 2);
-  if (rated.length >= 2) {
-    const best = rated[rated.length - 1];
-    const worst = rated[0];
-    if (best.accuracy >= PASS_MARK) out.push(`Strongest in ${best.topic}.`);
-    if (worst.accuracy < PASS_MARK) out.push(`Needs most work in ${worst.topic}.`);
-  } else if (r.weak[0]) out.push(`Needs most work in ${r.weak[0].topic}.`);
+  const out = [standing + "."];
+  if (r.count < 2) return [...out, "Not enough data yet to call a trend."].join(" ");
+
+  const rated = r.topics.filter((t) => t.total >= 2); // sorted weakest first
+  const best = rated[rated.length - 1];
+  const weak = rated.filter((t) => t.accuracy < ACCURACY_THRESHOLD).slice(0, 3);
+  const parts: string[] = [];
+  if (best && best.accuracy >= ACCURACY_THRESHOLD) parts.push(`${who} ${be} strongest in ${best.topic} (${Math.round(best.accuracy)}%)`);
+  if (weak.length) parts.push(`${parts.length ? "but " : `${who} `}${name ? "loses" : "lose"} marks in ${list(weak.map((t) => `${t.topic} (${Math.round(t.accuracy)}%)`))}`);
+  if (parts.length) out.push(parts.join(", ") + ".");
+  if (!weak.length && rated.length) out.push(`No topic is below ${ACCURACY_THRESHOLD}%, so keep the difficulty up.`);
+
+  const recent = r.scores.slice(-3);
+  const before = r.scores.slice(0, -recent.length);
+  const mean = (a: number[]) => a.reduce((t, x) => t + x, 0) / a.length;
+  const d = mean(recent) - mean(before.length ? before : r.scores.slice(0, 1));
+  const trend = d >= 5 ? "are improving" : d <= -5 ? "are slipping" : "are holding steady";
+  out.push(`${poss} recent scores ${trend}${weak[0] ? `; next practice: ${weak[0].topic}` : ""}.`);
   return out.join(" ");
 }
 

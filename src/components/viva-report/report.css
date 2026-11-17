@@ -1,11 +1,11 @@
 /* Viva report dashboard. Everything is scoped under .vr so it cannot leak into the rest of the site. */
 .vr {
-  --bg: #f6f8fa;
-  --card: #ffffff;
+  --bg: #f8f6ea;
+  --card: rgba(255, 254, 249, 0.88);
   --ink: #1f2328;
-  --soft: #59636e;
+  --soft: #656d76;
   --faint: #818b98;
-  --line: #d1d9e0;
+  --line: rgba(214, 206, 184, 0.9);
   --bad: rgb(209, 36, 47);
   --mid: rgb(154, 103, 0);
   --good: rgb(26, 127, 55);
@@ -22,24 +22,27 @@
   padding: 28px;
   overflow: hidden;
 }
-/* "Sunlit paper": a soft warm wash and a faint fine grid under the cards. */
+/* Sunlit Paper: warm cream canvas, amber and lemon light, a sage lift, and a warm hairline grid. */
 .vr::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -2;
-  background: radial-gradient(900px 420px at 85% -10%, rgba(255, 214, 153, 0.35), transparent 70%),
-    radial-gradient(700px 380px at -10% 20%, rgba(173, 216, 255, 0.25), transparent 70%);
+  background:
+    radial-gradient(62% 48% at 4% -8%, rgba(255, 196, 82, 0.42) 0%, transparent 72%),
+    radial-gradient(50% 42% at 100% 0%, rgba(255, 232, 130, 0.42) 0%, transparent 70%),
+    radial-gradient(60% 46% at 50% 112%, rgba(176, 214, 170, 0.3) 0%, transparent 72%),
+    linear-gradient(180deg, #fffdf4 0%, #f6f3e4 100%);
 }
 .vr::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: linear-gradient(rgba(31, 35, 40, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(31, 35, 40, 0.035) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(#000, transparent 70%);
+  background-image: linear-gradient(to right, rgba(120, 92, 20, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120, 92, 20, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(90% 70% at 30% 0%, #000 0%, transparent 78%);
 }
 .vr * { box-sizing: border-box; }
 
@@ -72,7 +75,8 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 18px;
-  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04), 0 8px 24px -16px rgba(31, 35, 40, 0.18);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 1px 2px rgba(90, 70, 20, 0.05), 0 14px 32px -12px rgba(150, 110, 20, 0.22);
   min-width: 0;
 }
 .vr h3 {
@@ -87,8 +91,8 @@
 .vr .empty { font: 400 13px var(--mono); color: var(--soft); margin: 0; }
 
 .vr .prog { font-size: 17px; line-height: 1.55; margin: 0; letter-spacing: -0.01em; }
-.vr .prog span { display: inline-block; opacity: 0; filter: blur(6px); transform: translateY(4px); }
-.vr .in .prog span { animation: vr-word 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(var(--i) * 28ms); }
+.vr .prog span { display: inline-block; opacity: 0; filter: blur(12px); transform: translateY(14px); }
+.vr .in .prog span { animation: vr-word 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(var(--i) * var(--step, 0.14s)); }
 @keyframes vr-word { to { opacity: 1; filter: blur(0); transform: none; } }
 
 .vr svg { display: block; width: 100%; height: auto; overflow: visible; }

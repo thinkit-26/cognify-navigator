@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { requireVivaAccess } from "@/lib/viva/guard";
 import { VivaReportDashboard } from "@/components/viva-report/VivaReportDashboard";
-import { VivaShell } from "@/components/viva/Shell";
+import { VivaShell, vivaPill } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/history")({
   ssr: false, // needs the browser's Supabase session
@@ -14,7 +14,7 @@ function HistoryPage() {
   return (
     <VivaShell
       actions={
-        <Link to="/viva/select" className="text-orange hover:underline">
+        <Link to="/viva/select" className={vivaPill}>
           Start a new viva
         </Link>
       }

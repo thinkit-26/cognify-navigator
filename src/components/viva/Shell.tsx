@@ -17,6 +17,10 @@ export function Eyebrow({ children, className = "" }: { children: ReactNode; cla
   );
 }
 
+/** Small outlined pill for header actions (Dashboard, Sign out, ...). */
+export const vivaPill =
+  "rounded-full border border-navy/25 bg-white/70 px-4 py-1.5 text-sm font-bold text-navy transition hover:border-navy hover:bg-white dark:border-white/25 dark:bg-white/5 dark:text-cream";
+
 const STEPS = ["Chapters", "Topics", "Instructions", "Viva"];
 
 function Steps({ current }: { current: number }) {

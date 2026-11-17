@@ -8,7 +8,7 @@ import Button from "@/components/viva/Button";
 import { getChapters } from "@/lib/viva/api";
 import type { Chapter } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
-import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
+import { Eyebrow, VivaShell, vivaCard, vivaPill } from "@/components/viva/Shell";
 
 export const Route = createFileRoute("/viva/select")({
   ssr: false, // the token lives in sessionStorage, so the check must run in the browser
@@ -58,7 +58,7 @@ function SelectPage() {
 
   const actions = (
     <>
-      <Link to="/viva/history" className="text-orange hover:underline">
+      <Link to="/viva/history" className={vivaPill}>
         Dashboard
       </Link>
       <button
@@ -68,7 +68,7 @@ function SelectPage() {
           sessionStorage.clear();
           navigate({ to: "/viva/gate" });
         }}
-        className="text-navy/60 hover:text-navy dark:text-cream/60"
+        className={vivaPill}
       >
         Sign out
       </button>
