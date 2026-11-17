@@ -316,8 +316,8 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
     <div className="vr">
       <div className="bar">
         <div>
-          <h2 className="title">{mode === "student" ? "My viva report" : userId ? shownName : "Viva report, all students"}</h2>
-          <p className="sub">{mode === "student" ? me?.name ?? "" : "Latest 500 attempts"}</p>
+          <h2 className="title">{mode === "student" ? (me ? `${me.name}'s report` : "") : userId ? `${shownName}'s report` : "Viva report, all students"}</h2>
+          {mode === "admin" && !userId && <p className="sub">Latest 500 attempts</p>}
         </div>
         {mode === "admin" && sessions && (
           <div className="tools">
