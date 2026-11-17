@@ -140,7 +140,8 @@
 .vr summary small { display: block; font: 400 11px var(--mono); color: var(--soft); margin-top: 2px; }
 .vr summary .grow { flex: 1; min-width: 0; }
 .vr summary .grow .name { display: block; font-weight: 500; }
-.vr .when { font: 400 12px var(--mono); color: var(--soft); white-space: nowrap; text-align: right; }
+.vr .when { font: 400 12px var(--mono); color: var(--soft); white-space: nowrap; text-align: right; line-height: 1.3; }
+.vr .when small { display: block; margin-top: 0; font-size: 11px; color: var(--faint); }
 .vr .q { padding: 10px 12px; margin-bottom: 8px; border-radius: 10px; background: #f6f8fa; font-size: 13px; line-height: 1.5; }
 .vr .q p { margin: 0; }
 .vr .q .fb { font: 400 12px var(--mono); margin-top: 6px; }

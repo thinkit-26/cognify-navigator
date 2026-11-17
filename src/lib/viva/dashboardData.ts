@@ -95,7 +95,7 @@ export interface StudentReport {
   passed: number;
   trend: { id: string; label: string; score: number }[];
   topics: TopicStat[];
-  weak: TopicStat[]; // most-flagged first
+  weak: TopicStat[]; // topics under the 75% threshold, weakest first
 }
 
 const shortDate = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -113,7 +113,7 @@ export function buildStudentReport(sessions: Session[], answers: SlimAnswer[]): 
     passed: scores.filter((x) => x >= PASS_MARK).length,
     trend: done.slice(-10).map((s) => ({ id: s.session_id, label: shortDate(s.completed_at ?? s.started_at), score: Number(s.overall_score) })),
     topics,
-    weak: topics.filter((t) => t.flagged > 0).sort((a, b) => b.flagged - a.flagged || a.accuracy - b.accuracy).slice(0, 12),
+    weak: topics.filter((t) => t.accuracy < ACCURACY_THRESHOLD).slice(0, 12), // topics is already weakest first
   };
 }
 
