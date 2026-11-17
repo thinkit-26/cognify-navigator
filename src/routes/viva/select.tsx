@@ -59,7 +59,7 @@ function SelectPage() {
   const actions = (
     <>
       <Link to="/viva/history" className="text-orange hover:underline">
-        My results
+        Dashboard
       </Link>
       <button
         type="button"
@@ -77,11 +77,9 @@ function SelectPage() {
 
   return (
     <VivaShell step={0} actions={actions} wide>
-      <Eyebrow>STEP 1 OF 4</Eyebrow>
-      <h1 className="mt-3 text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
+      <h1 className="text-balance text-4xl font-extrabold leading-[1.05] text-navy dark:text-cream md:text-5xl">
         Pick the chapters you want to be <span className="text-gradient-warm">examined on.</span>
       </h1>
-      <p className="mt-4 max-w-xl text-lg text-muted-foreground">Choose one or more. You'll choose topics next.</p>
 
       {loading ? (
         <p className="mt-12 text-navy/60">Loading chapters...</p>

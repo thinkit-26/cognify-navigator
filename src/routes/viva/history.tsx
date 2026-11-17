@@ -6,7 +6,7 @@ import { VivaShell } from "@/components/viva/Shell";
 export const Route = createFileRoute("/viva/history")({
   ssr: false, // needs the browser's Supabase session
   beforeLoad: requireVivaAccess,
-  head: () => ({ meta: [{ title: "My results, AI Oral Viva" }] }),
+  head: () => ({ meta: [{ title: "Dashboard, AI Oral Viva" }] }),
   component: HistoryPage,
 });
 
