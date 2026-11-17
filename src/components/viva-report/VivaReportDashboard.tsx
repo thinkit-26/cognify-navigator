@@ -124,15 +124,13 @@ function Attempt({ s, answers, onOpen }: { s: Session; answers: Answer[] | undef
   );
 }
 
-function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache, onPdf, pdfBusy }: {
+function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache }: {
   name: string | null;
   classAvg: number | null;
   sessions: Session[];
   slim: SlimAnswer[];
   loadAnswers: (sessionId: string) => void;
   cache: Record<string, Answer[]>;
-  onPdf: () => void;
-  pdfBusy: boolean;
 }) {
   const r = useMemo(() => buildStudentReport(sessions, slim), [sessions, slim]);
   const attempts = [...sessions].sort((a, b) => b.started_at.localeCompare(a.started_at));
@@ -181,11 +179,6 @@ function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache, onPdf
           {attempts.map((s) => (
             <Attempt key={s.id} s={s} answers={cache[s.session_id]} onOpen={() => loadAnswers(s.session_id)} />
           ))}
-          <div style={{ marginTop: 12 }}>
-            <button type="button" className="btn" onClick={onPdf} disabled={pdfBusy || !r.count}>
-              {pdfBusy ? "Making report..." : "Download report (PDF)"}
-            </button>
-          </div>
         </Card>
       </div>
     </>
@@ -322,9 +315,14 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
   return (
     <div className="vr">
       <div className="bar">
-        <div>
+        <div className="head">
           <h2 className="title">{mode === "student" ? (me ? `${me.name}'s report` : "") : userId ? `${shownName}'s report` : "Viva report, all students"}</h2>
           {mode === "admin" && !userId && <p className="sub">Latest 500 attempts</p>}
+          {userId && (
+            <button type="button" className="btn" onClick={pdf} disabled={pdfBusy || !mine.some((s) => s.status === "completed")}>
+              {pdfBusy ? "Making report..." : "Download report (PDF)"}
+            </button>
+          )}
         </div>
         {mode === "admin" && sessions && (
           <div className="tools">
@@ -343,7 +341,7 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
       {sessions && (mode === "admin" || me) && (mode === "admin" && !userId ? (
         <ClassView sessions={sessions} slim={slim} names={names} pick={setSel} />
       ) : (
-        <StudentView name={shownName} classAvg={classAvg} sessions={mine} slim={mineSlim} loadAnswers={loadAnswers} cache={cache} onPdf={pdf} pdfBusy={pdfBusy} />
+        <StudentView name={shownName} classAvg={classAvg} sessions={mine} slim={mineSlim} loadAnswers={loadAnswers} cache={cache} />
       ))}
     </div>
   );
