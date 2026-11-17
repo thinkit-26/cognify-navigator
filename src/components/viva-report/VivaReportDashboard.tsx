@@ -80,9 +80,10 @@ function TrendChart({ trend }: { trend: StudentReport["trend"] }) {
 }
 
 function Prognosis({ text }: { text: string }) {
+  const words = text.split(" ");
   return (
-    <p className="prog" aria-label={text}>
-      {text.split(" ").map((w, i) => (
+    <p key={text} className="prog" aria-label={text} style={{ ["--step" as string]: `${Math.min(0.14, 1.4 / words.length)}s` }}>
+      {words.map((w, i) => (
         <span key={i} aria-hidden style={{ ["--i" as string]: i }}>{w}&nbsp;</span>
       ))}
     </p>
@@ -120,8 +121,9 @@ function Attempt({ s, answers, onOpen }: { s: Session; answers: Answer[] | undef
   );
 }
 
-function StudentView({ name, sessions, slim, loadAnswers, cache, onPdf, pdfBusy }: {
+function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache, onPdf, pdfBusy }: {
   name: string | null;
+  classAvg: number | null;
   sessions: Session[];
   slim: SlimAnswer[];
   loadAnswers: (sessionId: string) => void;
@@ -139,7 +141,7 @@ function StudentView({ name, sessions, slim, loadAnswers, cache, onPdf, pdfBusy 
         <Stat value={r.count ? pct(r.best) : "-"} label="Best" color={r.count ? scoreColor(r.best) : undefined} />
         <Stat value={r.count ? `${r.passed}/${r.count}` : "-"} label={`Passed (${PASS_MARK}%+)`} />
       </div>
-      <Card title="Prognosis"><Prognosis text={prognosis(r, name)} /></Card>
+      <Card title="Prognosis"><Prognosis text={prognosis(r, name, classAvg)} /></Card>
       <div className="grid two">
         <Card title="Score trend">
           {r.trend.length ? <TrendChart trend={r.trend} /> : <p className="empty">No finished vivas yet.</p>}
@@ -293,6 +295,8 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
   const mine = useMemo(() => (userId ? (sessions ?? []).filter((s) => s.user_id === userId) : []), [sessions, userId]);
   const mineSlim = useMemo(() => (userId ? slim.filter((a) => a.user_id === userId) : []), [slim, userId]);
 
+  const classAvg = useMemo(() => (mode === "admin" && sessions ? buildClassReport(sessions, []).classAvg : null), [mode, sessions]);
+
   const pdf = async () => {
     if (!userId) return;
     setPdfBusy(true);
@@ -336,7 +340,7 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
       {sessions && (mode === "admin" || me) && (mode === "admin" && !userId ? (
         <ClassView sessions={sessions} slim={slim} names={names} pick={setSel} />
       ) : (
-        <StudentView name={shownName} sessions={mine} slim={mineSlim} loadAnswers={loadAnswers} cache={cache} onPdf={pdf} pdfBusy={pdfBusy} />
+        <StudentView name={shownName} classAvg={classAvg} sessions={mine} slim={mineSlim} loadAnswers={loadAnswers} cache={cache} onPdf={pdf} pdfBusy={pdfBusy} />
       ))}
     </div>
   );
