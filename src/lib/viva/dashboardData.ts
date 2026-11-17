@@ -117,18 +117,28 @@ export function buildStudentReport(sessions: Session[], answers: SlimAnswer[]): 
   };
 }
 
-/** One or two plain-English sentences. `name` null means the reader is the student ("You"). */
+/** A short verdict on overall performance: level, direction, strongest and weakest topic. `name` null means the reader is the student. */
 export function prognosis(r: StudentReport, name: string | null): string {
   if (!r.count) return name ? `${name} has not taken a viva yet.` : "You have not taken a viva yet. Your report will appear after your first one.";
   const who = name ?? "You";
   const be = name ? "is" : "are";
-  const poss = name ? "their" : "your";
-  const out = [`${who} ${be} averaging ${Math.round(r.avg)}% across ${r.count} viva${r.count === 1 ? "" : "s"}.`];
+  const level = r.avg >= 80 ? "strongly" : r.avg >= PASS_MARK ? "solidly" : r.avg >= 40 ? "below the pass mark" : "poorly";
+  const out = [`${who} ${be} performing ${level}, averaging ${Math.round(r.avg)}% with ${r.passed} of ${r.count} viva${r.count === 1 ? "" : "s"} passed.`];
   if (r.count >= 2) {
-    const delta = Math.round(r.scores[r.scores.length - 1] - r.scores[0]);
-    out.push(delta === 0 ? `${name ? "Their" : "Your"} latest score matches ${poss} first.` : `${name ? "Their" : "Your"} latest score is ${Math.abs(delta)} point${Math.abs(delta) === 1 ? "" : "s"} ${delta > 0 ? "above" : "below"} ${poss} first.`);
+    const recent = r.scores.slice(-3);
+    const before = r.scores.slice(0, -recent.length);
+    const base = before.length ? before : r.scores.slice(0, 1);
+    const mean = (a: number[]) => a.reduce((t, x) => t + x, 0) / a.length;
+    const d = mean(recent) - mean(base);
+    out.push(d >= 5 ? `${name ? "Their" : "Your"} scores are improving.` : d <= -5 ? `${name ? "Their" : "Your"} scores are slipping.` : `${name ? "Their" : "Your"} scores are holding steady.`);
   }
-  if (r.weak[0]) out.push(`${name ? "Next practice" : "Spend your next practice"} on ${r.weak[0].topic}.`);
+  const rated = r.topics.filter((t) => t.total >= 2);
+  if (rated.length >= 2) {
+    const best = rated[rated.length - 1];
+    const worst = rated[0];
+    if (best.accuracy >= PASS_MARK) out.push(`Strongest in ${best.topic}.`);
+    if (worst.accuracy < PASS_MARK) out.push(`Needs most work in ${worst.topic}.`);
+  } else if (r.weak[0]) out.push(`Needs most work in ${r.weak[0].topic}.`);
   return out.join(" ");
 }
 
