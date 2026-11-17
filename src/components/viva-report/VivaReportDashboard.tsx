@@ -21,7 +21,8 @@ type Answer = Tables<"viva_answers">;
 type Profile = { full_name: string; class_level: string | null };
 
 const pct = (n: number) => `${Math.round(n)}%`;
-const when = (iso: string) => new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+const day = (iso: string) => new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" });
+const clock = (iso: string) => new Date(iso).toLocaleTimeString(undefined, { timeStyle: "short" });
 
 // Adds the "in" class once the card scrolls into view, which starts its entrance animation.
 function Card({ title, children, className = "" }: { title?: string; children: ReactNode; className?: string }) {
@@ -101,7 +102,7 @@ function Attempt({ s, answers, onOpen }: { s: Session; answers: Answer[] | undef
           <span className="name" title={paperName(s)}>{paperName(s)}</span>
           <small>{s.status === "completed" ? `${s.correct_count ?? 0} of ${s.total_questions ?? "?"} correct` : "In progress"}</small>
         </span>
-        <span className="when">{when(s.started_at)}</span>
+        <span className="when">{day(s.started_at)}<small>{clock(s.started_at)}</small></span>
         <b className="mono" style={{ color: score == null ? "var(--faint)" : scoreColor(score) }}>{score == null ? "-" : pct(score)}</b>
       </summary>
       <div style={{ paddingBottom: 12 }}>
@@ -168,11 +169,11 @@ function StudentView({ name, classAvg, sessions, slim, loadAnswers, cache }: {
               {r.weak.slice(0, 6).map((t) => (
                 <div className="row" key={t.topic}>
                   <span className="name" title={niceTopic(t.topic)}>{niceTopic(t.topic)}</span>
-                  <b style={{ color: "var(--bad)" }}>{t.flagged} viva{t.flagged === 1 ? "" : "s"}</b>
+                  <b style={{ color: scoreColor(t.accuracy) }}>{pct(t.accuracy)}</b>
                 </div>
               ))}
             </div>
-          ) : <p className="empty">No weak topics flagged.</p>}
+          ) : <p className="empty">No topic is under 75%.</p>}
         </Card>
         <Card title="Attempts">
           {attempts.length === 0 && <p className="empty">No attempts yet.</p>}
