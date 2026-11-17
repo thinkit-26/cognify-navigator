@@ -144,7 +144,7 @@ function ResultsPage() {
         <div className={`${vivaCard} mx-auto max-w-xl p-10 text-center`}>
           <p className="font-bold text-rose-600">{error}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
+            <Button onClick={() => navigate({ to: "/viva/history" })}>Dashboard</Button>
             <Button variant="outline" onClick={() => navigate({ to: "/" })}>Return home</Button>
           </div>
         </div>
@@ -238,7 +238,7 @@ function ResultsPage() {
 
       <div className="mt-12 flex flex-wrap justify-center gap-4">
         <Button onClick={handleDownload}>Download report</Button>
-        <Button variant="outline" onClick={() => navigate({ to: "/viva/history" })}>My results</Button>
+        <Button variant="outline" onClick={() => navigate({ to: "/viva/history" })}>Dashboard</Button>
         <Button variant="outline" onClick={() => navigate({ to: "/" })}>Return home</Button>
       </div>
     </VivaShell>
