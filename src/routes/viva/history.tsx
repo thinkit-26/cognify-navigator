@@ -14,6 +14,7 @@ function HistoryPage() {
   return (
     <VivaShell
       full
+      back={{ to: "/viva/select" }}
       actions={
         <Link to="/viva/select" className={vivaPill}>
           Start a new viva
