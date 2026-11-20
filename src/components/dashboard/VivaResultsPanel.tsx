@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { withTimeout } from "@/lib/withTimeout";
 import { VivaReportDashboard } from "@/components/viva-report/VivaReportDashboard";
 
 const input =
@@ -13,17 +14,23 @@ export function VivaResultsPanel() {
   const [password, setPassword] = useState("");
   const [authMsg, setAuthMsg] = useState("");
 
+  // Reads the saved session locally (no network round trip) and gives up after 10s, so this can never sit on "Checking access".
   const checkAdmin = async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return setIsAdmin(false);
-    const { data: row } = await supabase
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", data.user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    setIsAdmin(!!row);
-    if (!row) setAuthMsg("This account is not an admin.");
+    try {
+      const { data } = await withTimeout(supabase.auth.getSession(), 10000, "timeout");
+      const user = data.session?.user;
+      if (!user) return setIsAdmin(false);
+      const { data: row } = await withTimeout(
+        supabase.from("user_roles").select("id").eq("user_id", user.id).eq("role", "admin").maybeSingle(),
+        10000,
+        "timeout",
+      );
+      setIsAdmin(!!row);
+      if (!row) setAuthMsg("This account is not an admin.");
+    } catch {
+      setIsAdmin(false);
+      setAuthMsg("Couldn't reach the server. Check your connection and sign in again.");
+    }
   };
   useEffect(() => {
     checkAdmin();

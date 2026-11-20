@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FileCheck2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { withTimeout } from "@/lib/withTimeout";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { PYQ_SESSIONS } from "@/data/pyqYears";
@@ -48,17 +49,23 @@ export function PyqUploadPanel() {
   const [password, setPassword] = useState("");
   const [authMsg, setAuthMsg] = useState("");
 
+  // Reads the saved session locally (no network round trip) and gives up after 10s, so this can never sit on "Checking access".
   const checkAdmin = async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return setIsAdmin(false);
-    const { data: row } = await supabase
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", data.user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    setIsAdmin(!!row);
-    if (!row) setAuthMsg("This account is not an admin.");
+    try {
+      const { data } = await withTimeout(supabase.auth.getSession(), 10000, "timeout");
+      const user = data.session?.user;
+      if (!user) return setIsAdmin(false);
+      const { data: row } = await withTimeout(
+        supabase.from("user_roles").select("id").eq("user_id", user.id).eq("role", "admin").maybeSingle(),
+        10000,
+        "timeout",
+      );
+      setIsAdmin(!!row);
+      if (!row) setAuthMsg("This account is not an admin.");
+    } catch {
+      setIsAdmin(false);
+      setAuthMsg("Couldn't reach the server. Check your connection and sign in again.");
+    }
   };
   useEffect(() => {
     checkAdmin();
@@ -74,7 +81,11 @@ export function PyqUploadPanel() {
 
   const upload = async (file: File, folder: string) => {
     const path = `${folder}/${crypto.randomUUID()}.${ext(file)}`;
-    const { error } = await supabase.storage.from("pyqs").upload(path, file, { contentType: file.type });
+    const { error } = await withTimeout(
+      supabase.storage.from("pyqs").upload(path, file, { contentType: file.type }),
+      180000,
+      "The upload is taking too long. Check your connection and try again.",
+    );
     if (error) throw error;
     return path;
   };
@@ -88,9 +99,11 @@ export function PyqUploadPanel() {
       const folder = `${cls}/${subject}`.replace(/[^\w/-]+/g, "_");
       const paper_path = await upload(paper, folder);
       const solution_path = solution ? await upload(solution, folder) : null;
-      const { error } = await supabase.from("pyq_papers").insert({
-        class_level: cls, subject, exam: exam.trim(), year, paper_path, solution_path,
-      });
+      const { error } = await withTimeout(
+        supabase.from("pyq_papers").insert({ class_level: cls, subject, exam: exam.trim(), year, paper_path, solution_path }),
+        30000,
+        "Saving the paper timed out. Check the list below before trying again.",
+      );
       if (error) throw error;
       setMsg("Uploaded. It is now live on the Previous Year Papers page.");
       setPaper(null);
