@@ -259,8 +259,8 @@ export function VivaReportDashboard({ mode }: { mode: "student" | "admin" }) {
 
   useEffect(() => {
     (async () => {
-      const { data: auth } = await supabase.auth.getUser();
-      const user = auth.user;
+      const { data: auth } = await supabase.auth.getSession();
+      const user = auth.session?.user;
       if (!user) return setError("Sign in to see your results.");
       let q = supabase.from("viva_sessions").select("*").order("started_at", { ascending: false }).limit(500);
       if (mode === "student") q = q.eq("user_id", user.id);

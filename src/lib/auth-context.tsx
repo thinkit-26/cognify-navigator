@@ -74,7 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     clearCheatRole();
-    await supabase.auth.signOut();
+    // "local" clears this browser at once; the default also waits on a server round trip, which is what hung.
+    await supabase.auth.signOut({ scope: "local" });
   };
 
   const cheat = getCheatRole();
