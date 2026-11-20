@@ -1,14 +1,70 @@
-from fastapi import APIRouter
+import logging
+import time
+
+from fastapi import APIRouter, BackgroundTasks
 
 from core.loader import load_questions
+from core.logging import get_logger, log_event, redact
 from models.schemas import VivaRequest, AnswerRequest
 from services.session_manager import session_manager
 from services.gemini_evaluator import evaluate_session, build_final_evaluation
 
+log = get_logger("viva")
+
 router = APIRouter(
     prefix="/viva",
-    tags=["Viva"]
+    tags=["Viva"],
 )
+
+
+def _run_evaluation(session_id: str) -> None:
+    """
+    Runs after the answer response has been sent, so a slow Gemini call (up to
+    ~45s of retry backoff) can no longer outlive the client's request timeout.
+    /viva/evaluation/{id} still reports "pending" until this finishes, which is
+    exactly what the frontend already polls for.
+    """
+    session = session_manager.get_session(session_id)
+    if session is None:
+        log_event(
+            log,
+            "evaluation_session_missing",
+            level=logging.WARNING,
+            session_id=session_id,
+        )
+        return
+
+    started = time.perf_counter()
+    log_event(
+        log,
+        "evaluation_started",
+        session_id=session_id,
+        total_answers=len(session.answers),
+    )
+
+    try:
+        raw_eval = evaluate_session(session.answers)
+        final_eval = build_final_evaluation(session.answers, raw_eval)
+        session.set_evaluation(final_eval)
+        log_event(
+            log,
+            "evaluation_finished",
+            session_id=session_id,
+            elapsed_ms=round((time.perf_counter() - started) * 1000),
+            overall_score=final_eval.get("overall_score"),
+            total_questions=final_eval.get("total_questions"),
+        )
+    except Exception as e:
+        session.set_evaluation({"error": f"Evaluation failed: {str(e)}"})
+        log_event(
+            log,
+            "evaluation_failed",
+            level=logging.ERROR,
+            session_id=session_id,
+            elapsed_ms=round((time.perf_counter() - started) * 1000),
+            error_type=type(e).__name__,
+            error=redact(str(e)),
+        )
 
 
 @router.post("/start")
@@ -20,6 +76,15 @@ def start_viva(request: VivaRequest):
         questions,
         request.chapters,
         request.topics
+    )
+
+    log_event(
+        log,
+        "session_created",
+        session_id=session.session_id,
+        chapters=len(request.chapters),
+        topics=len(request.topics),
+        total_questions=len(session.questions),
     )
 
     return {
@@ -50,23 +115,31 @@ def get_question(session_id: str):
 
 
 @router.post("/answer")
-def submit_answer(request: AnswerRequest):
+def submit_answer(request: AnswerRequest, background_tasks: BackgroundTasks):
 
     session = session_manager.get_session(request.session_id)
 
     if session is None:
+        log_event(
+            log,
+            "answer_session_missing",
+            level=logging.WARNING,
+            session_id=request.session_id,
+        )
         return {"error": "Session not found"}
 
     session.submit_answer(request.answer)
 
     if session.is_completed():
 
-        try:
-            raw_eval = evaluate_session(session.answers)
-            final_eval = build_final_evaluation(session.answers, raw_eval)
-            session.set_evaluation(final_eval)
-        except Exception as e:
-            session.set_evaluation({"error": f"Evaluation failed: {str(e)}"})
+        log_event(
+            log,
+            "session_completed",
+            session_id=request.session_id,
+            total_answers=len(session.answers),
+        )
+        # Handled after the response is sent — see _run_evaluation.
+        background_tasks.add_task(_run_evaluation, request.session_id)
 
         return {
             "status": "completed",
@@ -83,6 +156,7 @@ def submit_answer(request: AnswerRequest):
 
 @router.get("/evaluation/{session_id}")
 def get_evaluation(session_id: str):
+    # Polled every 2s by the frontend, so deliberately not logged.
 
     session = session_manager.get_session(session_id)
 

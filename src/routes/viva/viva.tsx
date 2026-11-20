@@ -5,6 +5,12 @@ import Button from "@/components/viva/Button";
 import MicrophoneContainer, { RecordingPhase } from "@/components/viva/MicrophoneContainer";
 import { getQuestion, submitAnswer } from "@/lib/viva/api";
 import { logAnswer } from "@/lib/viva/log";
+import {
+  beginResponse,
+  endResponse,
+  noteStopReason,
+  noteSubmit,
+} from "@/lib/viva/diagnostics";
 import type { VivaQuestion } from "@/lib/viva/types";
 import { requireVivaAccess } from "@/lib/viva/guard";
 import { Eyebrow, VivaShell, vivaCard } from "@/components/viva/Shell";
@@ -59,6 +65,18 @@ function VivaPage() {
     setTimeLeft(computeReadingTime(questionText));
   }
 
+  // Opens the diagnostic record for the question about to be answered. The
+  // reading window logged here is what the UI actually promised the student.
+  function beginQuestionLog(q: VivaQuestion, number: number) {
+    if (!sessionId) return;
+    beginResponse({
+      sessionId,
+      questionNumber: number,
+      questionId: q.id,
+      readingConfiguredMs: computeReadingTime(q.question) * 1000,
+    });
+  }
+
   async function loadQuestion() {
     if (!sessionId) return;
 
@@ -73,6 +91,7 @@ function VivaPage() {
       setQuestion(data.question);
       setQuestionNumber(data.question_number);
       setTotalQuestions(data.total_questions);
+      beginQuestionLog(data.question, data.question_number);
       resetToReading(data.question.question);
     } catch {
       // network or server error — stay on page, user can retry via Next
@@ -93,6 +112,9 @@ function VivaPage() {
         setPhase("recording");
         setTimeLeft(ANSWER_TIME);
       } else if (phase === "recording") {
+        // The 45s cap stopping capture. Recorded so a mid-sentence cutoff is
+        // attributable from the log alone.
+        noteStopReason("timer");
         setPhase("processing");
       }
       return;
@@ -114,8 +136,13 @@ function VivaPage() {
     const answerToSubmit = transcriptRef.current.trim() || "No answer recorded";
 
     try {
+      const submitStartedAt = performance.now();
       const response = await submitAnswer(sessionId, answerToSubmit);
+      noteSubmit(true, performance.now() - submitStartedAt);
       if (question) void logAnswer(sessionId, question, questionNumber, answerToSubmit);
+
+      // Close this answer's diagnostic line before the next question opens one.
+      endResponse();
 
       if (response.status === "completed") {
         navigate({ to: "/viva/evaluating" });
@@ -125,16 +152,34 @@ function VivaPage() {
       setQuestion(response.next_question);
       setQuestionNumber(response.question_number);
       setTotalQuestions(response.total_questions);
+      beginQuestionLog(response.next_question, response.question_number);
       resetToReading(response.next_question.question);
     } catch {
-      // submit failed — stay on page, user can retry
+      // Submit failed — the answer never reached the server. Logged rather than
+      // swallowed; we stay on the page as before, because a blind retry could
+      // double-record if the server had already advanced.
+      noteSubmit(false, null);
+      endResponse();
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  // Transcription failed, so the server never saw this answer and the same
+  // question is still current. Close the failed attempt, open a fresh record
+  // and return to reading so the student answers again instead of sitting on a
+  // permanently disabled "Processing" screen.
+  function handleTranscriptionFailed() {
+    endResponse();
+    if (sessionId && question) {
+      beginQuestionLog(question, questionNumber);
+    }
+    resetToReading(question?.question ?? "");
+  }
+
   function handleManualAdvance() {
     if (phase !== "recording") return;
+    noteStopReason("manual");
     setPhase("processing");
   }
 
@@ -204,6 +249,7 @@ function VivaPage() {
             phase={phase}
             onTranscriptChange={handleTranscriptChange}
             onTranscriptionDone={handleTranscriptionDone}
+            onTranscriptionFailed={handleTranscriptionFailed}
           />
         </div>
       </motion.div>
