@@ -116,13 +116,16 @@ export async function submitAnswer(
   return response.json();
 }
 
-export async function transcribeAudio(blob: Blob): Promise<string> {
+export async function transcribeAudio(blob: Blob, responseId?: string): Promise<string> {
   const formData = new FormData();
   formData.append("file", blob, "recording.webm");
 
   const response = await timedFetch(`${API_BASE}/transcribe/`, {
     method: "POST",
     body: formData,
+    // Correlates this upload with the frontend's [viva-diag] line. /transcribe
+    // already sends Authorization, which preflights, so this costs nothing extra.
+    headers: responseId ? { "X-Viva-Response-Id": responseId } : undefined,
   });
 
   if (!response.ok) {
