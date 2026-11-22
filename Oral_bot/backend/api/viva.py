@@ -1,7 +1,7 @@
 import logging
 import time
 
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from core.loader import load_questions
 from core.logging import get_logger, log_event, redact
@@ -75,8 +75,26 @@ def start_viva(request: VivaRequest):
     session = session_manager.create_session(
         questions,
         request.chapters,
-        request.topics
+        request.topics,
+        question_count=request.question_count,
     )
+
+    if not session.questions:
+        log_event(
+            log,
+            "session_empty",
+            level=logging.WARNING,
+            chapters=request.chapters,
+            topics=request.topics,
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="No questions are available for the selected topics.",
+        )
+
+    selected_topics = sorted({q["topic"] for q in session.questions})
+    selected_concepts = len({q.get("concept") or q["id"] for q in session.questions})
+    missing_topics = sorted(set(request.topics) - set(selected_topics))
 
     log_event(
         log,
@@ -85,7 +103,19 @@ def start_viva(request: VivaRequest):
         chapters=len(request.chapters),
         topics=len(request.topics),
         total_questions=len(session.questions),
+        selected_topics=len(selected_topics),
+        selected_concepts=selected_concepts,
+        missing_topics=missing_topics,
     )
+
+    if missing_topics:
+        log_event(
+            log,
+            "session_topics_missing",
+            level=logging.WARNING,
+            session_id=session.session_id,
+            missing_topics=missing_topics,
+        )
 
     return {
         "session_id": session.session_id,
