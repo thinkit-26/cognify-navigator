@@ -158,6 +158,48 @@ export type Database = {
         }
         Relationships: []
       }
+      viva_questions: {
+        Row: {
+          active: boolean
+          answer: string
+          chapter: string
+          chapter_no: number
+          concept: string | null
+          created_at: string
+          diagram_required: boolean
+          id: number
+          question: string
+          source: string
+          topic: string
+        }
+        Insert: {
+          active?: boolean
+          answer: string
+          chapter: string
+          chapter_no: number
+          concept?: string | null
+          created_at?: string
+          diagram_required?: boolean
+          id?: number
+          question: string
+          source?: string
+          topic: string
+        }
+        Update: {
+          active?: boolean
+          answer?: string
+          chapter?: string
+          chapter_no?: number
+          concept?: string | null
+          created_at?: string
+          diagram_required?: boolean
+          id?: number
+          question?: string
+          source?: string
+          topic?: string
+        }
+        Relationships: []
+      }
       viva_sessions: {
         Row: {
           chapters: number[]
