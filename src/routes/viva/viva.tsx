@@ -52,6 +52,9 @@ function VivaPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
+  // An answer that transcribes to nothing (muted mic, silence) gets one retry per question.
+  const emptyRetriedFor = useRef<number | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -131,6 +134,13 @@ function VivaPage() {
 
   async function handleTranscriptionDone() {
     if (!sessionId || isSubmitting) return;
+
+    if (!transcriptRef.current.trim() && emptyRetriedFor.current !== questionNumber) {
+      emptyRetriedFor.current = questionNumber;
+      setNotice("We couldn't hear your answer. Check your microphone and try again.");
+      handleTranscriptionFailed();
+      return;
+    }
     setIsSubmitting(true);
 
     const answerToSubmit = transcriptRef.current.trim() || "No answer recorded";
@@ -149,6 +159,7 @@ function VivaPage() {
         return;
       }
 
+      setNotice(null);
       setQuestion(response.next_question);
       setQuestionNumber(response.question_number);
       setTotalQuestions(response.total_questions);
@@ -256,7 +267,8 @@ function VivaPage() {
 
       <div className="mt-8 flex items-center justify-between gap-4">
         <div className="text-sm font-semibold text-navy/60 dark:text-cream/60">
-          {phase === "reading" && "Read the question. Recording starts automatically."}
+          {phase === "reading" &&
+            (notice ? <span className="text-orange">{notice}</span> : "Read the question. Recording starts automatically.")}
           {phase === "recording" && "Recording your answer..."}
           {phase === "processing" && "Processing your answer..."}
         </div>
