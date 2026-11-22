@@ -160,7 +160,9 @@ export function endResponse(anomaly?: string): ResponseLog | null {
  * the loss is visible instead of silent. No-op once the answer has been closed.
  */
 export function abortResponse(reason: StopReason): void {
-  if (!active) return;
+  // Capture never began (e.g. React dev StrictMode's simulated unmount on mount, or the student
+  // leaving while still reading): nothing was lost, so do not flag it or close the record early.
+  if (!active || !active.recordingStartedAt) return;
   noteStopReason(reason);
   noteRecordingStop();
   endResponse();

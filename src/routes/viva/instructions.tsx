@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/components/viva/Button";
 import { Mic, Clock, BrainCircuit, CheckCircle2 } from "lucide-react";
@@ -28,6 +28,12 @@ function InstructionsPage() {
     { icon: <BrainCircuit className="h-6 w-6" />, text: "You have up to 45 seconds to answer. Click Next when you're done, or it advances automatically." },
     { icon: <CheckCircle2 className="h-6 w-6" />, text: "Speak clearly. Your responses are evaluated automatically." },
   ];
+
+  // Nothing selected (opened directly, or the picks were cleared after a finished viva): start over at the chapters.
+  useEffect(() => {
+    const picked = (key: string) => JSON.parse(localStorage.getItem(key) || "[]").length > 0;
+    if (!picked("selectedChapters") || !picked("selectedTopics")) navigate({ to: "/viva/select", replace: true });
+  }, [navigate]);
 
   async function handleStart() {
     setStarting(true);
