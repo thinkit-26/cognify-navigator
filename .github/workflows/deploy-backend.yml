@@ -1,0 +1,35 @@
+name: Deploy Viva backend
+
+# The website deploys itself through Cloudflare. The Viva backend (FastAPI) runs on our own server, so this
+# logs in over SSH and runs Oral_bot/deploy/deploy.sh there. Setup steps are in Oral_bot/deploy/README.md.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Oral_bot/backend/**"
+      - "Oral_bot/deploy/**"
+  workflow_dispatch:
+
+# One deploy at a time; a newer merge waits for the running one instead of cancelling it half way.
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Set up SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      # The server's authorized_keys forces this key to run the deploy script, whatever command is sent.
+      - name: Deploy
+        run: ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" deploy
