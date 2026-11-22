@@ -60,6 +60,9 @@ function TopicSelectionPage() {
         Choose your <span className="text-gradient-warm">topics.</span>
       </h1>
       <p className="mt-4 max-w-xl text-lg text-muted-foreground">Questions will come only from the topics you tick.</p>
+      <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+        We ask two questions per topic where possible, and never repeat the same concept.
+      </p>
 
       <div className="mt-10 space-y-3">
         {topics.map((topic) => {

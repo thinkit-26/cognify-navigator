@@ -1,6 +1,7 @@
 from uuid import uuid4
-from random import shuffle
 from datetime import datetime
+
+from services.question_selector import select_questions
 
 
 class VivaSession:
@@ -67,23 +68,23 @@ class SessionManager:
 
         self.sessions = {}
 
-    def create_session(self, all_questions, chapters, topics):
+    def create_session(self, all_questions, chapters, topics, question_count=None):
+        """Build a balanced, concept-unique question set for this attempt."""
 
-        filtered = []
+        selected = select_questions(
+            all_questions,
+            chapters,
+            topics,
+            limit=question_count,
+        )
 
-        for q in all_questions:
+        session = VivaSession(selected)
 
-            if (
-                q["chapter_no"] in chapters
-                and q["topic"] in topics
-            ):
-                filtered.append(q)
-
-        shuffle(filtered)
-
-        session = VivaSession(filtered)
-
-        self.sessions[session.session_id] = session
+        # An empty selection is invalid, so it is not kept around. The API
+        # returns a clear 400 instead of handing back a session that cannot ask
+        # a single question.
+        if selected:
+            self.sessions[session.session_id] = session
 
         return session
 
