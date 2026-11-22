@@ -19,6 +19,7 @@ import {
   Flame,
   BookOpen,
   ClipboardList,
+  FileQuestion,
   ChevronRight,
 } from "lucide-react";
 import {
@@ -44,6 +45,7 @@ import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { PyqUploadPanel } from "@/components/dashboard/PyqUploadPanel";
 import { VivaResultsPanel } from "@/components/dashboard/VivaResultsPanel";
+import { VivaQuestionsPanel } from "@/components/dashboard/VivaQuestionsPanel";
 import { MonthCalendar } from "@/components/dashboard/MonthCalendar";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -70,7 +72,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin, Cognify" }] }),
 });
 
-type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs" | "viva";
+type Tab = "overview" | "papers" | "students" | "notices" | "calendar" | "attendance" | "pyqs" | "viva" | "vivaq";
 
 const ORANGE = "#E2740A";
 const GLOW = "#FBBF24";
@@ -109,6 +111,7 @@ function AdminDashboard() {
           { label: "Papers", icon: FileText, onClick: () => setTab("papers"), active: tab === "papers" },
           { label: "Previous Year Papers", icon: BookOpen, onClick: () => setTab("pyqs"), active: tab === "pyqs" },
           { label: "Viva Results", icon: ClipboardList, onClick: () => setTab("viva"), active: tab === "viva" },
+          { label: "Viva Questions", icon: FileQuestion, onClick: () => setTab("vivaq"), active: tab === "vivaq" },
           { label: "Students", icon: Users, onClick: () => setTab("students"), active: tab === "students" },
           { label: "Notices", icon: Megaphone, onClick: () => setTab("notices"), active: tab === "notices" },
           { label: "Calendar", icon: CalendarDays, onClick: () => setTab("calendar"), active: tab === "calendar" },
@@ -124,12 +127,13 @@ function AdminDashboard() {
               {tab === "papers" && "Paper Analytics"}
               {tab === "pyqs" && "Previous Year Papers"}
               {tab === "viva" && "Viva Results"}
+              {tab === "vivaq" && "Viva Questions"}
               {tab === "students" && "Class Roster"}
               {tab === "notices" && "Notices"}
               {tab === "calendar" && "Calendar"}
               {tab === "attendance" && "Attendance"}
             </h1>
-            {tab !== "pyqs" && tab !== "viva" && (
+            {tab !== "pyqs" && tab !== "viva" && tab !== "vivaq" && (
               <p className="mt-1 text-xs text-navy/60 dark:text-cream/60 sm:text-sm">
                 {STUDENTS.length} students · {PAPERS.length} papers · class avg {classAvg}%
               </p>
@@ -145,6 +149,7 @@ function AdminDashboard() {
         {tab === "papers" && <PapersPanel />}
         {tab === "pyqs" && <PyqUploadPanel />}
         {tab === "viva" && <VivaResultsPanel />}
+        {tab === "vivaq" && <VivaQuestionsPanel />}
         {tab === "students" && <StudentsPanel onOpen={setActiveStudent} />}
         {tab === "notices" && <NoticesPanel />}
         {tab === "calendar" && <CalendarPanel />}
