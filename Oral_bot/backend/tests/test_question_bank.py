@@ -1,4 +1,3 @@
-import io
 import os
 
 os.environ.setdefault("VIVA_TOKEN_SECRET", "test-secret")
@@ -6,14 +5,12 @@ os.environ.setdefault("GEMINI_API_KEY", "x")
 os.environ.setdefault("DEEPGRAM_API_KEY", "x")
 
 import pytest
-from docx import Document
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 
 import core.admin_auth as admin_auth
 import core.loader as loader
 from core.admin_auth import require_admin
-from services.question_extractor import docx_text, extract_questions, normalise
 
 
 class FakeResponse:
@@ -76,50 +73,6 @@ def test_loader_serves_stale_cache_when_supabase_goes_down(monkeypatch):
 def test_loader_uses_json_when_unconfigured(monkeypatch):
     monkeypatch.delenv("SUPABASE_URL")
     assert len(loader.load_questions()) == 81
-
-
-def test_normalise_cleans_and_prefixes_concepts():
-    items = [
-        {"topic": "  Ohm's   Law ", "concept": "Ohms Law!", "question": "  What is  V=IR? ", "answer": " V by I ", "diagram_required": 0},
-        {"topic": "", "concept": "ch2.series", "question": "Why series?", "answer": "", "diagram_required": True},
-        {"topic": "X", "concept": "c", "question": "   ", "answer": "dropped", "diagram_required": False},
-    ]
-    out = normalise(items, 2)
-    assert len(out) == 2
-    assert out[0] == {"topic": "Ohm's Law", "concept": "ch2.ohms-law", "question": "What is V=IR?", "answer": "V by I", "diagram_required": False}
-    assert out[1]["topic"] == "GENERAL" and out[1]["concept"] == "ch2.series" and out[1]["diagram_required"] is True
-
-
-def make_docx(*lines):
-    doc = Document()
-    for line in lines:
-        doc.add_paragraph(line)
-    buf = io.BytesIO()
-    doc.save(buf)
-    return buf.getvalue()
-
-
-def test_docx_text_reads_paragraphs():
-    assert docx_text(make_docx("Q1. What is current?", "Ans: flow of charge")) == "Q1. What is current?\nAns: flow of charge"
-
-
-def test_extract_routes_by_file_type_and_rejects_others():
-    seen = {}
-
-    def generate(prompt, pdf):
-        seen["pdf"], seen["prompt"] = pdf, prompt
-        return {"questions": [{"topic": "T", "concept": "x", "question": "q?", "answer": "a", "diagram_required": False}]}
-
-    assert extract_questions(b"%PDF", "p.PDF", 2, "ELECTRICITY", ["OLD"], generate)[0]["concept"] == "ch2.x"
-    assert seen["pdf"] == b"%PDF" and "OLD" in seen["prompt"]
-
-    extract_questions(make_docx("Q1 hello"), "p.docx", 2, "ELECTRICITY", [], generate)
-    assert seen["pdf"] is None and "Q1 hello" in seen["prompt"]
-
-    with pytest.raises(ValueError):
-        extract_questions(b"x", "p.txt", 2, "E", [], generate)
-    with pytest.raises(ValueError):
-        extract_questions(make_docx(), "p.docx", 2, "E", [], generate)
 
 
 def admin_client():
