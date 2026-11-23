@@ -9,6 +9,7 @@ const links = [
   { to: "/", label: "Approach", hash: "approach" },
   { to: "/", label: "Programs", hash: "programs" },
   { to: "/", label: "Why Cognify", hash: "why" },
+  { to: "/derivations", label: "Derivations", hash: "" },
   { to: "/testimonials", label: "Testimonials", hash: "" },
   { to: "/contact", label: "Contact", hash: "" },
 ];
@@ -58,6 +59,12 @@ export function Navbar() {
             className="rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy dark:text-cream"
           >
             Previous Year Papers
+          </Link>
+          <Link
+            to="/derivations"
+            className="hidden rounded-full border-2 border-navy/30 px-4 py-1 text-[0.78rem] font-bold text-navy transition hover:border-navy md:inline-block dark:text-cream"
+          >
+            Derivations
           </Link>
           <Link
             to="/viva/gate"

@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PyqsRouteImport } from './routes/pyqs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DerivationsRouteImport } from './routes/derivations'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -62,6 +63,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DerivationsRoute = DerivationsRouteImport.update({
+  id: '/derivations',
+  path: '/derivations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/derivations': typeof DerivationsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/derivations': typeof DerivationsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/derivations': typeof DerivationsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/pyqs': typeof PyqsRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/dashboard'
+    | '/derivations'
     | '/login'
     | '/privacy'
     | '/pyqs'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/dashboard'
+    | '/derivations'
     | '/login'
     | '/privacy'
     | '/pyqs'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/dashboard'
+    | '/derivations'
     | '/login'
     | '/privacy'
     | '/pyqs'
@@ -260,6 +272,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  DerivationsRoute: typeof DerivationsRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   PyqsRoute: typeof PyqsRoute
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/derivations': {
+      id: '/derivations'
+      path: '/derivations'
+      fullPath: '/derivations'
+      preLoaderRoute: typeof DerivationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -420,6 +440,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  DerivationsRoute: DerivationsRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   PyqsRoute: PyqsRoute,

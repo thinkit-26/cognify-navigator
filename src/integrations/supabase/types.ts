@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      derivations: {
+        Row: {
+          chapter: string
+          class_level: number
+          created_at: string
+          file_path: string
+          id: string
+          subject: string
+          title: string
+        }
+        Insert: {
+          chapter: string
+          class_level: number
+          created_at?: string
+          file_path: string
+          id?: string
+          subject: string
+          title: string
+        }
+        Update: {
+          chapter?: string
+          class_level?: number
+          created_at?: string
+          file_path?: string
+          id?: string
+          subject?: string
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           class_level: string | null
