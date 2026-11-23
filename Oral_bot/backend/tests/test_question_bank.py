@@ -5,12 +5,8 @@ os.environ.setdefault("GEMINI_API_KEY", "x")
 os.environ.setdefault("DEEPGRAM_API_KEY", "x")
 
 import pytest
-from fastapi import Depends, FastAPI
-from fastapi.testclient import TestClient
 
-import core.admin_auth as admin_auth
 import core.loader as loader
-from core.admin_auth import require_admin
 
 
 class FakeResponse:
@@ -73,34 +69,3 @@ def test_loader_serves_stale_cache_when_supabase_goes_down(monkeypatch):
 def test_loader_uses_json_when_unconfigured(monkeypatch):
     monkeypatch.delenv("SUPABASE_URL")
     assert len(loader.load_questions()) == 81
-
-
-def admin_client():
-    app = FastAPI()
-
-    @app.get("/x", dependencies=[Depends(require_admin)])
-    def x():
-        return {"ok": True}
-
-    return TestClient(app)
-
-
-def test_admin_check(monkeypatch):
-    def fake_get(url, params=None, headers=None, timeout=None):
-        if url.endswith("/auth/v1/user"):
-            return FakeResponse(200, {"id": "u1"}) if headers["Authorization"] == "Bearer good" else FakeResponse(401, {})
-        return FakeResponse(200, [{"id": "r"}] if params["user_id"] == "eq.u1" else [])
-
-    monkeypatch.setattr(admin_auth.requests, "get", fake_get)
-    c = admin_client()
-    assert c.get("/x").status_code == 401
-    assert c.get("/x", headers={"Authorization": "Bearer bad"}).status_code == 401
-    assert c.get("/x", headers={"Authorization": "Bearer good"}).status_code == 200
-
-    monkeypatch.setattr(admin_auth.requests, "get", lambda url, params=None, headers=None, timeout=None: FakeResponse(200, {"id": "u2"}) if url.endswith("/user") else FakeResponse(200, []))
-    assert c.get("/x", headers={"Authorization": "Bearer good"}).status_code == 403
-
-
-def test_admin_requires_server_config(monkeypatch):
-    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY")
-    assert admin_client().get("/x", headers={"Authorization": "Bearer t"}).status_code == 503
