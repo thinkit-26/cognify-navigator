@@ -4,9 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { AdminGate } from "@/components/dashboard/AdminGate";
 import { PyqPick as PickSelect } from "@/components/PyqPick";
-import { pollExtract, startExtract, type DraftQuestion } from "@/lib/viva/questionAdmin";
+import { extractBooklet, type DraftQuestion } from "@/lib/viva/extractBooklet";
 
-type Bank = Pick<Tables<"viva_questions">, "id" | "chapter_no" | "chapter" | "topic" | "question" | "answer">;
+type Bank = Pick<Tables<"viva_questions">, "id" | "chapter_no" | "chapter" | "topic" | "concept" | "question" | "answer">;
 type Draft = DraftQuestion & { key: number; include: boolean };
 
 const input =
@@ -15,7 +15,6 @@ const label = "mb-2 block text-xs font-bold tracking-[0.2em] text-orange";
 const card = "rounded-2xl border border-border bg-white/60 p-4 dark:border-white/10 dark:bg-white/[0.03]";
 const AUTO = "auto";
 const NEW = "new";
-const POLL_MS = 2000;
 
 function QuestionsManager() {
   const [bank, setBank] = useState<Bank[]>([]);
@@ -37,7 +36,7 @@ function QuestionsManager() {
   const loadBank = async () => {
     const { data, error: e } = await supabase
       .from("viva_questions")
-      .select("id, chapter_no, chapter, topic, question, answer")
+      .select("id, chapter_no, chapter, topic, concept, question, answer")
       .eq("active", true)
       .order("chapter_no")
       .order("topic")
@@ -69,31 +68,12 @@ function QuestionsManager() {
     setDraft(null);
     setProgress({ done: 0, total: 0 });
     try {
-      const { jobId, total } = await startExtract(file, forced ?? undefined);
-      setProgress({ done: 0, total });
-      let failures = 0;
-      for (;;) {
-        await new Promise((r) => setTimeout(r, POLL_MS));
-        if (cancelled.current) return;
-        let p;
-        try {
-          p = await pollExtract(jobId);
-          failures = 0;
-        } catch (e) {
-          if (++failures >= 5 || (e instanceof Error && /gone/i.test(e.message))) throw e;
-          continue;
-        }
-        setProgress({ done: p.done, total: p.total });
-        setWarnings(p.warnings);
-        if (p.status === "error") throw new Error(p.error || "The paper could not be read.");
-        if (p.status === "done") {
-          const qs = p.questions ?? [];
-          setDraft(qs.map((q, i) => ({ ...q, key: i, include: !q.duplicate })));
-          const dupes = qs.filter((q) => q.duplicate).length;
-          setMsg(`Found ${qs.length} questions${dupes ? `, ${dupes} already in the bank (left unticked)` : ""}.`);
-          return;
-        }
-      }
+      const { questions: qs, warnings: w } = await extractBooklet(file, forced, bank, (done, total) => !cancelled.current && setProgress({ done, total }));
+      if (cancelled.current) return;
+      setWarnings(w);
+      setDraft(qs.map((q, i) => ({ ...q, key: i, include: !q.duplicate })));
+      const dupes = qs.filter((q) => q.duplicate).length;
+      setMsg(`Found ${qs.length} questions${dupes ? `, ${dupes} already in the bank (left unticked)` : ""}.`);
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Could not read the paper.");
     } finally {
@@ -223,7 +203,7 @@ function QuestionsManager() {
               <div className="h-full rounded-full bg-orange transition-all" style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 4}%` }} />
             </div>
             <p className="mt-2 text-xs font-bold text-navy/70 dark:text-cream/70">
-              {progress.total ? `Part ${Math.min(progress.done + 1, progress.total)} of ${progress.total}. A full booklet takes a minute or two.` : "Uploading…"}
+              {progress.total ? `Part ${Math.min(progress.done + 1, progress.total)} of ${progress.total}. A full booklet takes a minute or two.` : "Reading the file…"}
             </p>
           </div>
         )}

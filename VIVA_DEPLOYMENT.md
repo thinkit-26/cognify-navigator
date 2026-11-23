@@ -57,6 +57,7 @@ In the **Cloudflare** deployment settings (Workers/Pages build environment), set
 |---|---|
 | `VITE_ORALBOT_BACKEND` | `https://your-render-service.onrender.com` |
 | `VIVA_TOKEN_SECRET` | random secret, add it as a **Secret**. Must match the backend's `VIVA_TOKEN_SECRET` (`openssl rand -hex 32`) |
+| `GEMINI_API_KEY` | your Gemini key, add it as a **Secret**. Used by the admin Viva Questions tab to read uploaded booklets (it never reaches the browser) |
 
 Then redeploy the frontend.
 

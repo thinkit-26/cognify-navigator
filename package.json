@@ -11,7 +11,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "tsx --test src/lib/viva/booklet.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
@@ -22,7 +23,9 @@
     "framer-motion": "^12.39.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.575.0",
+    "mammoth": "^1.13.0",
     "nitro": "3.0.260603-beta",
+    "pdfjs-dist": "^6.5.438",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-media-recorder": "^1.7.2",
@@ -45,6 +48,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "prettier": "^3.7.3",
+    "tsx": "^4.23.15",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
