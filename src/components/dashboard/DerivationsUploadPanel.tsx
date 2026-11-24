@@ -6,23 +6,44 @@ import { FilePill } from "@/components/dashboard/FilePill";
 import { PyqPick as Pick } from "@/components/PyqPick";
 import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { derivationFileUrl, listDerivations } from "@/lib/derivations";
+import { findDerivations, readHeader, splitPdf, type FileHeader } from "@/lib/derivationSplit";
+import { pdfPages } from "@/lib/pdfText";
 
 type Item = Awaited<ReturnType<typeof listDerivations>>[number];
+interface Row {
+  number: number;
+  title: string;
+  first: number;
+  last: number;
+  include: boolean;
+  uploaded: boolean; // this D number is already there for the chapter
+}
 
 const input =
   "h-12 w-full rounded-full border-2 border-navy/30 bg-white px-5 text-sm font-bold text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream";
 const label = "mb-2 block text-xs font-bold tracking-[0.2em] text-orange";
 const ext = (f: File) => f.name.split(".").pop()?.toLowerCase() ?? "pdf";
+const orangeBtn = "h-12 rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-10 text-sm font-bold text-white shadow-sm disabled:opacity-50";
 
 function DerivationsForm() {
   const [cls, setCls] = useState<number | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
   const [chapter, setChapter] = useState("");
+  const [existing, setExisting] = useState<Item[]>([]);
+
+  // whole-chapter upload
+  const [chapterFile, setChapterFile] = useState<File | null>(null);
+  const [rows, setRows] = useState<Row[] | null>(null);
+  const [header, setHeader] = useState<FileHeader | null>(null);
+  const [reading, setReading] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [chapterMsg, setChapterMsg] = useState("");
+
+  // one derivation
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
-  const [existing, setExisting] = useState<Item[]>([]);
 
   const subjects = cls ? PYQ_SUBJECTS[cls] : [];
 
@@ -33,6 +54,81 @@ function DerivationsForm() {
   useEffect(refresh, [cls, subject]);
 
   const chapters = useMemo(() => [...new Set(existing.map((d) => d.chapter))], [existing]);
+  const have = useMemo(() => new Set(existing.filter((d) => d.chapter === chapter.trim() && d.position != null).map((d) => d.position)), [existing, chapter]);
+
+  // Which D numbers are already uploaded changes when the chapter changes: re-mark the rows.
+  useEffect(() => {
+    setRows((rs) => rs && rs.map((r) => ({ ...r, uploaded: have.has(r.number), include: r.uploaded === have.has(r.number) ? r.include : !have.has(r.number) })));
+  }, [have]);
+
+  const pickChapterFile = async (f: File | null) => {
+    setChapterFile(f);
+    setRows(null);
+    setHeader(null);
+    setChapterMsg("");
+    if (!f) return;
+    if (!f.name.toLowerCase().endsWith(".pdf")) return setChapterMsg("Choose a PDF.");
+    setReading(true);
+    try {
+      const pages = await pdfPages(f);
+      const found = findDerivations(pages);
+      if (!found.length) return setChapterMsg('No derivations were found. Each one should start on a page with a header line like "D1".');
+      setHeader(readHeader(pages));
+      setRows(found.map((d) => ({ number: d.number, title: d.title, first: d.first, last: d.last, include: !have.has(d.number), uploaded: have.has(d.number) })));
+    } catch {
+      setChapterMsg("That PDF could not be read.");
+    } finally {
+      setReading(false);
+    }
+  };
+
+  const mismatch = [
+    header?.classLevel && cls && header.classLevel !== cls ? `The file says Class ${header.classLevel}, but you chose Class ${cls}.` : "",
+    header?.subject && subject && header.subject.toLowerCase() !== subject.toLowerCase() ? `The file says ${header.subject}, but you chose ${subject}.` : "",
+  ].filter(Boolean);
+
+  const chosen = (rows ?? []).filter((r) => r.include);
+  const ready = !!cls && !!subject && !!chapter.trim();
+
+  const uploadChapter = async () => {
+    if (!ready || !chapterFile || !chosen.length) return;
+    setProgress({ done: 0, total: chosen.length });
+    setChapterMsg("");
+    let done = 0;
+    try {
+      const parts = await splitPdf(new Uint8Array(await chapterFile.arrayBuffer()), chosen);
+      for (let i = 0; i < chosen.length; i++) {
+        const path = `${`${cls}/${subject}`.replace(/[^\w/-]+/g, "_")}/${crypto.randomUUID()}.pdf`;
+        const { error: upErr } = await withTimeout(
+          supabase.storage.from("derivations").upload(path, parts[i], { contentType: "application/pdf" }),
+          120000,
+          "An upload took too long. Check your connection.",
+        );
+        if (upErr) throw upErr;
+        const { error } = await supabase.from("derivations").insert({
+          class_level: cls!,
+          subject: subject!,
+          chapter: chapter.trim(),
+          title: `D${chosen[i].number} · ${chosen[i].title.trim()}`,
+          file_path: path,
+          position: chosen[i].number,
+        });
+        if (error) {
+          await supabase.storage.from("derivations").remove([path]);
+          throw error;
+        }
+        setProgress({ done: ++done, total: chosen.length });
+      }
+      setChapterMsg(`Uploaded ${done} derivations. They are live on the Derivations page.`);
+      setRows(null);
+      setChapterFile(null);
+    } catch (err) {
+      setChapterMsg(`${err instanceof Error ? err.message : "Upload failed."} ${done} of ${chosen.length} were uploaded; the rest were not. Check the list below.`);
+    } finally {
+      setProgress(null);
+      refresh();
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,63 +168,119 @@ function DerivationsForm() {
   };
 
   return (
-    <form onSubmit={submit} className="w-full max-w-5xl space-y-5">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Pick
-          label="CLASS"
-          placeholder="Select class"
-          value={cls ? String(cls) : null}
-          options={[9, 10, 11, 12].map((c) => ({ value: String(c), label: `Class ${c}` }))}
-          onChange={(v) => {
-            setCls(Number(v));
-            setSubject(null);
-          }}
-        />
-        <Pick label="SUBJECT" placeholder="Select subject" disabled={!cls} value={subject} options={subjects.map((x) => ({ value: x, label: x }))} onChange={setSubject} />
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
+    <div className="w-full max-w-5xl space-y-8">
+      <div className="space-y-5">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Pick
+            label="CLASS"
+            placeholder="Select class"
+            value={cls ? String(cls) : null}
+            options={[9, 10, 11, 12].map((c) => ({ value: String(c), label: `Class ${c}` }))}
+            onChange={(v) => {
+              setCls(Number(v));
+              setSubject(null);
+            }}
+          />
+          <Pick label="SUBJECT" placeholder="Select subject" disabled={!cls} value={subject} options={subjects.map((x) => ({ value: x, label: x }))} onChange={setSubject} />
+        </div>
+        <div className="max-w-xl">
           <label className={label}>CHAPTER</label>
-          <input className={input} list="derivation-chapters" value={chapter} onChange={(e) => setChapter(e.target.value)} placeholder="e.g. Electricity" />
+          <input className={input} list="derivation-chapters" value={chapter} onChange={(e) => setChapter(e.target.value)} placeholder="e.g. Electric Charges and Fields" />
           <datalist id="derivation-chapters">
             {chapters.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>
         </div>
-        <div>
-          <label className={label}>DERIVATION</label>
-          <input className={input} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Resistors in series" />
+      </div>
+
+      <section className="space-y-4">
+        <h2 className="text-lg font-black text-navy dark:text-cream">Upload a whole chapter</h2>
+        <p className="text-sm text-navy/70 dark:text-cream/70">
+          Upload one PDF with all the derivations of the chapter. Each derivation should start on a page headed D1, D2, D3… and is split into its own file.
+        </p>
+        <div className="max-w-md">
+          <FilePill label="CHAPTER PDF" file={chapterFile} onPick={pickChapterFile} />
         </div>
-      </div>
-      <div className="max-w-md">
-        <FilePill label="FILE (PDF OR IMAGE)" file={file} onPick={setFile} />
-      </div>
-      <button disabled={busy} className="h-12 rounded-full bg-gradient-to-r from-[#E2740A] to-[#FBBF24] px-10 text-sm font-bold text-white shadow-sm disabled:opacity-50">
-        {busy ? "Uploading…" : "Upload"}
-      </button>
-      {msg && <p className="text-sm font-semibold text-navy dark:text-cream">{msg}</p>}
+        {reading && <p className="text-sm font-semibold text-navy dark:text-cream">Reading the PDF…</p>}
+        {mismatch.map((m) => (
+          <p key={m} className="text-sm font-semibold text-amber-600">
+            {m} Check the class and subject above.
+          </p>
+        ))}
+        {rows && (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm font-bold text-navy dark:text-cream">
+                Found {rows.length} derivations (D{rows[0].number} to D{rows[rows.length - 1].number}). Fix any title, untick any you don't want.
+              </p>
+              <button type="button" onClick={uploadChapter} disabled={!ready || !!progress || !chosen.length} className={orangeBtn}>
+                {progress ? `Uploading ${progress.done} of ${progress.total}…` : `Upload ${chosen.length} derivations`}
+              </button>
+            </div>
+            {!ready && <p className="text-sm font-semibold text-rose-500">Choose the class, the subject and type the chapter above first.</p>}
+            <ul className="space-y-2">
+              {rows.map((r) => (
+                <li key={r.number} className={`flex flex-wrap items-center gap-3 rounded-2xl border border-border px-4 py-2 dark:border-white/10 ${r.include ? "" : "opacity-60"}`}>
+                  <label className="flex items-center gap-2 text-sm font-black text-navy dark:text-cream">
+                    <input type="checkbox" checked={r.include} onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.number === r.number ? { ...x, include: e.target.checked } : x)))} />D{r.number}
+                  </label>
+                  <input
+                    className="min-w-0 flex-1 rounded-full border-2 border-navy/20 bg-white px-4 py-1.5 text-sm text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream"
+                    value={r.title}
+                    onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.number === r.number ? { ...x, title: e.target.value } : x)))}
+                    aria-label={`Title of D${r.number}`}
+                  />
+                  <span className="text-xs font-bold text-navy/60 dark:text-cream/60">{r.first === r.last ? `page ${r.first + 1}` : `pages ${r.first + 1} to ${r.last + 1}`}</span>
+                  {r.uploaded && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">Already uploaded</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {chapterMsg && <p className="text-sm font-semibold text-navy dark:text-cream">{chapterMsg}</p>}
+      </section>
+
+      <form onSubmit={submit} className="space-y-4">
+        <h2 className="text-lg font-black text-navy dark:text-cream">Or add a single derivation</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className={label}>DERIVATION</label>
+            <input className={input} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Resistors in series" />
+          </div>
+          <FilePill label="FILE (PDF OR IMAGE)" file={file} onPick={setFile} />
+        </div>
+        <button disabled={busy} className={orangeBtn}>
+          {busy ? "Uploading…" : "Upload"}
+        </button>
+        {msg && <p className="text-sm font-semibold text-navy dark:text-cream">{msg}</p>}
+      </form>
 
       {existing.length > 0 && (
-        <ul className="space-y-2 pt-4">
-          {existing.map((d) => (
-            <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl border border-border px-4 py-2 text-sm dark:border-white/10">
-              <span className="min-w-0 font-bold text-navy dark:text-cream">
-                {d.chapter} · {d.title}
-              </span>
-              <span className="flex shrink-0 items-center gap-3">
-                <a href={derivationFileUrl(d.file_path)} target="_blank" rel="noreferrer" className="text-xs font-bold text-orange hover:underline">
-                  Open
-                </a>
-                <button type="button" onClick={() => remove(d)} className="text-xs font-bold text-rose-500">
-                  Delete
-                </button>
-              </span>
-            </li>
-          ))}
-        </ul>
+        <section className="space-y-2">
+          <h2 className="text-lg font-black text-navy dark:text-cream">
+            Uploaded ({existing.length})
+          </h2>
+          <ul className="space-y-2">
+            {existing.map((d) => (
+              <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl border border-border px-4 py-2 text-sm dark:border-white/10">
+                <span className="min-w-0 font-bold text-navy dark:text-cream">
+                  {d.chapter} · {d.title}
+                </span>
+                <span className="flex shrink-0 items-center gap-3">
+                  <a href={derivationFileUrl(d.file_path)} target="_blank" rel="noreferrer" className="text-xs font-bold text-orange hover:underline">
+                    Open
+                  </a>
+                  <button type="button" onClick={() => remove(d)} className="text-xs font-bold text-rose-500">
+                    Delete
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
-    </form>
+    </div>
   );
 }
 

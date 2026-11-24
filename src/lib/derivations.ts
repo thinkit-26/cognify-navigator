@@ -13,7 +13,8 @@ export async function listChapters(cls: number, subject: string) {
 export async function listDerivations(cls: number, subject: string, chapter?: string) {
   let q = supabase.from("derivations").select("*").eq("class_level", cls).eq("subject", subject);
   if (chapter) q = q.eq("chapter", chapter);
-  const { data, error } = await q.order("created_at", { ascending: true });
+  // D1, D2, ... in order; one-off uploads without a number come after, oldest first.
+  const { data, error } = await q.order("position", { ascending: true, nullsFirst: false }).order("created_at", { ascending: true });
   if (error) throw error;
   return data;
 }
