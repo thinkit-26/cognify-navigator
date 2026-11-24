@@ -20,13 +20,13 @@ export function DerivationList({ cls, subject, chapter }: { cls: number; subject
   return (
     <ul className="mt-4 space-y-3 text-left">
       {items.map((d) => (
-        <li key={d.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 dark:border-white/10">
-          <span className="font-bold text-navy dark:text-cream">{d.title}</span>
+        <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 dark:border-white/10">
+          <span className="min-w-0 font-bold text-navy dark:text-cream">{d.title}</span>
           <a
             href={derivationFileUrl(d.file_path)}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border-2 border-navy/30 px-4 py-1 text-xs font-bold text-navy transition hover:border-navy dark:text-cream"
+            className="shrink-0 rounded-full border-2 border-navy/30 px-4 py-1 text-xs font-bold text-navy transition hover:border-navy dark:text-cream"
           >
             Open
           </a>
