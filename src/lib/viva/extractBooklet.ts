@@ -1,4 +1,5 @@
 import { extractChunk } from "@/lib/viva/extract.functions";
+import { pdfPages } from "@/lib/pdfText";
 import { makeChunks, normalise, splitText, type BankRow, type DraftQuestion, type Place } from "@/lib/viva/booklet";
 
 export type { DraftQuestion } from "@/lib/viva/booklet";
@@ -8,21 +9,6 @@ const WORKERS = 4;
 export interface ExtractResult {
   questions: DraftQuestion[];
   warnings: string[];
-}
-
-/** One line per text row, per page, using the PDF's own line breaks. */
-async function pdfPages(file: File): Promise<string[][]> {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
-  const pdf = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()), verbosity: 0 }).promise;
-  const pages: string[][] = [];
-  for (let n = 1; n <= pdf.numPages; n++) {
-    const content = await (await pdf.getPage(n)).getTextContent();
-    let text = "";
-    for (const item of content.items) if ("str" in item) text += item.str + (item.hasEOL ? "\n" : "");
-    pages.push(text.split("\n"));
-  }
-  return pages;
 }
 
 async function docxPages(file: File): Promise<string[][]> {
