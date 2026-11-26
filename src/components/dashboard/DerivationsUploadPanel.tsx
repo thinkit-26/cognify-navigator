@@ -9,6 +9,7 @@ import { derivationFileUrl, listDerivations } from "@/lib/derivations";
 import { findDerivations, readHeader, splitPdf, type FileHeader } from "@/lib/derivationSplit";
 import { pdfPages } from "@/lib/pdfText";
 import { readDerivationNames } from "@/lib/derivationNames";
+import { chapterOptions, type ChapterOption } from "@/lib/chapters";
 
 type Item = Awaited<ReturnType<typeof listDerivations>>[number];
 interface Row {
@@ -30,6 +31,8 @@ function DerivationsForm() {
   const [cls, setCls] = useState<number | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
   const [chapter, setChapter] = useState("");
+  const [chapterNo, setChapterNo] = useState<number | null>(null); // its place in the book; null for a chapter typed by hand
+  const [typing, setTyping] = useState(false);
   const [existing, setExisting] = useState<Item[]>([]);
 
   // whole-chapter upload
@@ -58,8 +61,33 @@ function DerivationsForm() {
   };
   useEffect(refresh, [cls, subject]);
 
-  const chapters = useMemo(() => [...new Set(existing.map((d) => d.chapter))], [existing]);
-  const have = useMemo(() => new Set(existing.filter((d) => d.chapter === chapter.trim() && d.position != null).map((d) => d.position)), [existing, chapter]);
+  // Every chapter of the subject, in book order, each under the name already used for it.
+  const options = useMemo(() => chapterOptions(cls, subject, existing), [cls, subject, existing]);
+  const key = (o: ChapterOption) => (o.no != null ? `n:${o.no}` : `x:${o.name}`);
+  const itemsOf = (o: ChapterOption) =>
+    existing.filter((d) => (o.no != null ? d.chapter_no === o.no : d.chapter_no == null && d.chapter === o.name)).sort((a, b) => (a.position ?? Infinity) - (b.position ?? Infinity));
+  const have = useMemo(
+    () => new Set(existing.filter((d) => d.position != null && (chapterNo != null ? d.chapter_no === chapterNo : d.chapter === chapter.trim())).map((d) => d.position)),
+    [existing, chapter, chapterNo],
+  );
+  const pickChapter = (v: string) => {
+    if (v === "new") {
+      setTyping(true);
+      setChapter("");
+      setChapterNo(null);
+      return;
+    }
+    const o = options.find((x) => key(x) === v);
+    if (!o) return;
+    setTyping(false);
+    setChapter(o.name);
+    setChapterNo(o.no);
+  };
+  const resetChapter = () => {
+    setChapter("");
+    setChapterNo(null);
+    setTyping(false);
+  };
 
   // The numbers restart from 1 in every chapter, whatever the numbers printed in the file. "Number from" is
   // there for a chapter that comes in more than one file.
@@ -131,6 +159,7 @@ function DerivationsForm() {
           class_level: cls!,
           subject: subject!,
           chapter: chapter.trim(),
+          chapter_no: chapterNo,
           title: `D${numberOf(chosen[i])} · ${chosen[i].title.trim()}`,
           file_path: path,
           position: numberOf(chosen[i]),
@@ -166,7 +195,7 @@ function DerivationsForm() {
       );
       if (upErr) throw upErr;
       const { error } = await withTimeout(
-        supabase.from("derivations").insert({ class_level: cls, subject, chapter: chapter.trim(), title: title.trim(), file_path: path }),
+        supabase.from("derivations").insert({ class_level: cls, subject, chapter: chapter.trim(), chapter_no: chapterNo, title: title.trim(), file_path: path }),
         30000,
         "Saving timed out. Check the list below before trying again.",
       );
@@ -201,18 +230,42 @@ function DerivationsForm() {
             onChange={(v) => {
               setCls(Number(v));
               setSubject(null);
+              resetChapter();
             }}
           />
-          <Pick label="SUBJECT" placeholder="Select subject" disabled={!cls} value={subject} options={subjects.map((x) => ({ value: x, label: x }))} onChange={setSubject} />
+          <Pick
+            label="SUBJECT"
+            placeholder="Select subject"
+            disabled={!cls}
+            value={subject}
+            options={subjects.map((x) => ({ value: x, label: x }))}
+            onChange={(v) => {
+              setSubject(v);
+              resetChapter();
+            }}
+          />
         </div>
-        <div className="max-w-xl">
-          <label className={label}>CHAPTER</label>
-          <input className={input} list="derivation-chapters" value={chapter} onChange={(e) => setChapter(e.target.value)} placeholder="e.g. Electric Charges and Fields" />
-          <datalist id="derivation-chapters">
-            {chapters.map((c) => (
-              <option key={c} value={c} />
-            ))}
-          </datalist>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Pick
+            label="CHAPTER"
+            placeholder={subject ? "Select chapter" : "Select a subject first"}
+            disabled={!subject}
+            value={typing ? "new" : chapterNo != null ? `n:${chapterNo}` : chapter ? `x:${chapter}` : null}
+            options={[
+              ...options.map((o) => {
+                const n = itemsOf(o).length;
+                return { value: key(o), label: `${o.no != null ? `${o.no}. ` : ""}${o.name}${n ? ` (${n})` : ""}` };
+              }),
+              { value: "new", label: "+ Another chapter…" },
+            ]}
+            onChange={pickChapter}
+          />
+          {typing && (
+            <div>
+              <label className={label}>CHAPTER NAME</label>
+              <input className={input} value={chapter} onChange={(e) => setChapter(e.target.value)} placeholder="Type the chapter's name" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -247,7 +300,7 @@ function DerivationsForm() {
                 {progress ? `Uploading ${progress.done} of ${progress.total}…` : names ? `Reading the headings ${names.done} of ${names.total}…` : `Upload ${chosen.length} derivations`}
               </button>
             </div>
-            {!ready && <p className="text-sm font-semibold text-rose-500">Choose the class, the subject and type the chapter above first.</p>}
+            {!ready && <p className="text-sm font-semibold text-rose-500">Choose the class, the subject and the chapter above first.</p>}
             <ul className="space-y-2">
               {rows.map((r) => (
                 <li key={r.index} className={`flex flex-wrap items-center gap-3 rounded-2xl border border-border px-4 py-2 dark:border-white/10 ${isChosen(r) ? "" : "opacity-60"}`}>
@@ -285,28 +338,44 @@ function DerivationsForm() {
         {msg && <p className="text-sm font-semibold text-navy dark:text-cream">{msg}</p>}
       </form>
 
-      {existing.length > 0 && (
+      {cls && subject && (
         <section className="space-y-2">
           <h2 className="text-lg font-black text-navy dark:text-cream">
-            Uploaded ({existing.length})
+            Uploaded, chapter by chapter ({existing.length})
           </h2>
-          <ul className="space-y-2">
-            {existing.map((d) => (
-              <li key={d.id} className="flex items-center justify-between gap-3 rounded-2xl border border-border px-4 py-2 text-sm dark:border-white/10">
-                <span className="min-w-0 font-bold text-navy dark:text-cream">
-                  {d.chapter} · {d.title}
-                </span>
-                <span className="flex shrink-0 items-center gap-3">
-                  <a href={derivationFileUrl(d.file_path)} target="_blank" rel="noreferrer" className="text-xs font-bold text-orange hover:underline">
-                    Open
-                  </a>
-                  <button type="button" onClick={() => remove(d)} className="text-xs font-bold text-rose-500">
-                    Delete
-                  </button>
-                </span>
-              </li>
-            ))}
-          </ul>
+          {options.map((o) => {
+            const items = itemsOf(o);
+            const heading = `${o.no != null ? `${o.no}. ` : ""}${o.name}`;
+            if (!items.length) {
+              return (
+                <p key={key(o)} className="rounded-2xl border border-dashed border-border px-4 py-2 text-sm font-semibold text-navy/50 dark:border-white/10 dark:text-cream/50">
+                  {heading} <span className="ml-2 text-xs font-bold">no derivations yet</span>
+                </p>
+              );
+            }
+            return (
+              <details key={key(o)} open={chapterNo === o.no && chapter === o.name} className="rounded-2xl border border-border px-4 py-2 dark:border-white/10">
+                <summary className="cursor-pointer text-sm font-black text-navy dark:text-cream">
+                  {heading} <span className="ml-2 text-xs font-bold text-orange">{items.length} derivation{items.length === 1 ? "" : "s"}</span>
+                </summary>
+                <ul className="mt-2 space-y-1">
+                  {items.map((d) => (
+                    <li key={d.id} className="flex items-center justify-between gap-3 rounded-xl px-2 py-1.5 text-sm hover:bg-navy/[0.04] dark:hover:bg-white/[0.05]">
+                      <span className="min-w-0 font-bold text-navy dark:text-cream">{d.title}</span>
+                      <span className="flex shrink-0 items-center gap-3">
+                        <a href={derivationFileUrl(d.file_path)} target="_blank" rel="noreferrer" className="text-xs font-bold text-orange hover:underline">
+                          Open
+                        </a>
+                        <button type="button" onClick={() => remove(d)} className="text-xs font-bold text-rose-500">
+                          Delete
+                        </button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            );
+          })}
         </section>
       )}
     </div>

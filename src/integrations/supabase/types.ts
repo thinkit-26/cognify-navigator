@@ -17,6 +17,7 @@ export type Database = {
       derivations: {
         Row: {
           chapter: string
+          chapter_no: number | null
           class_level: number
           created_at: string
           file_path: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           chapter: string
+          chapter_no?: number | null
           class_level: number
           created_at?: string
           file_path: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           chapter?: string
+          chapter_no?: number | null
           class_level?: number
           created_at?: string
           file_path?: string
