@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { withTimeout } from "@/lib/withTimeout";
 import { AdminGate } from "@/components/dashboard/AdminGate";
@@ -8,15 +8,16 @@ import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { derivationFileUrl, listDerivations } from "@/lib/derivations";
 import { findDerivations, readHeader, splitPdf, type FileHeader } from "@/lib/derivationSplit";
 import { pdfPages } from "@/lib/pdfText";
+import { readDerivationNames } from "@/lib/derivationNames";
 
 type Item = Awaited<ReturnType<typeof listDerivations>>[number];
 interface Row {
-  number: number;
+  index: number; // 0-based order in the file; the D number is the "number from" value plus this
   title: string;
+  edited: boolean; // the admin changed the title, so the name read from the page must not replace it
   first: number;
   last: number;
-  include: boolean;
-  uploaded: boolean; // this D number is already there for the chapter
+  include: boolean | null; // null: left to the default, which is to skip a derivation already uploaded
 }
 
 const input =
@@ -36,6 +37,10 @@ function DerivationsForm() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [header, setHeader] = useState<FileHeader | null>(null);
   const [reading, setReading] = useState(false);
+  const [start, setStart] = useState("1");
+  const [names, setNames] = useState<{ done: number; total: number } | null>(null);
+  const [nameWarn, setNameWarn] = useState("");
+  const latestFile = useRef<File | null>(null);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [chapterMsg, setChapterMsg] = useState("");
 
@@ -56,16 +61,21 @@ function DerivationsForm() {
   const chapters = useMemo(() => [...new Set(existing.map((d) => d.chapter))], [existing]);
   const have = useMemo(() => new Set(existing.filter((d) => d.chapter === chapter.trim() && d.position != null).map((d) => d.position)), [existing, chapter]);
 
-  // Which D numbers are already uploaded changes when the chapter changes: re-mark the rows.
-  useEffect(() => {
-    setRows((rs) => rs && rs.map((r) => ({ ...r, uploaded: have.has(r.number), include: r.uploaded === have.has(r.number) ? r.include : !have.has(r.number) })));
-  }, [have]);
+  // The numbers restart from 1 in every chapter, whatever the numbers printed in the file. "Number from" is
+  // there for a chapter that comes in more than one file.
+  const startNo = Math.max(1, Math.trunc(Number(start)) || 1);
+  const numberOf = (r: Row) => startNo + r.index;
+  const isUploaded = (r: Row) => have.has(numberOf(r));
+  const isChosen = (r: Row) => r.include ?? !isUploaded(r);
 
   const pickChapterFile = async (f: File | null) => {
+    latestFile.current = f;
     setChapterFile(f);
     setRows(null);
     setHeader(null);
     setChapterMsg("");
+    setNames(null);
+    setNameWarn("");
     if (!f) return;
     if (!f.name.toLowerCase().endsWith(".pdf")) return setChapterMsg("Choose a PDF.");
     setReading(true);
@@ -74,7 +84,19 @@ function DerivationsForm() {
       const found = findDerivations(pages);
       if (!found.length) return setChapterMsg('No derivations were found. Each one should start on a page with a header line like "D1".');
       setHeader(readHeader(pages));
-      setRows(found.map((d) => ({ number: d.number, title: d.title, first: d.first, last: d.last, include: !have.has(d.number), uploaded: have.has(d.number) })));
+      setRows(found.map((d, index) => ({ index, title: d.title, edited: false, first: d.first, last: d.last, include: null })));
+
+      // The heading next to each D badge is drawn as shapes, not text, so it is read from a picture of the strip.
+      const stale = () => latestFile.current !== f;
+      setNames({ done: 0, total: found.length }); // uploading waits until the names are in
+      readDerivationNames(
+        f,
+        found.map((d) => d.first),
+        (i, name) => !stale() && setRows((rs) => rs && rs.map((r) => (r.index === i && !r.edited ? { ...r, title: name } : r))),
+        (done, total) => !stale() && setNames(done < total ? { done, total } : null),
+      )
+        .catch(() => !stale() && setNameWarn("The headings next to D1, D2… could not be read from the pictures, so the text under each heading is used. Check the titles."))
+        .finally(() => !stale() && setNames(null));
     } catch {
       setChapterMsg("That PDF could not be read.");
     } finally {
@@ -87,7 +109,7 @@ function DerivationsForm() {
     header?.subject && subject && header.subject.toLowerCase() !== subject.toLowerCase() ? `The file says ${header.subject}, but you chose ${subject}.` : "",
   ].filter(Boolean);
 
-  const chosen = (rows ?? []).filter((r) => r.include);
+  const chosen = (rows ?? []).filter(isChosen);
   const ready = !!cls && !!subject && !!chapter.trim();
 
   const uploadChapter = async () => {
@@ -109,9 +131,9 @@ function DerivationsForm() {
           class_level: cls!,
           subject: subject!,
           chapter: chapter.trim(),
-          title: `D${chosen[i].number} · ${chosen[i].title.trim()}`,
+          title: `D${numberOf(chosen[i])} · ${chosen[i].title.trim()}`,
           file_path: path,
-          position: chosen[i].number,
+          position: numberOf(chosen[i]),
         });
         if (error) {
           await supabase.storage.from("derivations").remove([path]);
@@ -208,31 +230,38 @@ function DerivationsForm() {
             {m} Check the class and subject above.
           </p>
         ))}
+        {nameWarn && <p className="text-sm font-semibold text-amber-600">{nameWarn}</p>}
         {rows && (
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm font-bold text-navy dark:text-cream">
-                Found {rows.length} derivations (D{rows[0].number} to D{rows[rows.length - 1].number}). Fix any title, untick any you don't want.
-              </p>
-              <button type="button" onClick={uploadChapter} disabled={!ready || !!progress || !chosen.length} className={orangeBtn}>
-                {progress ? `Uploading ${progress.done} of ${progress.total}…` : `Upload ${chosen.length} derivations`}
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div className="flex flex-wrap items-end gap-4">
+                <div className="w-32">
+                  <label className={label}>NUMBER FROM</label>
+                  <input className={input} type="number" min={1} value={start} onChange={(e) => setStart(e.target.value)} aria-label="Number the first derivation as" />
+                </div>
+                <p className="max-w-md pb-3 text-sm font-bold text-navy dark:text-cream">
+                  {rows.length} derivations: D{startNo} to D{startNo + rows.length - 1}. Fix any title, untick any you don't want.
+                </p>
+              </div>
+              <button type="button" onClick={uploadChapter} disabled={!ready || !!progress || !!names || !chosen.length} className={orangeBtn}>
+                {progress ? `Uploading ${progress.done} of ${progress.total}…` : names ? `Reading the headings ${names.done} of ${names.total}…` : `Upload ${chosen.length} derivations`}
               </button>
             </div>
             {!ready && <p className="text-sm font-semibold text-rose-500">Choose the class, the subject and type the chapter above first.</p>}
             <ul className="space-y-2">
               {rows.map((r) => (
-                <li key={r.number} className={`flex flex-wrap items-center gap-3 rounded-2xl border border-border px-4 py-2 dark:border-white/10 ${r.include ? "" : "opacity-60"}`}>
+                <li key={r.index} className={`flex flex-wrap items-center gap-3 rounded-2xl border border-border px-4 py-2 dark:border-white/10 ${isChosen(r) ? "" : "opacity-60"}`}>
                   <label className="flex items-center gap-2 text-sm font-black text-navy dark:text-cream">
-                    <input type="checkbox" checked={r.include} onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.number === r.number ? { ...x, include: e.target.checked } : x)))} />D{r.number}
+                    <input type="checkbox" checked={isChosen(r)} onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.index === r.index ? { ...x, include: e.target.checked } : x)))} />D{numberOf(r)}
                   </label>
                   <input
                     className="min-w-0 flex-1 rounded-full border-2 border-navy/20 bg-white px-4 py-1.5 text-sm text-navy focus:border-navy focus:outline-none dark:bg-white/5 dark:text-cream"
                     value={r.title}
-                    onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.number === r.number ? { ...x, title: e.target.value } : x)))}
-                    aria-label={`Title of D${r.number}`}
+                    onChange={(e) => setRows((rs) => rs && rs.map((x) => (x.index === r.index ? { ...x, title: e.target.value, edited: true } : x)))}
+                    aria-label={`Title of D${numberOf(r)}`}
                   />
                   <span className="text-xs font-bold text-navy/60 dark:text-cream/60">{r.first === r.last ? `page ${r.first + 1}` : `pages ${r.first + 1} to ${r.last + 1}`}</span>
-                  {r.uploaded && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">Already uploaded</span>}
+                  {isUploaded(r) && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">Already uploaded</span>}
                 </li>
               ))}
             </ul>
