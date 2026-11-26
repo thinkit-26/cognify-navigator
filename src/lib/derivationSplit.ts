@@ -20,9 +20,34 @@ const D_HEADER = /^D\s*(\d{1,3})$/;
 const ROMAN: Record<string, number> = { IX: 9, X: 10, XI: 11, XII: 12 };
 const clean = (text: string) => text.replace(/[ \s]+/g, " ").trim();
 
-/** The title is the first sentence of the question under the header, cut at a word. */
+const MAX_TITLE = 300;
+
+// Symbols the Word-to-PDF conversion put in a private-use font, so pdf.js cannot read them as text.
+const SYMBOLS: Record<string, string> = {
+  "\ue081": "(", "\ue082": ")", "\ue083": "[", "\ue084": "]", "\ue085": "{",
+  "\ue088": "-", "\ue097": "<", "\ue098": ">", "\ue0a3": "~",
+};
+
+/** Makes a heading readable: the private-use symbols, and the markdown and LaTeX bits the conversion left in the text. */
+const tidy = (text: string) => {
+  let t = text.replace(/[\ue000-\uf8ff]/g, (c) => SYMBOLS[c] ?? "");
+  t = t.replace(/\{\.[\w-]+\}/g, ""); // {.underline}
+  for (let i = 0; i < 3; i++) t = t.replace(/\\mathbf\{([^{}]*)\}/g, "$1 "); // \mathbf{N}
+  t = t.replace(/\\chi\b/g, "χ").replace(/\\(?:var)?epsilon\b/g, "ε").replace(/\\varepsilon\b/g, "ε");
+  t = t.replace(/\\([<>])/g, "$1").replace(/~(\S+?)~/g, "$1").replace(/[${}]/g, ""); // \<, R~1~ and stray markers
+  return clean(t).replace(/\s+([)\]])/g, "$1").replace(/([(\[])\s+/g, "$1");
+};
+
+/**
+ * The title is the heading printed under the D number, which runs up to the "Working" line. Files without
+ * that line fall back to the first sentence of what follows.
+ */
 function titleOf(lines: string[]): string {
-  const text = clean(lines.filter((l) => l.trim() && !/^working$/i.test(l.trim())).slice(0, 4).join(" "));
+  const working = lines.slice(0, 12).findIndex((l) => /^working$/i.test(clean(l)));
+  const heading = working > 0 ? tidy(lines.slice(0, working).join(" ")) : "";
+  if (heading) return heading.length <= MAX_TITLE ? heading : heading.slice(0, MAX_TITLE).replace(/\s+\S*$/, "") + "…";
+
+  const text = clean(lines.filter((l) => l.trim()).slice(0, 4).join(" "));
   const sentence = /^(.{20,}?[.?:])(\s|$)/.exec(text)?.[1] ?? text;
   if (sentence.length <= 110) return sentence;
   return sentence.slice(0, 110).replace(/\s+\S*$/, "") + "…";
