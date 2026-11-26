@@ -3,7 +3,20 @@ import { derivationFileUrl, listDerivations } from "@/lib/derivations";
 
 type Item = Awaited<ReturnType<typeof listDerivations>>[number];
 
-export function DerivationList({ cls, subject, chapter }: { cls: number; subject: string; chapter: string }) {
+// Opens in the page's own viewer; a modified click (new tab, new window) still goes to the file itself.
+const plain = (e: React.MouseEvent) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+export function DerivationList({
+  cls,
+  subject,
+  chapter,
+  onOpen,
+}: {
+  cls: number;
+  subject: string;
+  chapter: string;
+  onOpen: (path: string, title: string) => void;
+}) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -24,8 +37,7 @@ export function DerivationList({ cls, subject, chapter }: { cls: number; subject
           <span className="min-w-0 font-bold text-navy dark:text-cream">{d.title}</span>
           <a
             href={derivationFileUrl(d.file_path)}
-            target="_blank"
-            rel="noreferrer"
+            onClick={(e) => plain(e) && (e.preventDefault(), onOpen(d.file_path, d.title))}
             className="shrink-0 rounded-full border-2 border-navy/30 px-4 py-1 text-xs font-bold text-navy transition hover:border-navy dark:text-cream"
           >
             Open
