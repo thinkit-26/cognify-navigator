@@ -1,13 +1,16 @@
 import { supabase } from "@/integrations/supabase/client";
+import { byChapterOrder, type ChapterOption } from "@/lib/chapters";
 
 export const derivationFileUrl = (path: string) =>
   supabase.storage.from("derivations").getPublicUrl(path).data.publicUrl;
 
-/** The chapters that have at least one derivation uploaded, for a class and subject. */
-export async function listChapters(cls: number, subject: string) {
-  const { data, error } = await supabase.from("derivations").select("chapter").eq("class_level", cls).eq("subject", subject);
+/** The chapters that have at least one derivation uploaded, for a class and subject, in book order. */
+export async function listChapters(cls: number, subject: string): Promise<ChapterOption[]> {
+  const { data, error } = await supabase.from("derivations").select("chapter, chapter_no").eq("class_level", cls).eq("subject", subject);
   if (error) throw error;
-  return [...new Set(data.map((d) => d.chapter))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const seen = new Map<string, ChapterOption>();
+  for (const d of data) if (!seen.has(d.chapter)) seen.set(d.chapter, { no: d.chapter_no, name: d.chapter });
+  return [...seen.values()].sort(byChapterOrder);
 }
 
 export async function listDerivations(cls: number, subject: string, chapter?: string) {

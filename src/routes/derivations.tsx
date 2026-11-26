@@ -6,6 +6,7 @@ import { PyqPick as Pick } from "@/components/PyqPick";
 import { DerivationList } from "@/components/DerivationList";
 import { PYQ_SUBJECTS } from "@/data/pyqSubjects";
 import { derivationFileUrl, listChapters } from "@/lib/derivations";
+import type { ChapterOption } from "@/lib/chapters";
 import { text } from "@/lib/search";
 
 type DerivationSearch = { cls?: number; subject?: string; chapter?: string; view?: string; title?: string };
@@ -35,7 +36,7 @@ function Derivations() {
   const { cls, subject, chapter, view, title } = Route.useSearch();
   const navigate = Route.useNavigate();
   const openedHere = useRef(false);
-  const [chapters, setChapters] = useState<string[] | null>(null);
+  const [chapters, setChapters] = useState<ChapterOption[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   const subjects = cls ? (PYQ_SUBJECTS[cls] ?? []) : [];
@@ -93,8 +94,8 @@ function Derivations() {
               label="CHAPTER"
               placeholder={validSubject && chapters?.length === 0 ? "Coming soon" : "Select chapter"}
               disabled={!validSubject || !chapters?.length}
-              value={chapter && chapters?.includes(chapter) ? chapter : null}
-              options={(chapters ?? []).map((c) => ({ value: c, label: c }))}
+              value={chapter && chapters?.some((c) => c.name === chapter) ? chapter : null}
+              options={(chapters ?? []).map((c) => ({ value: c.name, label: c.name }))}
               onChange={(v) => navigate({ search: (prev) => ({ ...prev, chapter: v }), replace: true })}
             />
           </div>
@@ -102,7 +103,7 @@ function Derivations() {
           {failed && <p className="mt-8 text-muted-foreground">Could not load chapters. Please try again.</p>}
           {validSubject && chapters?.length === 0 && <p className="mt-8 text-muted-foreground">Derivations for this subject are coming soon.</p>}
 
-          {cls && validSubject && chapter && chapters?.includes(chapter) && (
+          {cls && validSubject && chapter && chapters?.some((c) => c.name === chapter) && (
             <div className="mx-auto mt-12 max-w-2xl rounded-[2rem] border border-border bg-white px-6 py-8 shadow-soft dark:border-white/10 dark:bg-white/5">
               <p className="text-sm font-bold text-orange">
                 Class {cls} › {validSubject} › {chapter}
