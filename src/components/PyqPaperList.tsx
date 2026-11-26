@@ -3,7 +3,20 @@ import { listPapers, pyqFileUrl } from "@/lib/pyqPapers";
 
 type Paper = Awaited<ReturnType<typeof listPapers>>[number];
 
-export function PyqPaperList({ cls, subject, year }: { cls: number; subject: string; year: string }) {
+// Opens in the page's own viewer; a modified click (new tab, new window) still goes to the file itself.
+const plain = (e: React.MouseEvent) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+export function PyqPaperList({
+  cls,
+  subject,
+  year,
+  onOpen,
+}: {
+  cls: number;
+  subject: string;
+  year: string;
+  onOpen: (path: string, title: string) => void;
+}) {
   const [papers, setPapers] = useState<Paper[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -27,9 +40,21 @@ export function PyqPaperList({ cls, subject, year }: { cls: number; subject: str
             {p.exam} · {p.year}
           </span>
           <span className="flex gap-2">
-            <a href={pyqFileUrl(p.paper_path)} target="_blank" rel="noreferrer" className={btn}>Paper</a>
+            <a
+              href={pyqFileUrl(p.paper_path)}
+              onClick={(e) => plain(e) && (e.preventDefault(), onOpen(p.paper_path, `${p.exam} · ${p.year} · Paper`))}
+              className={btn}
+            >
+              Paper
+            </a>
             {p.solution_path && (
-              <a href={pyqFileUrl(p.solution_path)} target="_blank" rel="noreferrer" className={btn}>Solution</a>
+              <a
+                href={pyqFileUrl(p.solution_path)}
+                onClick={(e) => plain(e) && (e.preventDefault(), onOpen(p.solution_path!, `${p.exam} · ${p.year} · Solution`))}
+                className={btn}
+              >
+                Solution
+              </a>
             )}
           </span>
         </li>
